@@ -749,6 +749,18 @@
   opacity: 1;
 }
 
+/* Force dark text inside white badges on the accent section */
+.section--accent .app-badge .app-badge-sub,
+.section--accent .app-badge--large .app-badge-sub,
+.section--accent .app-badge--cta .app-badge-sub {
+  color: rgba(11, 15, 16, 0.60);
+}
+.section--accent .app-badge .app-badge-main,
+.section--accent .app-badge--large .app-badge-main,
+.section--accent .app-badge--cta .app-badge-main {
+  color: var(--primary-300, #0b0f10);
+}
+
 .app-badge-icon {
   width: 32px;
   height: 32px;
@@ -946,6 +958,19 @@
   }
 }
 
+/* 5-card variant for C.R.E.S.T. */
+@media (min-width: 1024px) {
+  .values-grid--5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .values-grid--5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 .value-card {
   display: flex;
   flex-direction: column;
@@ -978,6 +1003,14 @@
   /* inherits color from wrapper */
 }
 
+.value-letter {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--secondary-300, #c15006);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
 .value-title {
   font-size: 17px;
   font-weight: 700;
@@ -989,6 +1022,93 @@
   font-size: 14px;
   color: var(--grey-500, #6b7280);
   line-height: 1.65;
+}
+
+
+/* --------------------------------------------------------------------------
+   About Long-form Section (about.pug)
+   -------------------------------------------------------------------------- */
+.about-longform-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .about-longform-inner {
+    grid-template-columns: 1fr 2fr;
+    gap: 64px;
+  }
+}
+
+.about-longform-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-longform-body p {
+  font-size: 16px;
+  color: var(--grey-600, #4b5563);
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+
+.about-longform-closing {
+  font-size: 17px !important;
+  font-weight: 700;
+  color: var(--primary-300, #0b0f10) !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   HGC Callout Section (about.pug)
+   -------------------------------------------------------------------------- */
+.about-hgc-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .about-hgc-inner {
+    grid-template-columns: 2fr 1fr;
+    gap: 64px;
+  }
+}
+
+.about-hgc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-hgc-desc {
+  font-size: 16px;
+  color: var(--grey-600, #4b5563);
+  line-height: 1.75;
+  margin: 0;
+}
+
+.about-hgc-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hgc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--white, #fff);
+  border: 1px solid var(--grey-200, #e5e7eb);
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-300, #0b0f10);
 }
 
 
