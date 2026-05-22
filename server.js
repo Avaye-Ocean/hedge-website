@@ -9,7 +9,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const version = getVersion();
-const year = new Date().getFullYear();
 
 if (!process.env.WEB_SHOP_APP_URL) {
   console.error('ERROR: WEB_SHOP_APP_URL is required — set it in .env or the system environment');
@@ -29,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
   res.locals.version = version;
-  res.locals.year = year;
+  res.locals.year = new Date().getFullYear();
   Object.assign(res.locals, shopUrls);
   next();
 });
