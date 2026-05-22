@@ -1,9 +1,12 @@
 # Claude Code — Hedge Website
 
+**Working branch:** `develop`
+
 ## Stack
 
-- **Runtime:** Node.js 22 LTS
+- **Runtime:** Node.js 22 LTS (requires ≥ 20.6 for `--env-file`)
 - **Server:** Express 4 (CommonJS — no `"type": "module"`)
+- **Env loading:** `node --env-file=.env server.js || node server.js` — no dotenv package
 - **View engine:** Pug 3 — templates live in `./views/`
 - **Styles:** Vanilla CSS — files live in `./public/css/`
 - **Client JS:** Vanilla JS (IIFE, no bundler) — files live in `./public/js/`

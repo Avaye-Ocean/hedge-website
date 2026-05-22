@@ -3,17 +3,18 @@
   "version": "1.0.0",
   "description": "Hedge Wears official marketing website",
   "main": "server.js",
-  "engines": { "node": ">=22.0.0" },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node --env-file=.env server.js || node server.js",
+    "dev": "nodemon --exec 'node --env-file=.env server.js || node server.js'",
     "build": "node scripts/build.js",
     "start:prod": "pm2 start server.js --name hedge-website"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "pug": "^3.0.3"
+    "pug": "^3.0.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.4",
