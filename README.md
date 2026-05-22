@@ -73,6 +73,6 @@ Copy `.env.example` to `.env` and fill in your values. No `dotenv` package is us
 | `BACKEND_API_KEY` | _(required)_ | Static API key sent with every backend request |
 | `BACKEND_SOURCE_ID` | `HEDGE_WEARSLY_LTD` | Source/tenant identifier for this storefront |
 | `BACKEND_BUSINESS_ID` | _(required)_ | MongoDB ObjectId of the Hedge Wears business |
-| `WEB_SHOP_APP_URL` | `https://hedgewears.com` | URL of the web shop (Next.js app) — used for product/category/tag links |
+| `WEB_SHOP_APP_URL` | **required** | URL of the web shop (Next.js app) — used for all product/category/tag links. Server will not start if unset. |
 | `IOS_SHOP_APP_URL` | `https://apps.apple.com` | App Store page URL |
 | `ANDROID_SHOP_APP_URL` | `https://play.google.com` | Google Play page URL |

@@ -11,9 +11,14 @@ const PORT = process.env.PORT || 3000;
 const version = getVersion();
 const year = new Date().getFullYear();
 
+if (!process.env.WEB_SHOP_APP_URL) {
+  console.error('ERROR: WEB_SHOP_APP_URL is required — set it in .env or the system environment');
+  process.exit(1);
+}
+
 // URLs injected into all templates
 const shopUrls = {
-  webShopUrl: process.env.WEB_SHOP_APP_URL ?? 'https://hedgewears.com',
+  webShopUrl: process.env.WEB_SHOP_APP_URL.replace(/\/$/, ''),
   iosUrl: process.env.IOS_SHOP_APP_URL ?? 'https://apps.apple.com',
   androidUrl: process.env.ANDROID_SHOP_APP_URL ?? 'https://play.google.com',
 };
@@ -37,12 +42,11 @@ async function safeApi(fn, fallback = []) {
 // ── Routes ──────────────────────────────────────────────
 
 app.get('/', async (req, res) => {
-  const [categories, featuredProducts, tags] = await Promise.all([
+  const [categories, featuredProducts] = await Promise.all([
     safeApi(api.getCategories),
     safeApi(api.getFeaturedProducts),
-    safeApi(api.getTags),
   ]);
-  res.render('index', { categories, featuredProducts, tags });
+  res.render('index', { categories, featuredProducts });
 });
 
 app.get('/features', (req, res) => res.render('features'));

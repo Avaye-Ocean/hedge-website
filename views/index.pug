@@ -131,22 +131,22 @@ block content
         p.editorial-band-sub Crafted with intention, worn with purpose.
         a.btn.btn-white.btn-lg(href=webShopUrl target='_blank' rel='noopener') Discover the Collection
 
-  //- ─── TRENDING TAGS ─────────────────────────────────────────────────────────
+  //- ─── TRENDING CATEGORIES ───────────────────────────────────────────────────
   section.trending-tags.section
     .container
       .section-header
         h2.section-title Trending Now
       .tags-row
-        if tags && tags.length > 0
-          each tag in tags
-            a.tag-pill(href=webShopUrl + '/?tags=' + tag._id target='_blank' rel='noopener')= tag.name
+        if categories && categories.length > 0
+          each category in categories
+            a.tag-pill(href=webShopUrl + '/?categories=' + category._id target='_blank' rel='noopener')= category.name
         else
-          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Dresses
-          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Sneakers
           a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Bags
+          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Shoes
+          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Dresses
           a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Jewelry
           a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Blazers
-          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') New Arrivals
+          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Accessories
 
   //- ─── HEDGECOIN FEATURE ─────────────────────────────────────────────────────
   section.hedgecoin-feature.section.section--muted
