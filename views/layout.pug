@@ -3,15 +3,17 @@ html(lang='en')
   head
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    meta(name='description' content=description || 'Hedge Wears — Discover fashion from local designers. Earn HedgeCoin rewards with every purchase.')
-    meta(property='og:title' content=title ? title + ' | Hedge Wears' : 'Hedge Wears')
-    meta(property='og:description' content=description || 'Discover fashion from local designers. Earn HedgeCoin rewards with every purchase.')
+    block metaDesc
+      meta(name='description' content='Hedge Wears — African creativity on the global stage. Discover fashion from local designers. Earn HedgeCoin rewards with every purchase.')
+    meta(property='og:title' content=title ? title + ' — Hedge Wears' : 'Hedge Wears')
+    meta(property='og:description' content='African creativity on the global stage. Refined classics with cultural weight and contemporary relevance.')
     meta(property='og:type' content='website')
-    meta(property='og:image' content='/assets/og-image.png')
+    meta(property='og:image' content='https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp')
     meta(name='twitter:card' content='summary_large_image')
-    meta(name='twitter:title' content=title ? title + ' | Hedge Wears' : 'Hedge Wears')
-    meta(name='twitter:description' content=description || 'Discover fashion from local designers. Earn HedgeCoin rewards with every purchase.')
-    title= title ? title + ' | Hedge Wears' : 'Hedge Wears — Wear Bold. Shop Smart.'
+    meta(name='twitter:title' content=title ? title + ' — Hedge Wears' : 'Hedge Wears')
+    meta(name='twitter:description' content='African creativity on the global stage. Refined classics with cultural weight and contemporary relevance.')
+    block pageTitle
+      title Hedge Wears
 
     link(rel='preconnect' href='https://fonts.googleapis.com')
     link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
@@ -21,11 +23,13 @@ html(lang='en')
     link(rel='stylesheet' href='/css/base.css?v=' + version)
     link(rel='stylesheet' href='/css/components.css?v=' + version)
     link(rel='stylesheet' href='/css/layout.css?v=' + version)
+    link(rel='stylesheet' href='/css/pages.css?v=' + version)
 
-    link(rel='icon' type='image/svg+xml' href='/assets/favicon.svg')
+    link(rel='icon' type='image/svg+xml' href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 40"><path d="M67.83 0V3.19C67.83 6.65 65.9 9.84 62.83 11.41L42.08 22V0H33.91V3.19C33.91 6.65 31.98 9.84 28.92 11.41L8.17 22V0H0v40h8.17v-3.19C8.17 33.35 10.1 30.16 13.17 28.59L33.92 18v22H42.09v-3.19C42.09 33.35 44.02 30.16 47.08 28.59L67.83 18v22H76V0H67.83Z" fill="%23c15006"/></svg>')
 
   body
     include partials/nav
+    include partials/icons
 
     main
       block content

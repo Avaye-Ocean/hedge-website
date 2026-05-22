@@ -1,16 +1,21 @@
 extends layout
 
+block pageTitle
+  title About Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Hedge Wears was built to put African fashion on the global stage. Refined classics with cultural weight and contemporary relevance.')
+
 block content
 
-  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
-  section.page-hero.section
+  //- ─── HERO ──────────────────────────────────────────────────────────────────
+  section.about-hero.hero--image.section(style='background-image: url("https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp")')
+    .hero-overlay
     .container
-      .page-hero-inner.page-hero-inner--centered
+      .about-hero-inner
         span.section-eyebrow Our story
-        h1.page-hero-title Built for African fashion.
-          br
-          | Built for you.
-        p.page-hero-subtitle Hedge Wears was born from a simple frustration: local fashion designers were building incredible things, but had no direct way to reach the people who would love their work.
+        h1.about-hero-title About Hedge Wears
+        p.about-hero-sub African creativity on the global stage. Refined classics with cultural weight and contemporary relevance.
 
   //- ─── MISSION ────────────────────────────────────────────────────────────────
   section.mission.section.section--dark
@@ -19,11 +24,11 @@ block content
         .mission-statement
           span.section-eyebrow Our mission
           blockquote.mission-quote
-            | &ldquo;To connect fashion creators with fashion lovers &mdash; and make every purchase a step toward something more.&rdquo;
+            | &ldquo;We built Hedge Wears to put African fashion on the global stage.&rdquo;
         .mission-body
-          p We started Hedge Wears to give local fashion brands a platform that works as hard as they do. A place where sellers can list their products, manage their business, and get paid &mdash; all without the complexity of building their own store from scratch.
-          p For shoppers, we wanted fashion discovery to feel exciting and rewarding. Not just buying clothes, but earning something back each time you do. That&rsquo;s where HedgeCoin came in &mdash; a loyalty system that turns your spending into savings.
-          p Today, Hedge Wears connects thousands of shoppers with hundreds of brands, with new sellers and products added every day.
+          p We started Hedge Wears from a conviction that the African fashion industry &mdash; one of the most creative, vibrant, and culturally rich in the world &mdash; deserved better infrastructure. Local designers were building incredible things. Buyers were looking for them. The two were just not meeting.
+          p Hedge Wears is the bridge. A platform where sellers can list their products, run their business, and get paid without complexity &mdash; and where shoppers can discover fashion that carries real cultural weight. Every purchase earns HedgeCoin, turning loyalty into real savings.
+          p Today, Hedge Wears connects thousands of shoppers with hundreds of brands across Africa. New sellers and products join every day, and we are just getting started.
 
   //- ─── VALUES ────────────────────────────────────────────────────────────────
   section.values.section
@@ -35,91 +40,85 @@ block content
       .values-grid
         .value-card
           .value-icon-wrap
-            span.value-icon ◆
-          h3.value-title Local first
-          p.value-desc We champion African designers and fashion entrepreneurs. Hedge Wears is a platform built to amplify local talent, not displace it.
+            svg.value-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+              circle(cx='12' cy='9' r='2.5' stroke='currentColor' stroke-width='1.8')
+          h3.value-title Local First
+          p.value-desc We champion African designers and fashion entrepreneurs. Hedge Wears is a platform built to amplify local talent, not displace it. Every feature we ship is designed to help local businesses grow.
 
         .value-card
           .value-icon-wrap
-            span.value-icon ◈
+            svg.value-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+              circle(cx='12' cy='12' r='3' stroke='currentColor' stroke-width='1.8')
           h3.value-title Transparency
-          p.value-desc Pricing is clear. HedgeCoin is straightforward. No hidden fees, no confusing terms. What you see is what you get.
+          p.value-desc Pricing is clear. HedgeCoin is straightforward. No hidden fees, no confusing terms. What you see is what you get &mdash; on every product page and at every checkout.
 
         .value-card
           .value-icon-wrap
-            span.value-icon ◉
-          h3.value-title Rewarding loyalty
-          p.value-desc Shopping here should benefit you every time. The HedgeCoin reward system exists to give back to the people who keep the platform alive: our customers.
+            svg.value-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              circle(cx='12' cy='12' r='9' stroke='currentColor' stroke-width='1.8')
+              path(d='M12 7v1m0 8v1M9.5 9.5C9.5 8.67 10.67 8 12 8s2.5.67 2.5 1.5S13.33 11 12 11s-2.5.83-2.5 1.5S10.67 15 12 15s2.5-.67 2.5-1.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round')
+          h3.value-title Rewarding Loyalty
+          p.value-desc Shopping here benefits you every time. The HedgeCoin reward system exists to give back to the people who keep the platform alive: our customers. HGC earned never expires while your account is active.
 
         .value-card
           .value-icon-wrap
-            span.value-icon ○
-          h3.value-title Simple by design
-          p.value-desc Every feature we ship has to earn its place. If it doesn&rsquo;t make shopping or selling meaningfully easier, we cut it.
+            svg.value-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+          h3.value-title Simple by Design
+          p.value-desc Every feature we ship has to earn its place. If it doesn&rsquo;t make shopping or selling meaningfully easier, we cut it. Complexity is a bug, not a feature.
 
-  //- ─── BUILT FOR AFRICA ──────────────────────────────────────────────────────
-  section.africa.section.section--muted
-    .container
-      .africa-inner
-        .africa-content
-          span.section-eyebrow Where we&rsquo;re headed
-          h2.africa-title Fashion without borders
-          p Hedge Wears launched in Nigeria but was always designed to grow. Our multi-currency support means shoppers can view prices in their local currency, and our seller tools are built to support brands shipping across borders.
-          p We believe Africa&rsquo;s fashion industry is one of the most vibrant in the world. Our goal is to build the infrastructure that lets it reach a global audience.
-        .africa-stats
-          .africa-stat-card
-            span.africa-stat-num 10,000+
-            span.africa-stat-label Products available
-          .africa-stat-card
-            span.africa-stat-num 500+
-            span.africa-stat-label Active stores
-          .africa-stat-card
-            span.africa-stat-num 15+
-            span.africa-stat-label Currencies supported
-          .africa-stat-card
-            span.africa-stat-num 50,000+
-            span.africa-stat-label Customers
-
-  //- ─── TEAM / PLACEHOLDER ────────────────────────────────────────────────────
-  section.team.section
+  //- ─── TEAM ──────────────────────────────────────────────────────────────────
+  section.team.section.section--muted
     .container
       .section-header
         span.section-eyebrow The people
         h2.section-title Behind Hedge Wears
-        p.section-subtitle We&rsquo;re a small team of designers, engineers, and fashion enthusiasts working to build something lasting.
+        p.section-subtitle A small team of designers, engineers, and fashion enthusiasts working to build something lasting.
 
       .team-grid
         .team-card.team-card--placeholder
-          .team-avatar-placeholder
+          .team-avatar-placeholder(aria-hidden='true')
+            span.team-avatar-initials F
           .team-info
             span.team-name Founder &amp; CEO
             span.team-role Building the vision
         .team-card.team-card--placeholder
-          .team-avatar-placeholder
+          .team-avatar-placeholder(aria-hidden='true')
+            span.team-avatar-initials P
           .team-info
             span.team-name Head of Product
             span.team-role Designing the experience
         .team-card.team-card--placeholder
-          .team-avatar-placeholder
+          .team-avatar-placeholder(aria-hidden='true')
+            span.team-avatar-initials D
           .team-info
-            span.team-name Lead Engineer
-            span.team-role Shipping the platform
-        .team-card.team-card--placeholder
-          .team-avatar-placeholder
-          .team-info
-            span.team-name Growth &amp; Partnerships
-            span.team-role Growing the community
+            span.team-name Head of Design
+            span.team-role Shaping the aesthetic
 
-      p.team-footer-note
-        | Want to join the team?&nbsp;
-        a.link(href='/careers') See open roles
+  //- ─── STATS ─────────────────────────────────────────────────────────────────
+  section.stats-bar.section
+    .container
+      .stats-grid
+        .stat-item
+          span.stat-number 500+
+          span.stat-label Brands
+        .stat-divider
+        .stat-item
+          span.stat-number 50,000+
+          span.stat-label Customers
+        .stat-divider
+        .stat-item
+          span.stat-number 10,000+
+          span.stat-label Products
 
-  //- ─── CONTACT CTA ────────────────────────────────────────────────────────────
+  //- ─── JOIN CTA ───────────────────────────────────────────────────────────────
   section.cta-banner.section
     .container
       .cta-banner-inner
-        h2.cta-banner-title Got questions?
-        p.cta-banner-subtitle We&rsquo;d love to hear from you &mdash; whether you&rsquo;re a shopper, a brand, or just curious.
+        h2.cta-banner-title Join us
+        p.cta-banner-subtitle Be part of the platform putting African fashion on the global stage.
         .cta-banner-actions
-          a.btn.btn-white.btn-lg(href='/contact') Get in Touch
-          a.btn.btn-outline-white.btn-lg(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Visit the Store
+          a.btn.btn-white.btn-lg(href=webShopUrl target='_blank' rel='noopener') Start Shopping
+          a.btn.btn-outline-white.btn-lg(href='/contact') Get in Touch

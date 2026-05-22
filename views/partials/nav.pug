@@ -6,12 +6,13 @@ header.nav
       span.nav-logo-text HEDGE WEARS
 
     nav.nav-links(aria-label='Primary navigation')
-      a.nav-link(href='/#features') Features
-      a.nav-link(href='/download') Download
-      a.nav-link(href='/about') About
-      a.nav-link(href='/#pricing') Pricing
+      a.nav-link(href='/' class=(page === 'home' ? 'active' : '')) Home
+      a.nav-link(href='/collections' class=(page === 'collections' ? 'active' : '')) Collections
+      a.nav-link(href='/products' class=(page === 'products' ? 'active' : '')) Products
+      a.nav-link(href='/about' class=(page === 'about' ? 'active' : '')) About
+      a.nav-link(href='/download' class=(page === 'download' ? 'active' : '')) Download
 
-    a.btn.btn-primary.nav-cta(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Get Started
+    a.btn.btn-primary.nav-cta(href=webShopUrl target='_blank' rel='noopener') Shop Now
 
     button.nav-hamburger(type='button' aria-label='Open menu' aria-expanded='false' aria-controls='nav-mobile-menu')
       svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
@@ -21,8 +22,9 @@ header.nav
 
   .nav-mobile-menu#nav-mobile-menu(aria-hidden='true')
     nav.nav-mobile-links
-      a.nav-mobile-link(href='/#features') Features
-      a.nav-mobile-link(href='/download') Download
-      a.nav-mobile-link(href='/about') About
-      a.nav-mobile-link(href='/#pricing') Pricing
-    a.btn.btn-primary.nav-mobile-cta(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Get Started
+      a.nav-mobile-link(href='/' class=(page === 'home' ? 'active' : '')) Home
+      a.nav-mobile-link(href='/collections' class=(page === 'collections' ? 'active' : '')) Collections
+      a.nav-mobile-link(href='/products' class=(page === 'products' ? 'active' : '')) Products
+      a.nav-mobile-link(href='/about' class=(page === 'about' ? 'active' : '')) About
+      a.nav-mobile-link(href='/download' class=(page === 'download' ? 'active' : '')) Download
+    a.btn.btn-primary.nav-mobile-cta(href=webShopUrl target='_blank' rel='noopener') Shop Now

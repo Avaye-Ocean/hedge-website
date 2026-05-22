@@ -1,0 +1,54 @@
+extends layout
+
+block pageTitle
+  title Our Products — Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Discover fashion from African designers on Hedge Wears. Browse bags, shoes, dresses, jewelry and more — priced in HGC.')
+
+block content
+
+  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
+  section.page-hero.section
+    .container
+      .page-hero-inner.page-hero-inner--centered
+        span.section-eyebrow The Full Catalogue
+        h1.page-hero-title Our Products
+        p.page-hero-subtitle Discover fashion from African designers. Every item priced in HGC — earn rewards with every order.
+
+  //- ─── FILTER TAGS ───────────────────────────────────────────────────────────
+  if tags && tags.length > 0
+    section.filter-tags.section
+      .container
+        .tags-row
+          each tag in tags
+            a.tag-pill(href=webShopUrl + '/explore' target='_blank' rel='noopener')= tag.name
+
+  //- ─── PRODUCT GRID ──────────────────────────────────────────────────────────
+  section.products-section.section
+    .container
+      - const placeholderImages = ['https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-shoe.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/card4.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress.jpeg', 'https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg']
+      - const placeholderNames = ['Meridian Dress', 'Street Sneakers', 'Gold Layer Set', 'Structured Tote', 'Block Heel Mule', 'Derby Oxford', 'Tailored Blazer', 'Leather Shoulder Bag']
+      - const placeholderPrices = [280, 320, 150, 410, 240, 290, 360, 380]
+      .products-grid
+        if featuredProducts && featuredProducts.length > 0
+          each product in featuredProducts
+            - const imgUrl = (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp'
+            a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
+              .product-card-img-wrap
+                img.product-card-img(src=imgUrl alt=product.name loading='lazy')
+              .product-card-info
+                span.product-card-name= product.name
+                span.product-price= product.sellingPriceCoin + ' HGC'
+              span.product-card-link View →
+        else
+          each imgSrc, i in placeholderImages
+            a.product-card(href=webShopUrl + '/explore' target='_blank' rel='noopener')
+              .product-card-img-wrap
+                img.product-card-img(src=imgSrc alt=placeholderNames[i] loading='lazy')
+              .product-card-info
+                span.product-card-name= placeholderNames[i]
+                span.product-price= placeholderPrices[i] + ' HGC'
+              span.product-card-link View →
+      .section-footer-cta
+        a.btn.btn-primary.btn-lg(href=webShopUrl + '/explore' target='_blank' rel='noopener') Browse all in the store

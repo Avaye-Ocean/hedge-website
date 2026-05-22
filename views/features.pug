@@ -1,5 +1,11 @@
 extends layout
 
+block pageTitle
+  title Features — Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Every feature on Hedge Wears is designed to make fashion shopping and selling rewarding. Explore shopping, HedgeCoin, business tools, and more.')
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
@@ -37,10 +43,8 @@ block content
               | Verified seller badges for added trust
         .feature-detail-visual
           .feature-visual-card
-            .feature-visual-top
-              .feature-visual-img-block.feature-visual-img-block--tall
-              .feature-visual-img-block
-            .feature-visual-label Search: &ldquo;oversized blazer&rdquo;
+            img.feature-visual-img(src='https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg' alt="Women's bags — sample product from Hedge Wears catalogue" loading='lazy')
+            .feature-visual-label Search: &ldquo;structured bag&rdquo;
             .feature-visual-count 1,240 results
 
   //- ─── FEATURE: HEDGECOIN ────────────────────────────────────────────────────
@@ -75,7 +79,7 @@ block content
               span.coin-wallet-label HGC Balance
               span.coin-wallet-icon ◆
             .coin-wallet-balance 1,240 HGC
-            .coin-wallet-fiat ≈ $12.40
+            .coin-wallet-fiat Multi-currency display
             .coin-wallet-actions
               .coin-wallet-btn Redeem
               .coin-wallet-btn.outline History
@@ -104,7 +108,7 @@ block content
           ul.feature-detail-list
             li
               span.check ✓
-              | Add and manage products with photos & video
+              | Add and manage products with photos &amp; video
             li
               span.check ✓
               | Real-time order tracking and fulfilment
@@ -117,7 +121,7 @@ block content
             li
               span.check ✓
               | Sales analytics and inventory alerts
-          a.btn.btn-primary(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Open Your Store
+          a.btn.btn-primary(href=webShopUrl target='_blank' rel='noopener') Open Your Store
 
         .feature-detail-visual
           .store-dashboard-card
@@ -130,7 +134,7 @@ block content
                 span.store-stat-val 12
                 span.store-stat-key Pending
               .store-stat
-                span.store-stat-val ₦48k
+                span.store-stat-val 2,400 HGC
                 span.store-stat-key Revenue
             .store-orders-title Recent Orders
             .store-order-item
@@ -232,5 +236,5 @@ block content
         h2.cta-banner-title Seen enough?
         p.cta-banner-subtitle Join over 50,000 shoppers already earning HedgeCoin rewards.
         .cta-banner-actions
-          a.btn.btn-white.btn-lg(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Start Shopping
+          a.btn.btn-white.btn-lg(href=webShopUrl target='_blank' rel='noopener') Start Shopping
           a.btn.btn-outline-white.btn-lg(href='/download') Download App

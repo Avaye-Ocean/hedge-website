@@ -1,0 +1,44 @@
+extends layout
+
+block pageTitle
+  title Shop by Category — Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Browse all fashion categories on Hedge Wears — bags, shoes, dresses, jewelry and more from African designers.')
+
+block content
+
+  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
+  section.page-hero.section
+    .container
+      .page-hero-inner.page-hero-inner--centered
+        span.section-eyebrow Browse the range
+        h1.page-hero-title Shop by Category
+        p.page-hero-subtitle From everyday essentials to statement pieces — find it by category.
+
+  //- ─── CATEGORY GRID ─────────────────────────────────────────────────────────
+  section.categories-page.section
+    .container
+      - const fallbackCategories = [{name: "Women's Bags", description: "Structured totes, crossbodies and clutches from African designers.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg'}, {name: "Women's Shoes", description: "Heels, mules, and sandals crafted for everyday elegance.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp'}, {name: "Men's Bags", description: "Duffels, backpacks, and briefcases built to last.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/Card3.jpeg'}, {name: "Men's Shoes", description: "Oxfords, sneakers, and loafers with intentional design.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/card4.webp'}, {name: "Dresses", description: "Contemporary cuts with cultural influence — day to evening.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp'}, {name: "Jewelry", description: "Layered gold, bold statement pieces, and everyday essentials.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp'}]
+      .categories-grid.categories-grid--large
+        if categories && categories.length > 0
+          each category in categories
+            - const catImg = category.photo || 'https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp'
+            - const truncDesc = category.description ? category.description.slice(0, 80) + (category.description.length > 80 ? '…' : '') : ''
+            a.category-card.category-card--large(href=webShopUrl + '/explore' target='_blank' rel='noopener')
+              .category-card-img-wrap
+                img.category-card-img(src=catImg alt=category.name + ' category' loading='lazy')
+              .category-card-info
+                span.category-card-name= category.name
+                if truncDesc
+                  p.category-card-desc= truncDesc
+                span.category-card-cta Explore →
+        else
+          each cat in fallbackCategories
+            a.category-card.category-card--large(href=webShopUrl + '/explore' target='_blank' rel='noopener')
+              .category-card-img-wrap
+                img.category-card-img(src=cat.photo alt=cat.name + ' category' loading='lazy')
+              .category-card-info
+                span.category-card-name= cat.name
+                p.category-card-desc= cat.description
+                span.category-card-cta Explore →

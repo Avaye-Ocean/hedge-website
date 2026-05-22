@@ -5,59 +5,85 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { getVersion } = require('./scripts/version');
+const api = require('./services/api');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Resolve version once at startup for cache-busting
 const version = getVersion();
 const year = new Date().getFullYear();
 
-// View engine
+// URLs injected into all templates
+const shopUrls = {
+  webShopUrl: process.env.WEB_SHOP_APP_URL ?? 'https://hedgewears.com',
+  iosUrl: process.env.IOS_SHOP_APP_URL ?? 'https://apps.apple.com',
+  androidUrl: process.env.ANDROID_SHOP_APP_URL ?? 'https://play.google.com',
+};
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-
-// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Inject version and year into all templates
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   res.locals.version = version;
   res.locals.year = year;
+  Object.assign(res.locals, shopUrls);
   next();
 });
 
-// Routes
-app.get('/', function (req, res) {
-  res.render('index');
+// Helper: safely fetch API data, default to empty on failure
+async function safeApi(fn, fallback = []) {
+  try { return await fn() ?? fallback; } catch { return fallback; }
+}
+
+// ── Routes ──────────────────────────────────────────────
+
+app.get('/', async (req, res) => {
+  const [categories, featuredProducts, tags] = await Promise.all([
+    safeApi(api.getCategories),
+    safeApi(api.getFeaturedProducts),
+    safeApi(api.getTags),
+  ]);
+  res.render('index', { categories, featuredProducts, tags });
 });
 
-app.get('/features', function (req, res) {
-  res.render('features');
+app.get('/features', (req, res) => res.render('features'));
+
+app.get('/download', (req, res) => res.render('download'));
+
+app.get('/about', (req, res) => res.render('about'));
+
+app.get('/collections', async (req, res) => {
+  const [categories, featuredProducts] = await Promise.all([
+    safeApi(api.getCategories),
+    safeApi(api.getFeaturedProducts),
+  ]);
+  res.render('collections', { categories, featuredProducts });
 });
 
-app.get('/download', function (req, res) {
-  res.render('download');
+app.get('/pricing', (req, res) => res.render('pricing'));
+
+app.get('/contact', (req, res) => res.render('contact'));
+
+app.get('/products', async (req, res) => {
+  const [featuredProducts, categories, tags] = await Promise.all([
+    safeApi(api.getFeaturedProducts),
+    safeApi(api.getCategories),
+    safeApi(api.getTags),
+  ]);
+  res.render('products', { featuredProducts, categories, tags });
 });
 
-app.get('/about', function (req, res) {
-  res.render('about');
+app.get('/categories', async (req, res) => {
+  const categories = await safeApi(api.getCategories);
+  res.render('categories', { categories });
 });
 
-// 404 handler
-app.use(function (req, res) {
-  res.status(404);
-  if (res.locals && app.get('views')) {
-    try {
-      return res.render('404');
-    } catch (e) {
-      // fallback if 404.pug doesn't exist yet
-    }
-  }
-  res.send('<h1>404 — Page Not Found</h1><p><a href="/">Go home</a></p>');
+// 404
+app.use((req, res) => {
+  res.status(404).render('404');
 });
 
-// Start server
-app.listen(PORT, function () {
+app.listen(PORT, () => {
   console.log(`Hedge Wears website running on http://localhost:${PORT}`);
 });

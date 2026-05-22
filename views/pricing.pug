@@ -1,0 +1,134 @@
+extends layout
+
+block pageTitle
+  title Pricing — Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Simple, transparent pricing on Hedge Wears. Free for shoppers. Flexible plans for sellers. Earn HGC on every order.')
+
+block content
+
+  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
+  section.page-hero.section
+    .container
+      .page-hero-inner.page-hero-inner--centered
+        span.section-eyebrow No surprises
+        h1.page-hero-title Simple, transparent pricing
+        p.page-hero-subtitle Whether you shop or sell, Hedge Wears keeps pricing clear. No hidden fees. No confusing tiers. Just fashion.
+
+  //- ─── PRICING TIERS ─────────────────────────────────────────────────────────
+  section.pricing.section
+    .container
+      .pricing-grid
+        .pricing-card
+          .pricing-card-header
+            span.pricing-tier Free
+            span.pricing-audience Shoppers
+          .pricing-card-price
+            span.pricing-amount-big £0
+            span.pricing-period /month
+          p.pricing-card-desc Browse, discover, and buy fashion from African designers with zero subscription cost.
+          ul.pricing-features-list
+            li
+              span.check ✓
+              | Browse &amp; buy unlimited products
+            li
+              span.check ✓
+              | Earn HGC on every completed order
+            li
+              span.check ✓
+              | HedgeCoin wallet &amp; transaction history
+            li
+              span.check ✓
+              | Order tracking &amp; push notifications
+            li
+              span.check ✓
+              | Multi-currency price display
+          a.btn.btn-outline.btn-full(href=webShopUrl target='_blank' rel='noopener') Start Shopping
+
+        .pricing-card.pricing-card--featured
+          .pricing-card-badge Most Popular
+          .pricing-card-header
+            span.pricing-tier Starter
+            span.pricing-audience Sellers
+          .pricing-card-price
+            span.pricing-amount-big Free
+            span.pricing-period to list
+          p.pricing-card-desc List your fashion products and start selling to thousands of customers — no upfront cost.
+          ul.pricing-features-list
+            li
+              span.check ✓
+              | List up to 20 products
+            li
+              span.check ✓
+              | 5% transaction fee per sale
+            li
+              span.check ✓
+              | Product photos &amp; video uploads
+            li
+              span.check ✓
+              | Order management dashboard
+            li
+              span.check ✓
+              | Customer messaging
+          a.btn.btn-primary.btn-full(href=webShopUrl target='_blank' rel='noopener') Open Your Store
+
+        .pricing-card
+          .pricing-card-header
+            span.pricing-tier Pro
+            span.pricing-audience Sellers
+          .pricing-card-price
+            span.pricing-amount-big Free
+            span.pricing-period to list
+          p.pricing-card-desc Unlimited products, priority listing, and analytics — for brands ready to scale.
+          ul.pricing-features-list
+            li
+              span.check ✓
+              | Unlimited product listings
+            li
+              span.check ✓
+              | 3% transaction fee per sale
+            li
+              span.check ✓
+              | Priority search placement
+            li
+              span.check ✓
+              | Sales analytics &amp; insights
+            li
+              span.check ✓
+              | Staff account management
+            li
+              span.check ✓
+              | Promotion &amp; ad tools
+          a.btn.btn-outline.btn-full(href=webShopUrl target='_blank' rel='noopener') Get Started
+
+  //- ─── HGC NOTE ──────────────────────────────────────────────────────────────
+  section.pricing-note.section.section--muted
+    .container
+      .pricing-note-inner
+        .pricing-note-icon
+          svg(width='32' height='32' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+            circle(cx='12' cy='12' r='9' stroke='currentColor' stroke-width='1.8')
+            path(d='M12 7v1m0 8v1M9.5 9.5C9.5 8.67 10.67 8 12 8s2.5.67 2.5 1.5S13.33 11 12 11s-2.5.83-2.5 1.5S10.67 15 12 15s2.5-.67 2.5-1.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round')
+        .pricing-note-text
+          h3.pricing-note-title All prices in HGC
+          p.pricing-note-desc Product prices on Hedge Wears are displayed in HGC (HedgeCoin). You can view the equivalent in your local currency at any time. HGC earned on orders can be used to offset the cost of future purchases at checkout.
+
+  //- ─── FAQ ───────────────────────────────────────────────────────────────────
+  section.faq.section
+    .container
+      .section-header
+        span.section-eyebrow Got questions?
+        h2.section-title Frequently asked
+      .faq-list
+        .faq-item
+          h3.faq-question What is HedgeCoin (HGC)?
+          p.faq-answer HGC is Hedge Wears' in-app loyalty currency. You earn HGC on every completed purchase and can redeem it at checkout to reduce the cost of future orders. HGC does not expire while your account is active.
+
+        .faq-item
+          h3.faq-question How do returns work?
+          p.faq-answer Returns are managed directly between the buyer and the seller. Each seller sets their own return policy, which is visible on their product pages. If you have a dispute, our support team can assist. Contact us at hello@hedgewears.com.
+
+        .faq-item
+          h3.faq-question What fees do sellers pay?
+          p.faq-answer Listing products on Hedge Wears is free. We charge a small transaction fee when a sale is completed — 5% on Starter and 3% on Pro. There are no monthly subscriptions, no setup fees, and no listing fees.
