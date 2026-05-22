@@ -78,7 +78,9 @@ block content
                 img.product-card-img(src=imgUrl alt=product.name loading='lazy')
               .product-card-info
                 span.product-card-name= product.name
-                span.product-price= product.sellingPriceCoin + ' HGC'
+                span.product-price
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                  = product.sellingPriceCoin
               span.product-card-link View →
         else
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
@@ -86,28 +88,36 @@ block content
               img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp' alt='Dress from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Dress
-              span.product-price 280 HGC
+              span.product-price
+                img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                | 280
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
               img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-shoe.webp' alt='Shoes from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Sneakers
-              span.product-price 320 HGC
+              span.product-price
+                img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                | 320
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
               img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp' alt='Jewelry from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Gold Layer Set
-              span.product-price 150 HGC
+              span.product-price
+                img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                | 150
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
               img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp' alt='Handbag from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Structured Tote
-              span.product-price 410 HGC
+              span.product-price
+                img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                | 410
             span.product-card-link View →
       .section-footer-cta
         a.btn.btn-primary(href=webShopUrl target='_blank' rel='noopener') View all products →
@@ -152,19 +162,19 @@ block content
           .coin-card
             .coin-card-header
               span.coin-card-label HGC Balance
-              svg.coin-card-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
-                circle(cx='12' cy='12' r='9' stroke='currentColor' stroke-width='1.8')
-                path(d='M12 7v1m0 8v1M9.5 9.5C9.5 8.67 10.67 8 12 8s2.5.67 2.5 1.5S13.33 11 12 11s-2.5.83-2.5 1.5S10.67 15 12 15s2.5-.67 2.5-1.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round')
+              img.hgc-icon-card-header(src='/img/hgc-icon.svg' alt='HGC')
             .coin-card-amount
-              span.coin-card-amount-big HGC
+              img.hgc-icon-coin-card(src='/img/hgc-icon.svg' alt='HGC')
               span.coin-card-amount-sub Your loyalty, rewarded.
             .coin-card-tx
               .coin-tx-item
                 span.coin-tx-label Order completed
-                span.coin-tx-amount +45 HGC
+                span.coin-tx-amount +45
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
               .coin-tx-item
                 span.coin-tx-label Order completed
-                span.coin-tx-amount +30 HGC
+                span.coin-tx-amount +30
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
 
   //- ─── APP DOWNLOAD STRIP ────────────────────────────────────────────────────
   section.app-strip.section.section--accent

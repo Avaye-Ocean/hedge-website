@@ -39,7 +39,9 @@ block content
                 img.product-card-img(src=imgUrl alt=product.name loading='lazy')
               .product-card-info
                 span.product-card-name= product.name
-                span.product-price= product.sellingPriceCoin + ' HGC'
+                span.product-price
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                  = product.sellingPriceCoin
               span.product-card-link View →
         else
           each imgSrc, i in placeholderImages
@@ -48,7 +50,9 @@ block content
                 img.product-card-img(src=imgSrc alt=placeholderNames[i] loading='lazy')
               .product-card-info
                 span.product-card-name= placeholderNames[i]
-                span.product-price= placeholderPrices[i] + ' HGC'
+                span.product-price
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                  = placeholderPrices[i]
               span.product-card-link View →
       .section-footer-cta
         a.btn.btn-primary.btn-lg(href=webShopUrl target='_blank' rel='noopener') Browse all in the store

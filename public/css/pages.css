@@ -414,6 +414,9 @@
   font-size: 16px;
   color: var(--secondary-300, #c15006);
   line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .product-card-link {
@@ -649,6 +652,9 @@
   font-size: 13px;
   font-weight: 600;
   color: #29ae29;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 
@@ -2833,6 +2839,36 @@
 .link:hover {
   text-decoration: underline;
 }
+
+/* --------------------------------------------------------------------------
+   HGC Coin Icon — inline (price labels) + large (coin card widget)
+   -------------------------------------------------------------------------- */
+.hgc-icon-inline {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 3px;
+  position: relative;
+  top: -1px;
+  flex-shrink: 0;
+}
+
+.hgc-icon-coin-card {
+  display: block;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 8px;
+  filter: brightness(1.1);
+}
+
+.hgc-icon-card-header {
+  display: block;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
 
 .section-eyebrow {
   display: block;
