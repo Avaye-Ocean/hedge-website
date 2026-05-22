@@ -25,7 +25,7 @@ block content
           each category in categories
             - const catImg = category.photo || 'https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp'
             - const truncDesc = category.description ? category.description.slice(0, 80) + (category.description.length > 80 ? '…' : '') : ''
-            a.category-card.category-card--large(href=webShopUrl + '/explore' target='_blank' rel='noopener')
+            a.category-card.category-card--large(href=webShopUrl + '/?categories=' + category._id target='_blank' rel='noopener')
               .category-card-img-wrap
                 img.category-card-img(src=catImg alt=category.name + ' category' loading='lazy')
               .category-card-info
@@ -35,7 +35,8 @@ block content
                 span.category-card-cta Explore →
         else
           each cat in fallbackCategories
-            a.category-card.category-card--large(href=webShopUrl + '/explore' target='_blank' rel='noopener')
+            - const genderParam = cat.name.toLowerCase().includes("women") ? '/?productGender=FEMALE' : cat.name.toLowerCase().includes("men") ? '/?productGender=MALE' : ''
+            a.category-card.category-card--large(href=webShopUrl + genderParam target='_blank' rel='noopener')
               .category-card-img-wrap
                 img.category-card-img(src=cat.photo alt=cat.name + ' category' loading='lazy')
               .category-card-info

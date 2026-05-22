@@ -22,7 +22,7 @@ block content
       .container
         .tags-row
           each tag in tags
-            a.tag-pill(href=webShopUrl + '/explore' target='_blank' rel='noopener')= tag.name
+            a.tag-pill(href=webShopUrl + '/?tags=' + tag._id target='_blank' rel='noopener')= tag.name
 
   //- ─── PRODUCT GRID ──────────────────────────────────────────────────────────
   section.products-section.section
@@ -43,7 +43,7 @@ block content
               span.product-card-link View →
         else
           each imgSrc, i in placeholderImages
-            a.product-card(href=webShopUrl + '/explore' target='_blank' rel='noopener')
+            a.product-card(href=webShopUrl target='_blank' rel='noopener')
               .product-card-img-wrap
                 img.product-card-img(src=imgSrc alt=placeholderNames[i] loading='lazy')
               .product-card-info
@@ -51,4 +51,4 @@ block content
                 span.product-price= placeholderPrices[i] + ' HGC'
               span.product-card-link View →
       .section-footer-cta
-        a.btn.btn-primary.btn-lg(href=webShopUrl + '/explore' target='_blank' rel='noopener') Browse all in the store
+        a.btn.btn-primary.btn-lg(href=webShopUrl target='_blank' rel='noopener') Browse all in the store

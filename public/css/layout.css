@@ -1103,28 +1103,39 @@
 }
 
 
-/* ── Section background modifiers ── */
+/* ── Section background / colour modifiers ────────────────────────────────
+   Each section carries a semantic class (.editorial-band, .app-strip, etc.)
+   that scopes its component colours independently. These modifier classes
+   only control backgrounds and the shared utility classes (.section-title,
+   .section-eyebrow, .section-subtitle) — they do NOT override bare h/p
+   tags, which prevents specificity clashes with component rules.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* Dark sections (primary-300 background, white base text) */
 .section--dark {
   background: var(--primary-300);
   color: var(--white);
 }
-.section--dark h1, .section--dark h2, .section--dark h3, .section--dark h4 { color: var(--white); }
-.section--dark p { color: var(--grey-400); }
-.section--dark .section-title { color: var(--white); }
-.section--dark .section-subtitle { color: var(--grey-400); }
-.section--dark .section-eyebrow { color: var(--secondary-200); }
+.section--dark .section-title    { color: var(--white); }
+.section--dark .section-subtitle { color: rgba(255, 255, 255, 0.75); }
+.section--dark .section-eyebrow  { color: var(--secondary-200); }
 
+/* Muted / grey sections */
 .section--grey,
-.section--muted { background: var(--grey-50); }
+.section--muted { background: var(--grey-50); color: inherit; }
 
+/* Accent / orange sections */
 .section--orange,
 .section--accent {
   background: var(--secondary-300);
   color: var(--white);
 }
-.section--orange h2, .section--accent h2,
-.section--orange .section-title, .section--accent .section-title { color: var(--white); }
-.section--orange .section-subtitle, .section--accent .section-subtitle { color: rgba(255,255,255,0.85); }
+.section--orange .section-title,
+.section--accent .section-title    { color: var(--white); }
+.section--orange .section-subtitle,
+.section--accent .section-subtitle { color: rgba(255, 255, 255, 0.85); }
+.section--orange .section-eyebrow,
+.section--accent .section-eyebrow  { color: rgba(255, 255, 255, 0.70); }
 
 /* ── Button variants ── */
 .btn-white { background: var(--white); color: var(--primary-300); border: 2px solid var(--white); }
@@ -1193,7 +1204,4 @@
   flex-shrink: 0;
 }
 
-.section--muted { background: var(--grey-50); }
-.section--accent { background: var(--secondary-300); color: var(--white); }
-.section--accent .section-title { color: var(--white); }
-.section--accent .section-subtitle { color: rgba(255,255,255,0.8); }
+/* Section modifier aliases already defined above — no duplicates here */
