@@ -543,6 +543,64 @@
 
 
 /* --------------------------------------------------------------------------
+   Tag Cards Grid (categories.pug — Shop by Style / Tags section)
+   -------------------------------------------------------------------------- */
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 480px) {
+  .tags-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .tags-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .tags-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.tag-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--white, #fff);
+  border: 1px solid var(--grey-200, #e5e7eb);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tag-card:hover {
+  border-color: var(--secondary-300, #c15006);
+  box-shadow: 0 4px 16px rgba(193, 80, 6, 0.08);
+  text-decoration: none;
+}
+
+.tag-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-300, #0b0f10);
+}
+
+.tag-card-arrow {
+  font-size: 14px;
+  color: var(--secondary-300, #c15006);
+  flex-shrink: 0;
+}
+
+
+/* --------------------------------------------------------------------------
    HedgeCoin Feature Section (index.pug)
    -------------------------------------------------------------------------- */
 .hedgecoin-feature {

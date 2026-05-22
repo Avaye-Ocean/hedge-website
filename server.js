@@ -77,8 +77,11 @@ app.get('/products', async (req, res) => {
 });
 
 app.get('/categories', async (req, res) => {
-  const categories = await safeApi(api.getCategories);
-  res.render('categories', { categories });
+  const [categories, tags] = await Promise.all([
+    safeApi(api.getCategories),
+    safeApi(api.getTags),
+  ]);
+  res.render('categories', { categories, tags });
 });
 
 app.get('/help', (req, res) => res.render('help'));
