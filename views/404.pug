@@ -1,0 +1,27 @@
+extends layout
+
+block content
+
+  section.error-page.section
+    .container
+      .error-page-inner
+        .error-visual
+          span.error-code 404
+          .error-divider
+          svg.error-icon(width='48' height='26' viewBox='0 0 76 40' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+            path(d='M67.83 0V3.18928C67.83 6.64845 65.895 9.83773 62.8312 11.4058L42.0844 22.0007V0H33.9144V3.18928C33.9144 6.64845 31.9794 9.83773 28.9156 11.4058L8.16881 22.0007V0H0V40H8.17V36.8107C8.17 33.3515 10.105 30.1623 13.1688 28.5942L33.9156 17.9993V39.9994H42.0856V36.8101C42.0856 33.351 44.0206 30.1617 47.0844 28.5936L67.8312 17.9987V39.9988H76.0012V0H67.8312H67.83Z' fill='currentColor')
+
+        h1.error-title Page not found
+        p.error-subtitle The page you&rsquo;re looking for doesn&rsquo;t exist or may have moved. Let&rsquo;s get you back on track.
+
+        .error-actions
+          a.btn.btn-primary.btn-lg(href='/') Back to Home
+          a.btn.btn-outline.btn-lg(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Visit the Store
+
+        .error-links
+          p Other places you might be looking for:
+          ul.error-links-list
+            li: a.link(href='/#features') Features
+            li: a.link(href='/download') Download the App
+            li: a.link(href='/about') About Us
+            li: a.link(href='/contact') Contact Support

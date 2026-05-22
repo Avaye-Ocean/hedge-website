@@ -1,0 +1,236 @@
+extends layout
+
+block content
+
+  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
+  section.page-hero.section
+    .container
+      .page-hero-inner
+        span.section-eyebrow Features
+        h1.page-hero-title Everything you need
+          br
+          | to shop smarter
+        p.page-hero-subtitle Hedge Wears is built around one idea: fashion shopping should be rewarding. Here&rsquo;s every feature we&rsquo;ve shipped to make that real.
+
+  //- ─── FEATURE: SHOPPING ─────────────────────────────────────────────────────
+  section.feature-detail.section
+    .container
+      .feature-detail-inner
+        .feature-detail-content
+          span.feature-detail-tag Shopping
+          h2.feature-detail-title A catalogue that moves
+            br
+            | as fast as fashion does
+          p.feature-detail-desc New products are listed every day by hundreds of verified sellers. Filter by size, category, price range, or brand — and find exactly what you&rsquo;re looking for in seconds.
+          ul.feature-detail-list
+            li
+              span.check ✓
+              | Thousands of products across categories
+            li
+              span.check ✓
+              | Rich product pages with photos, video, and size guides
+            li
+              span.check ✓
+              | Saved wishlist to revisit favourites
+            li
+              span.check ✓
+              | Verified seller badges for added trust
+        .feature-detail-visual
+          .feature-visual-card
+            .feature-visual-top
+              .feature-visual-img-block.feature-visual-img-block--tall
+              .feature-visual-img-block
+            .feature-visual-label Search: &ldquo;oversized blazer&rdquo;
+            .feature-visual-count 1,240 results
+
+  //- ─── FEATURE: HEDGECOIN ────────────────────────────────────────────────────
+  section#hedgecoin.feature-detail.section.section--muted
+    .container
+      .feature-detail-inner.feature-detail-inner--reverse
+        .feature-detail-content
+          span.feature-detail-tag HedgeCoin Rewards
+          h2.feature-detail-title Your loyalty earns
+            br
+            | real discounts
+          p.feature-detail-desc Every order you complete credits HedgeCoin (HGC) directly to your wallet. HGC is Hedge Wears&rsquo; in-app loyalty currency — not points that expire, but a real balance you can redeem at checkout.
+          ul.feature-detail-list
+            li
+              span.check ✓
+              | HGC credited on every completed order
+            li
+              span.check ✓
+              | Redeem at checkout for instant savings
+            li
+              span.check ✓
+              | Live coin balance always visible in your wallet
+            li
+              span.check ✓
+              | View full transaction history
+          .feature-detail-callout
+            span.callout-icon ◆
+            span.callout-text HedgeCoin never expires as long as your account is active.
+        .feature-detail-visual
+          .coin-wallet-card
+            .coin-wallet-header
+              span.coin-wallet-label HGC Balance
+              span.coin-wallet-icon ◆
+            .coin-wallet-balance 1,240 HGC
+            .coin-wallet-fiat ≈ $12.40
+            .coin-wallet-actions
+              .coin-wallet-btn Redeem
+              .coin-wallet-btn.outline History
+            .coin-wallet-recent
+              p.coin-wallet-recent-title Recent Earnings
+              .coin-tx-item
+                span.coin-tx-label Order #4821
+                span.coin-tx-amount +45 HGC
+              .coin-tx-item
+                span.coin-tx-label Order #4790
+                span.coin-tx-amount +30 HGC
+              .coin-tx-item
+                span.coin-tx-label Order #4755
+                span.coin-tx-amount +20 HGC
+
+  //- ─── FEATURE: BUSINESS TOOLS ───────────────────────────────────────────────
+  section#business.feature-detail.section
+    .container
+      .feature-detail-inner
+        .feature-detail-content
+          span.feature-detail-tag Business Tools
+          h2.feature-detail-title Your store.
+            br
+            | Your rules.
+          p.feature-detail-desc Whether you&rsquo;re a solo designer or a growing brand, Hedge Wears gives you everything you need to run your store directly from the app. No third-party integrations, no monthly fees to list.
+          ul.feature-detail-list
+            li
+              span.check ✓
+              | Add and manage products with photos & video
+            li
+              span.check ✓
+              | Real-time order tracking and fulfilment
+            li
+              span.check ✓
+              | Staff accounts with role-based access
+            li
+              span.check ✓
+              | Promotion and ad tools to reach more customers
+            li
+              span.check ✓
+              | Sales analytics and inventory alerts
+          a.btn.btn-primary(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Open Your Store
+
+        .feature-detail-visual
+          .store-dashboard-card
+            .store-dashboard-header Your Store Dashboard
+            .store-dashboard-stats
+              .store-stat
+                span.store-stat-val 38
+                span.store-stat-key Products
+              .store-stat
+                span.store-stat-val 12
+                span.store-stat-key Pending
+              .store-stat
+                span.store-stat-val ₦48k
+                span.store-stat-key Revenue
+            .store-orders-title Recent Orders
+            .store-order-item
+              span.store-order-id #5021
+              span.store-order-status.status--new New
+            .store-order-item
+              span.store-order-id #5020
+              span.store-order-status.status--shipped Shipped
+            .store-order-item
+              span.store-order-id #5018
+              span.store-order-status.status--delivered Delivered
+
+  //- ─── FEATURE: PAYMENTS ─────────────────────────────────────────────────────
+  section.feature-detail.section.section--muted
+    .container
+      .feature-detail-inner.feature-detail-inner--reverse
+        .feature-detail-content
+          span.feature-detail-tag Secure Payments
+          h2.feature-detail-title Pay your way,
+            br
+            | safely every time
+          p.feature-detail-desc All transactions on Hedge Wears are processed through Paystack — one of Africa&rsquo;s most trusted payment processors. Your card details are never stored on our servers.
+          ul.feature-detail-list
+            li
+              span.check ✓
+              | Debit &amp; credit card payments
+            li
+              span.check ✓
+              | Bank transfer option
+            li
+              span.check ✓
+              | Apply HGC balance at checkout for discounts
+            li
+              span.check ✓
+              | Instant order confirmation
+            li
+              span.check ✓
+              | Buyer protection on all orders
+        .feature-detail-visual
+          .payment-card
+            .payment-card-header Checkout
+            .payment-card-row
+              span Cart Total
+              span 1,200 HGC
+            .payment-card-row.payment-card-row--discount
+              span HGC Applied
+              span &minus;240 HGC
+            .payment-card-divider
+            .payment-card-row.payment-card-row--total
+              span Total Due
+              span 960 HGC
+            .payment-card-btn Pay Securely
+
+  //- ─── FEATURE: DELIVERY ─────────────────────────────────────────────────────
+  section.feature-detail.section
+    .container
+      .feature-detail-inner
+        .feature-detail-content
+          span.feature-detail-tag Fast Delivery
+          h2.feature-detail-title From checkout
+            br
+            | to your door
+          p.feature-detail-desc Once your order is placed, you can track every step of the delivery from within the app. Get real-time push notifications at each stage of fulfilment.
+          ul.feature-detail-list
+            li
+              span.check ✓
+              | Real-time order status updates
+            li
+              span.check ✓
+              | Push notifications at every stage
+            li
+              span.check ✓
+              | Seller contact for quick resolution
+            li
+              span.check ✓
+              | Easy returns process
+        .feature-detail-visual
+          .delivery-tracker
+            .delivery-step.complete
+              .delivery-step-dot
+              .delivery-step-label Order Placed
+            .delivery-step-line.complete
+            .delivery-step.complete
+              .delivery-step-dot
+              .delivery-step-label Processing
+            .delivery-step-line.complete
+            .delivery-step.active
+              .delivery-step-dot
+              .delivery-step-label Shipped
+            .delivery-step-line
+            .delivery-step
+              .delivery-step-dot
+              .delivery-step-label Delivered
+
+  //- ─── BOTTOM CTA ────────────────────────────────────────────────────────────
+  section.cta-banner.section
+    .container
+      .cta-banner-inner
+        h2.cta-banner-title Seen enough?
+        p.cta-banner-subtitle Join over 50,000 shoppers already earning HedgeCoin rewards.
+        .cta-banner-actions
+          a.btn.btn-white.btn-lg(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Start Shopping
+          a.btn.btn-outline-white.btn-lg(href='/download') Download App

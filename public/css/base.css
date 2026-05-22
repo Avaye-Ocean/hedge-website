@@ -1,0 +1,285 @@
+/* ==========================================================================
+   Hedge Wears — Base Styles
+   Depends on: variables.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Google Fonts — Rethink Sans (weights 400, 500, 600, 700)
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700&display=swap');
+
+
+/* --------------------------------------------------------------------------
+   CSS Reset
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--text-md);
+  font-weight: var(--font-regular);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   Typography — Headings
+   -------------------------------------------------------------------------- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: var(--text-5xl);   /* 40px */
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: var(--text-4xl);   /* 32px */
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: var(--text-2xl);   /* 24px */
+  line-height: var(--leading-snug);
+}
+
+h4 {
+  font-size: var(--text-xl);    /* 20px */
+  line-height: var(--leading-snug);
+}
+
+h5 {
+  font-size: var(--text-lg);    /* 18px */
+  font-weight: var(--font-semibold);
+}
+
+h6 {
+  font-size: var(--text-md);    /* 16px */
+  font-weight: var(--font-semibold);
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: var(--text-6xl); /* 48px */
+  }
+
+  h2 {
+    font-size: var(--text-5xl); /* 40px */
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   Typography — Body text
+   -------------------------------------------------------------------------- */
+p {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text);
+}
+
+p + p {
+  margin-top: var(--space-4);
+}
+
+strong,
+b {
+  font-weight: var(--font-bold);
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+small {
+  font-size: var(--text-sm);
+}
+
+
+/* --------------------------------------------------------------------------
+   Typography — Links
+   -------------------------------------------------------------------------- */
+a {
+  color: var(--color-brand);
+  text-decoration: none;
+  transition: color var(--transition-default);
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--color-brand-hover);
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+
+/* --------------------------------------------------------------------------
+   Layout — Container
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-px-mobile);
+  padding-right: var(--container-px-mobile);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: var(--container-px-tablet);
+    padding-right: var(--container-px-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: var(--container-px-desktop);
+    padding-right: var(--container-px-desktop);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   Layout — Section
+   -------------------------------------------------------------------------- */
+.section {
+  padding-top: var(--section-py-mobile);
+  padding-bottom: var(--section-py-mobile);
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-top: var(--section-py-desktop);
+    padding-bottom: var(--section-py-desktop);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   Selection
+   -------------------------------------------------------------------------- */
+::selection {
+  background-color: var(--secondary-300);
+  color: var(--white);
+}
+
+::-moz-selection {
+  background-color: var(--secondary-300);
+  color: var(--white);
+}
+
+
+/* --------------------------------------------------------------------------
+   Focus styles (accessible)
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   Scrollbar (webkit)
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--grey-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--grey-300);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--grey-400);
+}
+
+
+/* --------------------------------------------------------------------------
+   Utility — Screen reader only
+   -------------------------------------------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

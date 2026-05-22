@@ -1,0 +1,188 @@
+/* ==========================================================================
+   Hedge Wears — CSS Custom Properties (Design Tokens)
+   Import order: variables.css → base.css → components.css → layout.css
+   ========================================================================== */
+
+:root {
+
+  /* --------------------------------------------------------------------------
+     Colors — Primary (dark/neutral)
+     -------------------------------------------------------------------------- */
+  --primary-100: #cfd0d1;
+  --primary-200: #888a8b;
+  --primary-300: #111618; /* main dark — headings, logo fill */
+  --primary-400: #0b0f10;
+  --primary-500: #060708;
+
+  /* --------------------------------------------------------------------------
+     Colors — Secondary (brand orange — Hedge accent)
+     -------------------------------------------------------------------------- */
+  --secondary-100: #f3dccd;
+  --secondary-200: #d68a59;
+  --secondary-300: #c15006; /* main brand orange — CTAs, highlights */
+  --secondary-400: #813504;
+  --secondary-500: #401b02;
+
+  /* --------------------------------------------------------------------------
+     Colors — Greyscale
+     -------------------------------------------------------------------------- */
+  --grey-50:  #fbfbfb;
+  --grey-100: #f6f6f6;
+  --grey-200: #ebebeb;
+  --grey-300: #dbdbdb;
+  --grey-400: #afafaf;
+  --grey-500: #808080;
+  --grey-600: #636363;
+  --grey-700: #232323;
+  --grey-800: #111111;
+  --grey-900: #000000;
+  --white:    #ffffff;
+
+  /* --------------------------------------------------------------------------
+     Colors — Semantic / Status
+     -------------------------------------------------------------------------- */
+  --color-success:       #29ae29;
+  --color-success-light: #e8f7e8;
+  --color-warning:       #ffc62a;
+  --color-warning-light: #fff8e1;
+  --color-error:         #ef4444;
+  --color-error-light:   #fef2f2;
+
+  /* --------------------------------------------------------------------------
+     Colors — Semantic Aliases
+     -------------------------------------------------------------------------- */
+  --color-bg:           var(--white);
+  --color-bg-subtle:    var(--grey-50);
+  --color-bg-muted:     var(--grey-100);
+  --color-text:         var(--primary-300);
+  --color-text-muted:   var(--grey-500);
+  --color-text-subtle:  var(--grey-400);
+  --color-border:       var(--grey-200);
+  --color-border-dark:  var(--grey-300);
+  --color-brand:        var(--secondary-300);
+  --color-brand-hover:  var(--secondary-400);
+  --color-brand-light:  var(--secondary-100);
+
+  /* --------------------------------------------------------------------------
+     Typography — Font family
+     -------------------------------------------------------------------------- */
+  --font-family: 'Rethink Sans', sans-serif;
+
+  /* --------------------------------------------------------------------------
+     Typography — Type scale
+     -------------------------------------------------------------------------- */
+  --text-xs:   10px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  30px;
+  --text-4xl:  32px;
+  --text-5xl:  40px;
+  --text-6xl:  48px;
+
+  /* --------------------------------------------------------------------------
+     Typography — Font weights
+     -------------------------------------------------------------------------- */
+  --font-regular:    400;
+  --font-medium:     500;
+  --font-semibold:   600;
+  --font-bold:       700;
+
+  /* --------------------------------------------------------------------------
+     Typography — Line heights
+     -------------------------------------------------------------------------- */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.5;
+  --leading-relaxed:1.65;
+
+  /* --------------------------------------------------------------------------
+     Typography — Letter spacing
+     -------------------------------------------------------------------------- */
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.08em;
+
+  /* --------------------------------------------------------------------------
+     Spacing scale
+     -------------------------------------------------------------------------- */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-7:   28px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-14:  56px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+  --space-32: 128px;
+
+  /* --------------------------------------------------------------------------
+     Border radius
+     -------------------------------------------------------------------------- */
+  --radius-sm:   8px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-pill: 9999px;
+
+  /* --------------------------------------------------------------------------
+     Shadows
+     -------------------------------------------------------------------------- */
+  --shadow-sm:  0 11px 24px 0 rgba(17, 17, 17, 0.10);
+  --shadow-md:  0 11px 17px 0 rgba(17, 17, 17, 0.13);
+  --shadow-xs:  0 2px 8px 0 rgba(17, 17, 17, 0.06);
+  --shadow-lg:  0 20px 48px 0 rgba(17, 17, 17, 0.16);
+
+  /* --------------------------------------------------------------------------
+     Transitions
+     -------------------------------------------------------------------------- */
+  --transition-default: 0.2s ease;
+  --transition-slow:    0.4s ease;
+  --transition-spring:  0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --------------------------------------------------------------------------
+     Z-index layers
+     -------------------------------------------------------------------------- */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-dropdown:200;
+  --z-sticky:  300;
+  --z-overlay: 400;
+  --z-modal:   500;
+  --z-toast:   600;
+
+  /* --------------------------------------------------------------------------
+     Layout
+     -------------------------------------------------------------------------- */
+  --max-width:          1200px;
+  --container-px-mobile:  24px;
+  --container-px-tablet:  40px;
+  --container-px-desktop: 80px;
+
+  --section-py-desktop: 80px;
+  --section-py-mobile:  60px;
+
+  --nav-height: 72px;
+
+  /* --------------------------------------------------------------------------
+     Breakpoints (documented as custom props — use @media in actual rules)
+     -- mobile:  0px
+     -- tablet:  768px
+     -- desktop: 1024px
+     -- wide:    1280px
+     -------------------------------------------------------------------------- */
+  --bp-tablet:  768px;
+  --bp-desktop: 1024px;
+  --bp-wide:    1280px;
+
+}

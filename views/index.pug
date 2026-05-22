@@ -1,0 +1,192 @@
+extends layout
+
+block content
+
+  //- ─── HERO ──────────────────────────────────────────────────────────────────
+  section.hero.section
+    .container
+      .hero-inner
+        .hero-content
+          span.hero-badge
+            span.hero-badge-dot
+            | New Season Arrivals
+          h1.hero-title
+            | Wear Bold.
+            br
+            | Shop Smart.
+          p.hero-subtitle Discover fashion from local designers across Africa. Earn HedgeCoin rewards on every purchase and redeem them for real discounts.
+          .hero-cta-group
+            a.btn.btn-primary.btn-lg(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Shop Now
+            a.btn.btn-outline.btn-lg(href='/download') Download App
+
+        .hero-visual
+          .hero-mockup-frame
+            .hero-mockup-screen
+              .hero-mockup-card
+                .hero-mockup-img-placeholder
+                .hero-mockup-info
+                  span.hero-mockup-label New In
+                  span.hero-mockup-price 120 HGC
+              .hero-mockup-coins
+                span.hero-coin-badge +15 HGC earned
+            .hero-mockup-dots
+              span.hero-dot.active
+              span.hero-dot
+              span.hero-dot
+
+  //- ─── STATS BAR ─────────────────────────────────────────────────────────────
+  section.stats-bar.section
+    .container
+      .stats-grid
+        .stat-item
+          span.stat-number 10,000+
+          span.stat-label Products Listed
+        .stat-divider
+        .stat-item
+          span.stat-number 500+
+          span.stat-label Fashion Brands
+        .stat-divider
+        .stat-item
+          span.stat-number 50,000+
+          span.stat-label Happy Customers
+
+  //- ─── FEATURES ──────────────────────────────────────────────────────────────
+  section#features.features.section
+    .container
+      .section-header
+        span.section-eyebrow Why Hedge Wears?
+        h2.section-title The smarter way to shop fashion
+        p.section-subtitle From browsing to checkout, every step is designed to feel effortless — and reward you for it.
+
+      .features-grid
+        .feature-card
+          .feature-icon-wrap
+            svg.feature-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+          h3.feature-title Shop with Confidence
+          p.feature-desc Browse thousands of verified products from curated local designers. Every seller is vetted so you get quality fashion, every time.
+          ul.feature-list
+            li Verified sellers & authentic products
+            li Buyer protection on all orders
+            li Detailed size guides & reviews
+
+        .feature-card.feature-card--accent
+          .feature-icon-wrap
+            svg.feature-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              circle(cx='12' cy='12' r='9' stroke='currentColor' stroke-width='1.8')
+              path(d='M12 7v1m0 8v1M9.5 9.5C9.5 8.67 10.67 8 12 8s2.5.67 2.5 1.5S13.33 11 12 11s-2.5.83-2.5 1.5S10.67 15 12 15s2.5-.67 2.5-1.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round')
+          h3.feature-title Earn HedgeCoin (HGC)
+          p.feature-desc Every purchase earns you HedgeCoin — our loyalty reward currency. Stack up your HGC balance and redeem it for discounts on future orders.
+          ul.feature-list
+            li Earn HGC on every completed order
+            li Redeem at checkout for instant savings
+            li Track your coin balance in real time
+
+        .feature-card
+          .feature-icon-wrap
+            svg.feature-icon(width='28' height='28' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+              path(d='M9 22V12h6v10' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+          h3.feature-title Run Your Store
+          p.feature-desc Own a fashion brand? Sell directly to customers through the Hedge Wears platform. Manage products, track orders, and grow your business.
+          ul.feature-list
+            li List products with photos & video
+            li Real-time order & inventory tracking
+            li Staff access management
+
+  //- ─── HOW IT WORKS ──────────────────────────────────────────────────────────
+  section.how-it-works.section
+    .container
+      .section-header
+        span.section-eyebrow Simple by design
+        h2.section-title How it works
+        p.section-subtitle Getting started takes less than two minutes.
+
+      .steps-grid
+        .step-item
+          .step-number-wrap
+            span.step-number 01
+          .step-content
+            h3.step-title Browse & Discover
+            p.step-desc Explore thousands of fashion products across clothing, accessories, and more. Filter by brand, category, or style.
+          .step-connector
+
+        .step-item
+          .step-number-wrap
+            span.step-number 02
+          .step-content
+            h3.step-title Add to Cart & Checkout
+            p.step-desc Add your picks to cart, apply any HedgeCoin balance for a discount, then pay securely via card or bank transfer.
+          .step-connector
+
+        .step-item
+          .step-number-wrap
+            span.step-number 03
+          .step-content
+            h3.step-title Earn Coins & Repeat
+            p.step-desc Every completed order credits HGC to your wallet. Your balance grows with every purchase — the more you shop, the more you save.
+
+  //- ─── APP SHOWCASE ──────────────────────────────────────────────────────────
+  section#download.app-showcase.section.section--dark
+    .container
+      .app-showcase-inner
+        .app-showcase-content
+          span.section-eyebrow Available on iOS & Android
+          h2.section-title Shop anywhere,
+            br
+            | anytime.
+          p.app-showcase-desc The Hedge Wears app puts the full store in your pocket. Browse new arrivals, track your orders, manage your coin wallet, and get push notifications when your order ships.
+          .app-download-group
+            a.app-badge(href='https://apps.apple.com' target='_blank' rel='noopener' aria-label='Download on the App Store')
+              span.app-badge-sub Download on the
+              span.app-badge-main App Store
+            a.app-badge(href='https://play.google.com' target='_blank' rel='noopener' aria-label='Get it on Google Play')
+              span.app-badge-sub Get it on
+              span.app-badge-main Google Play
+
+        .app-showcase-visual
+          .app-mockup-placeholder(role='img' aria-label='Hedge Wears mobile app preview')
+            .app-mockup-notch
+            .app-mockup-screen-content
+              .app-screen-header
+                span.app-screen-title Explore
+                span.app-screen-coins 240 HGC
+              .app-screen-grid
+                .app-screen-card
+                .app-screen-card
+                .app-screen-card
+                .app-screen-card
+            .app-mockup-home-indicator
+
+  //- ─── BUSINESS CTA ──────────────────────────────────────────────────────────
+  section.business-cta.section
+    .container
+      .business-cta-inner
+        .business-cta-content
+          span.section-eyebrow For brands & designers
+          h2.section-title Sell your fashion
+            br
+            | on Hedge Wears
+          p.business-cta-desc Turn your passion into a business. List your products, manage orders, run promotions, and reach thousands of fashion-forward customers — all from one dashboard.
+          a.btn.btn-primary.btn-lg(href='/features#business') Learn About Business Tools
+
+        .business-cta-stats
+          .biz-stat
+            span.biz-stat-number 500+
+            span.biz-stat-label Active Stores
+          .biz-stat
+            span.biz-stat-number #[strong 0%] fee
+            span.biz-stat-label to list products
+          .biz-stat
+            span.biz-stat-number 24/7
+            span.biz-stat-label Order tracking
+
+  //- ─── CTA BANNER ────────────────────────────────────────────────────────────
+  section.cta-banner.section
+    .container
+      .cta-banner-inner
+        h2.cta-banner-title Ready to start shopping?
+        p.cta-banner-subtitle Join over 50,000 customers already saving with HedgeCoin rewards.
+        .cta-banner-actions
+          a.btn.btn-white.btn-lg(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Shop Now
+          a.btn.btn-outline-white.btn-lg(href='/download') Get the App

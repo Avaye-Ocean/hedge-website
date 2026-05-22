@@ -1,0 +1,28 @@
+header.nav
+  .nav-inner.container
+    a.nav-logo(href='/')
+      svg.nav-logo-icon(width='32' height='17' viewBox='0 0 76 40' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+        path(d='M67.83 0V3.18928C67.83 6.64845 65.895 9.83773 62.8312 11.4058L42.0844 22.0007V0H33.9144V3.18928C33.9144 6.64845 31.9794 9.83773 28.9156 11.4058L8.16881 22.0007V0H0V40H8.17V36.8107C8.17 33.3515 10.105 30.1623 13.1688 28.5942L33.9156 17.9993V39.9994H42.0856V36.8101C42.0856 33.351 44.0206 30.1617 47.0844 28.5936L67.8312 17.9987V39.9988H76.0012V0H67.8312H67.83Z' fill='currentColor')
+      span.nav-logo-text HEDGE WEARS
+
+    nav.nav-links(aria-label='Primary navigation')
+      a.nav-link(href='/#features') Features
+      a.nav-link(href='/download') Download
+      a.nav-link(href='/about') About
+      a.nav-link(href='/#pricing') Pricing
+
+    a.btn.btn-primary.nav-cta(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Get Started
+
+    button.nav-hamburger(type='button' aria-label='Open menu' aria-expanded='false' aria-controls='nav-mobile-menu')
+      svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+        rect(x='3' y='6' width='18' height='2' rx='1' fill='currentColor')
+        rect(x='3' y='11' width='18' height='2' rx='1' fill='currentColor')
+        rect(x='3' y='16' width='18' height='2' rx='1' fill='currentColor')
+
+  .nav-mobile-menu#nav-mobile-menu(aria-hidden='true')
+    nav.nav-mobile-links
+      a.nav-mobile-link(href='/#features') Features
+      a.nav-mobile-link(href='/download') Download
+      a.nav-mobile-link(href='/about') About
+      a.nav-mobile-link(href='/#pricing') Pricing
+    a.btn.btn-primary.nav-mobile-cta(href='https://hedgewears.com/shop' target='_blank' rel='noopener') Get Started

@@ -1,0 +1,164 @@
+extends layout
+
+block content
+
+  //- ─── DOWNLOAD HERO ─────────────────────────────────────────────────────────
+  section.download-hero.section
+    .container
+      .download-hero-inner
+        .download-hero-content
+          span.section-eyebrow Free to download
+          h1.download-hero-title Get the Hedge Wears app
+          p.download-hero-subtitle Shop fashion, earn HedgeCoin rewards, and manage your orders — all from the palm of your hand. Available on iPhone and Android.
+
+          .download-buttons
+            a.app-badge.app-badge--large(href='https://apps.apple.com' target='_blank' rel='noopener' aria-label='Download on the App Store')
+              .app-badge-icon
+                svg(width='22' height='22' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+                  path(d='M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z' fill='currentColor')
+              .app-badge-text
+                span.app-badge-sub Download on the
+                span.app-badge-main App Store
+
+            a.app-badge.app-badge--large(href='https://play.google.com' target='_blank' rel='noopener' aria-label='Get it on Google Play')
+              .app-badge-icon
+                svg(width='22' height='22' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+                  path(d='M3.18 23.76c.3.17.63.24.97.2L15.72 12 12 8.28 3.18 23.76zM20.48 10.26l-3.04-1.75-4.02 3.49 4.02 3.49 3.07-1.77c.87-.5.87-1.96-.03-2.46zM2.01 1.23C1.64 1.56 1.4 2.08 1.4 2.76V21.2c0 .68.24 1.2.62 1.53L3.18.24 2.01 1.23zM15.72 12L3.18.24l9.84 11.76L15.72 12z' fill='currentColor')
+              .app-badge-text
+                span.app-badge-sub Get it on
+                span.app-badge-main Google Play
+
+          .download-qr-section
+            .download-qr-placeholder(role='img' aria-label='QR code to download the Hedge Wears app')
+              span.qr-label-text Scan to download
+            p.qr-caption Point your phone camera at the code to go straight to the app store.
+
+        .download-hero-visual
+          .phone-mockup-large
+            .phone-mockup-notch
+            .phone-mockup-content
+              .phone-screen-status
+                span 9:41
+                span ◆ 240 HGC
+              .phone-screen-hero
+                .phone-screen-title Explore
+                .phone-screen-search Search fashion...
+              .phone-screen-row
+                .phone-product-card
+                  .phone-product-img
+                  .phone-product-name Oversized Tee
+                  .phone-product-price 80 HGC
+                .phone-product-card
+                  .phone-product-img
+                  .phone-product-name Cargo Pants
+                  .phone-product-price 150 HGC
+              .phone-screen-row
+                .phone-product-card
+                  .phone-product-img
+                  .phone-product-name Linen Set
+                  .phone-product-price 200 HGC
+                .phone-product-card
+                  .phone-product-img
+                  .phone-product-name Sneakers
+                  .phone-product-price 320 HGC
+            .phone-mockup-home-bar
+
+  //- ─── APP FEATURES LIST ─────────────────────────────────────────────────────
+  section.app-features.section.section--muted
+    .container
+      .section-header
+        span.section-eyebrow Built for you
+        h2.section-title Everything in the app
+
+      .app-features-grid
+        .app-feature-item
+          .app-feature-icon-wrap
+            svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              circle(cx='11' cy='11' r='8' stroke='currentColor' stroke-width='1.8')
+              path(d='M21 21l-4.35-4.35' stroke='currentColor' stroke-width='1.8' stroke-linecap='round')
+          .app-feature-text
+            h3.app-feature-title Smart Search
+            p.app-feature-desc Find any product by name, brand, or category in seconds.
+
+        .app-feature-item
+          .app-feature-icon-wrap
+            svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+              circle(cx='12' cy='9' r='2.5' stroke='currentColor' stroke-width='1.8')
+          .app-feature-text
+            h3.app-feature-title Live Order Tracking
+            p.app-feature-desc Know exactly where your order is at every step of delivery.
+
+        .app-feature-item
+          .app-feature-icon-wrap
+            svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+          .app-feature-text
+            h3.app-feature-title Secure Checkout
+            p.app-feature-desc Pay via card or bank transfer with full buyer protection.
+
+        .app-feature-item
+          .app-feature-icon-wrap
+            svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              circle(cx='12' cy='12' r='9' stroke='currentColor' stroke-width='1.8')
+              path(d='M12 7v1m0 8v1M9.5 9.5C9.5 8.67 10.67 8 12 8s2.5.67 2.5 1.5S13.33 11 12 11s-2.5.83-2.5 1.5S10.67 15 12 15s2.5-.67 2.5-1.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round')
+          .app-feature-text
+            h3.app-feature-title HedgeCoin Wallet
+            p.app-feature-desc Track your HGC balance and redeem coins at checkout.
+
+        .app-feature-item
+          .app-feature-icon-wrap
+            svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+          .app-feature-text
+            h3.app-feature-title Push Notifications
+            p.app-feature-desc Get alerted on order updates, new arrivals, and promotions.
+
+        .app-feature-item
+          .app-feature-icon-wrap
+            svg(width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round')
+              circle(cx='12' cy='7' r='4' stroke='currentColor' stroke-width='1.8')
+          .app-feature-text
+            h3.app-feature-title Profile & History
+            p.app-feature-desc View past orders, manage addresses, and update your preferences.
+
+  //- ─── SYSTEM REQUIREMENTS ───────────────────────────────────────────────────
+  section.requirements.section
+    .container
+      .requirements-inner
+        .req-col
+          h3.req-title
+            svg(width='20' height='20' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z' fill='currentColor')
+            | iPhone (iOS)
+          ul.req-list
+            li Requires iOS 14.0 or later
+            li Compatible with iPhone and iPad
+            li ~45 MB download
+
+        .req-col
+          h3.req-title
+            svg(width='20' height='20' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true')
+              path(d='M3.18 23.76c.3.17.63.24.97.2L15.72 12 12 8.28 3.18 23.76zM20.48 10.26l-3.04-1.75-4.02 3.49 4.02 3.49 3.07-1.77c.87-.5.87-1.96-.03-2.46zM2.01 1.23C1.64 1.56 1.4 2.08 1.4 2.76V21.2c0 .68.24 1.2.62 1.53L3.18.24 2.01 1.23zM15.72 12L3.18.24l9.84 11.76L15.72 12z' fill='currentColor')
+            | Android
+          ul.req-list
+            li Requires Android 8.0 (Oreo) or later
+            li Works on phones and tablets
+            li ~38 MB download
+
+  //- ─── BOTTOM CTA ────────────────────────────────────────────────────────────
+  section.cta-banner.section
+    .container
+      .cta-banner-inner
+        h2.cta-banner-title Your next wardrobe
+          br
+          | is one download away.
+        p.cta-banner-subtitle Free to download. Free to browse. Start earning HedgeCoin today.
+        .cta-banner-actions
+          a.app-badge.app-badge--cta(href='https://apps.apple.com' target='_blank' rel='noopener' aria-label='Download on the App Store')
+            span.app-badge-sub Download on the
+            span.app-badge-main App Store
+          a.app-badge.app-badge--cta(href='https://play.google.com' target='_blank' rel='noopener' aria-label='Get it on Google Play')
+            span.app-badge-sub Get it on
+            span.app-badge-main Google Play
