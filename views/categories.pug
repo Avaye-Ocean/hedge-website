@@ -19,7 +19,7 @@ block content
   //- ─── CATEGORY GRID ─────────────────────────────────────────────────────────
   section.categories-page.section
     .container
-      - const fallbackCategories = [{name: "Women's Bags", description: "Structured totes, crossbodies and clutches from African designers.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg'}, {name: "Women's Shoes", description: "Heels, mules, and sandals crafted for everyday elegance.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp'}, {name: "Men's Bags", description: "Duffels, backpacks, and briefcases built to last.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/Card3.jpeg'}, {name: "Men's Shoes", description: "Oxfords, sneakers, and loafers with intentional design.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/card4.webp'}, {name: "Dresses", description: "Contemporary cuts with cultural influence — day to evening.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp'}, {name: "Jewelry", description: "Layered gold, bold statement pieces, and everyday essentials.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp'}]
+      - const fallbackCategories = [{name: "Women's Bags", gender: "FEMALE", description: "Structured totes, crossbodies and clutches from African designers.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg'}, {name: "Women's Shoes", gender: "FEMALE", description: "Heels, mules, and sandals crafted for everyday elegance.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp'}, {name: "Men's Bags", gender: "MALE", description: "Duffels, backpacks, and briefcases built to last.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/Card3.jpeg'}, {name: "Men's Shoes", gender: "MALE", description: "Oxfords, sneakers, and loafers with intentional design.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/card4.webp'}, {name: "Dresses", gender: "FEMALE", description: "Contemporary cuts with cultural influence — day to evening.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp'}, {name: "Jewelry", gender: "UNISEX", description: "Layered gold, bold statement pieces, and everyday essentials.", photo: 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp'}]
       .categories-grid.categories-grid--large
         if categories && categories.length > 0
           each category in categories
@@ -35,7 +35,7 @@ block content
                 span.category-card-cta Explore →
         else
           each cat in fallbackCategories
-            a.category-card.category-card--large(href=webShopUrl target='_blank' rel='noopener')
+            a.category-card.category-card--large(href=webShopUrl + '/?productGender=' + cat.gender target='_blank' rel='noopener')
               .category-card-img-wrap
                 img.category-card-img(src=cat.photo alt=cat.name + ' category' loading='lazy')
               .category-card-info
