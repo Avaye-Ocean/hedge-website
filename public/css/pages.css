@@ -332,13 +332,6 @@
 
 @media (min-width: 768px) {
   .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .products-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
   }
@@ -2232,6 +2225,98 @@
   margin-top: auto;
 }
 
+/* How it works steps */
+.how-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .how-steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.how-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.how-step-number {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--secondary-300, #c15006);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.how-step-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary-300, #0b0f10);
+}
+
+.how-step p {
+  font-size: 14px;
+  color: var(--grey-500, #6b7280);
+  line-height: 1.65;
+}
+
+/* Shopper features grid */
+.shopper-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .shopper-features-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+.shopper-feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 24px;
+  background: var(--white, #fff);
+  border: 1px solid var(--grey-200, #e5e7eb);
+  border-radius: 16px;
+  transition: box-shadow 0.2s ease;
+}
+
+.shopper-feature-card:hover {
+  box-shadow: 0 8px 24px rgba(11,15,16,0.08);
+}
+
+.shopper-feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--secondary-100, #fde8d8);
+  color: var(--secondary-300, #c15006);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.shopper-feature-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-300, #0b0f10);
+}
+
+.shopper-feature-desc {
+  font-size: 14px;
+  color: var(--grey-500, #6b7280);
+  line-height: 1.65;
+}
+
 /* Pricing note */
 .pricing-note-inner {
   display: flex;
@@ -2276,6 +2361,10 @@
   line-height: 1.65;
   max-width: 560px;
 }
+
+/* When pricing-note is inside a dark section */
+.section--dark .pricing-note-title  { color: var(--white); }
+.section--dark .pricing-note-desc   { color: rgba(255, 255, 255, 0.75); }
 
 /* FAQ */
 .faq-list {
