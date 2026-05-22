@@ -999,3 +999,8 @@
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
+
+.section--muted { background: var(--grey-50); }
+.section--accent { background: var(--secondary-300); color: var(--white); }
+.section--accent .section-title { color: var(--white); }
+.section--accent .section-subtitle { color: rgba(255,255,255,0.8); }

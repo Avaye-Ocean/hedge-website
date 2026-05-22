@@ -79,6 +79,12 @@ app.get('/categories', async (req, res) => {
   res.render('categories', { categories });
 });
 
+app.get('/help', (req, res) => res.render('help'));
+app.get('/privacy', (req, res) => res.render('privacy'));
+app.get('/terms', (req, res) => res.render('terms'));
+app.get('/blog', (req, res) => res.render('blog'));
+app.get('/careers', (req, res) => res.render('careers'));
+
 // 404
 app.use((req, res) => {
   res.status(404).render('404');

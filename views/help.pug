@@ -1,0 +1,84 @@
+extends layout
+
+block pageTitle
+  title Help Center — Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Find answers to common questions about shopping, orders, delivery, and HedgeCoin on Hedge Wears.')
+
+block content
+
+  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
+  section.page-hero.section
+    .container
+      .page-hero-inner.page-hero-inner--centered
+        span.section-eyebrow Support
+        h1.page-hero-title Help Center
+        p.page-hero-subtitle Find answers to the most common questions about shopping, orders, and HedgeCoin rewards.
+
+  //- ─── GETTING STARTED ───────────────────────────────────────────────────────
+  section.section
+    .container
+      .help-sections
+
+        .help-section
+          h2.help-section-title Getting Started
+          .faq-list
+            .faq-item
+              h3.faq-question How do I create a Hedge Wears account?
+              p.faq-answer Download the Hedge Wears app from the App Store or Google Play, then tap "Sign Up." Enter your name, email address, and a password. You can also sign up via the web shop at hedgewears.com. Your account is free to create.
+            .faq-item
+              h3.faq-question Is Hedge Wears free to use?
+              p.faq-answer Yes — browsing and shopping on Hedge Wears is completely free. There are no subscription fees for shoppers. You only pay when you make a purchase.
+            .faq-item
+              h3.faq-question What countries can I shop from?
+              p.faq-answer Hedge Wears is available globally. Product prices are displayed in HGC (HedgeCoin) and you can view an equivalent in your local currency from the settings menu. Delivery availability depends on the individual seller.
+            .faq-item
+              h3.faq-question How do I update my account details?
+              p.faq-answer Open the app and tap your profile icon in the bottom navigation. From there you can update your name, email, delivery addresses, and notification preferences.
+
+        .help-section
+          h2.help-section-title Orders &amp; Delivery
+          .faq-list
+            .faq-item
+              h3.faq-question How do I track my order?
+              p.faq-answer Once your order is placed, go to the Orders section of the app. You will see a live status for each order: Confirmed, Processing, Shipped, and Delivered. You will also receive push notifications at each stage.
+            .faq-item
+              h3.faq-question How long does delivery take?
+              p.faq-answer Delivery times vary by seller and your location. Each product page shows the seller's estimated delivery window. If you have a specific query, you can message the seller directly from the order page.
+            .faq-item
+              h3.faq-question What is the returns policy?
+              p.faq-answer Returns are managed between the buyer and the seller. Each seller sets their own returns policy, which is visible on their product and store pages. If you cannot resolve a dispute directly, contact us at hello@hedgewears.com and our support team will assist.
+            .faq-item
+              h3.faq-question My order hasn't arrived — what do I do?
+              p.faq-answer First, check the tracking status in the app. If the status shows Delivered but you haven't received the item, contact the seller via the order page. If you're still not resolved within 48 hours, email us at hello@hedgewears.com with your order number.
+            .faq-item
+              h3.faq-question Can I cancel an order?
+              p.faq-answer You may be able to cancel an order before the seller has marked it as Processing. Go to the Orders section, select the order, and tap "Request Cancellation." If the order has already been dispatched, you will need to follow the seller's returns process.
+
+        .help-section
+          h2.help-section-title HedgeCoin &amp; Payments
+          .faq-list
+            .faq-item
+              h3.faq-question What is HedgeCoin (HGC)?
+              p.faq-answer HedgeCoin (HGC) is Hedge Wears' in-app loyalty currency. You earn HGC every time you complete a purchase. You can then redeem HGC at checkout to reduce the cost of future orders. Your HGC balance never expires while your account is active.
+            .faq-item
+              h3.faq-question How do I earn HedgeCoin?
+              p.faq-answer HGC is credited to your wallet automatically when an order is marked as Delivered. The amount earned is shown on the order confirmation screen and in your HGC transaction history.
+            .faq-item
+              h3.faq-question How do I use HedgeCoin at checkout?
+              p.faq-answer At checkout, you will see an option to apply your HGC balance. Toggle it on to offset part or all of the order cost. The final amount due in your local currency is updated in real time.
+            .faq-item
+              h3.faq-question Which payment methods are accepted?
+              p.faq-answer All payments are processed through Paystack, one of Africa's most trusted payment providers. You can pay by debit or credit card, or via bank transfer. Your card details are never stored on Hedge Wears servers.
+            .faq-item
+              h3.faq-question Is my payment information safe?
+              p.faq-answer Yes. All payment data is handled by Paystack using industry-standard encryption. Hedge Wears never stores your card numbers or banking details.
+
+  //- ─── HELP CTA ───────────────────────────────────────────────────────────────
+  section.section
+    .container
+      .help-cta
+        p.help-cta-title Still need help?
+        p.help-cta-sub Our team is happy to help with anything not covered above.
+        a.btn.btn-primary(href='/contact') Contact Us →

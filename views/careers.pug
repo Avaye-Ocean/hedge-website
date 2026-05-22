@@ -1,0 +1,63 @@
+extends layout
+
+block pageTitle
+  title Careers — Hedge Wears
+
+block metaDesc
+  meta(name='description' content='Join the Hedge Wears team. We are building the platform for African fashion — and we are looking for talented people to help.')
+
+block content
+
+  //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
+  section.page-hero.section
+    .container
+      .page-hero-inner.page-hero-inner--centered
+        span.section-eyebrow Join us
+        h1.page-hero-title Work with us
+        p.page-hero-subtitle We are a small team building something meaningful. If you care about fashion, Africa, and well-crafted products — we want to hear from you.
+
+  //- ─── MISSION ────────────────────────────────────────────────────────────────
+  section.section
+    .container
+      .careers-intro
+        p.careers-intro-text At Hedge Wears, we are on a mission to put African fashion on the global stage. We build the infrastructure that lets local designers sell to the world — and lets shoppers discover fashion with real cultural weight. We care about craft, whether that means pixel-perfect interfaces, thoughtful copy, or a seamlessly fulfilled order. If you want to work somewhere that ships real product and cares about quality, you will fit in well here.
+
+  //- ─── OPEN ROLES ─────────────────────────────────────────────────────────────
+  section.section.section--muted
+    .container
+      .section-header
+        span.section-eyebrow Open positions
+        h2.section-title Current openings
+      .roles-grid
+        .role-card
+          h3.role-title Frontend Engineer
+          .role-meta
+            span.role-location Remote (Africa/Europe)
+            span.role-type Full-time
+          p.role-desc We are looking for a React Native and React developer to help build the next generation of the Hedge Wears apps. You will work closely with design and product to ship features that millions of shoppers and sellers will use every day.
+          a.btn.btn-primary(href='/contact') Apply →
+
+        .role-card
+          h3.role-title Customer Experience Lead
+          .role-meta
+            span.role-location Remote
+            span.role-type Full-time
+          p.role-desc We need a customer-obsessed person to own the support experience across both shoppers and sellers. You will build processes, resolve escalations, and represent the voice of our customers inside the team.
+          a.btn.btn-primary(href='/contact') Apply →
+
+        .role-card
+          h3.role-title Marketing Designer
+          .role-meta
+            span.role-location Remote (Africa/Europe)
+            span.role-type Full-time / Contract
+          p.role-desc We are looking for a visual storyteller who understands both fashion aesthetics and performance marketing. You will create content for social, email, and paid channels — and help define the visual identity of Hedge Wears.
+          a.btn.btn-primary(href='/contact') Apply →
+
+  //- ─── CAREERS CTA ────────────────────────────────────────────────────────────
+  section.section
+    .container
+      .careers-cta
+        p.careers-cta-title Don't see your role?
+        p.careers-cta-sub
+          | We are always interested in hearing from talented people. Send us your CV and a note about what you'd like to work on:&nbsp;
+          a(href='mailto:hello@hedgewears.com') hello@hedgewears.com
