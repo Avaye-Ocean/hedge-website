@@ -35,8 +35,7 @@ block content
                 span.category-card-cta Explore →
         else
           each cat in fallbackCategories
-            - const genderParam = cat.name.toLowerCase().includes("women") ? '/?productGender=FEMALE' : cat.name.toLowerCase().includes("men") ? '/?productGender=MALE' : ''
-            a.category-card.category-card--large(href=webShopUrl + genderParam target='_blank' rel='noopener')
+            a.category-card.category-card--large(href=webShopUrl target='_blank' rel='noopener')
               .category-card-img-wrap
                 img.category-card-img(src=cat.photo alt=cat.name + ' category' loading='lazy')
               .category-card-info

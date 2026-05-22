@@ -36,25 +36,25 @@ block content
                 span.category-card-name= category.name
                 span.category-card-cta Shop →
         else
-          a.category-card(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener')
+          a.category-card(href=webShopUrl target='_blank' rel='noopener')
             .category-card-img-wrap
               img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg' alt="Women's Bags" loading='lazy')
             .category-card-info
               span.category-card-name Women's Bags
               span.category-card-cta Shop →
-          a.category-card(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener')
+          a.category-card(href=webShopUrl target='_blank' rel='noopener')
             .category-card-img-wrap
               img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp' alt="Women's Shoes" loading='lazy')
             .category-card-info
               span.category-card-name Women's Shoes
               span.category-card-cta Shop →
-          a.category-card(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener')
+          a.category-card(href=webShopUrl target='_blank' rel='noopener')
             .category-card-img-wrap
               img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/Card3.jpeg' alt="Men's Bags" loading='lazy')
             .category-card-info
               span.category-card-name Men's Bags
               span.category-card-cta Shop →
-          a.category-card(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener')
+          a.category-card(href=webShopUrl target='_blank' rel='noopener')
             .category-card-img-wrap
               img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/card4.webp' alt="Men's Shoes" loading='lazy')
             .category-card-info
@@ -131,11 +131,11 @@ block content
           each tag in tags
             a.tag-pill(href=webShopUrl + '/?tags=' + tag._id target='_blank' rel='noopener')= tag.name
         else
-          a.tag-pill(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener') Dresses
-          a.tag-pill(href=webShopUrl + '/?productGender=UNISEX' target='_blank' rel='noopener') Sneakers
+          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Dresses
+          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Sneakers
           a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Bags
           a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Jewelry
-          a.tag-pill(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener') Blazers
+          a.tag-pill(href=webShopUrl target='_blank' rel='noopener') Blazers
           a.tag-pill(href=webShopUrl target='_blank' rel='noopener') New Arrivals
 
   //- ─── HEDGECOIN FEATURE ─────────────────────────────────────────────────────
