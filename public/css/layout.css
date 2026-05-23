@@ -1189,7 +1189,7 @@
 }
 .app-badge-main {
   display: block;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: var(--font-bold);
   color: var(--white);
   line-height: 1.2;
