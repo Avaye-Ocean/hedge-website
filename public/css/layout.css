@@ -187,7 +187,7 @@
   display: block;
   width: 22px;
   height: 2px;
-  background-color: var(--primary-300);
+  background-color: var(--grey-900);
   border-radius: var(--radius-pill);
   transition: transform var(--transition-default), opacity var(--transition-default);
   transform-origin: center;
@@ -259,8 +259,8 @@
 }
 
 .nav-mobile-menu__link.active {
-  color: var(--secondary-300);
-  background-color: var(--secondary-100);
+  color: var(--grey-900);
+  background-color: var(--grey-100);
 }
 
 .nav-mobile-menu__divider {
@@ -319,8 +319,8 @@
 }
 
 .nav-mobile-link.active {
-  color: var(--secondary-300);
-  background-color: var(--secondary-100);
+  color: var(--grey-900);
+  background-color: var(--grey-100);
 }
 
 .nav-mobile-cta {
