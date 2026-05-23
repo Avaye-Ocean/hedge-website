@@ -6,7 +6,7 @@ const SOURCE_ID = process.env.BACKEND_SOURCE_ID ?? 'HEDGE_WEARSLY_LTD';
 const BUSINESS_ID = process.env.BACKEND_BUSINESS_ID ?? '';
 
 const cache = new Map();
-const TTL_MS = 5 * 60 * 1000; // 5 minutes
+const TTL_MS = 30 * 60 * 1000; // 30 minutes
 
 function cachedFetch(key, fetcher) {
   const hit = cache.get(key);
