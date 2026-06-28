@@ -26,9 +26,12 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use((req, res, next) => {
   res.locals.version = version;
   res.locals.year = new Date().getFullYear();
+  res.locals.path = req.originalUrl;
   Object.assign(res.locals, shopUrls);
   next();
 });
@@ -45,26 +48,32 @@ app.get('/', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getFeaturedProducts),
   ]);
-  res.render('index', { categories, featuredProducts });
+  res.render('index', { categories, featuredProducts, page: 'home', title: 'Home' });
 });
 
-app.get('/features', (req, res) => res.render('features'));
+app.get('/features', (req, res) => res.render('features', { page: 'features', title: 'Features' }));
 
-app.get('/download', (req, res) => res.render('download'));
+app.get('/download', (req, res) => res.render('download', { page: 'download', title: 'Download the App' }));
 
-app.get('/about', (req, res) => res.render('about'));
+app.get('/about', (req, res) => res.render('about', { page: 'about', title: 'About Us' }));
 
 app.get('/collections', async (req, res) => {
   const [categories, featuredProducts] = await Promise.all([
     safeApi(api.getCategories),
     safeApi(api.getFeaturedProducts),
   ]);
-  res.render('collections', { categories, featuredProducts });
+  res.render('collections', { categories, featuredProducts, page: 'collections', title: 'Collections' });
 });
 
-app.get('/pricing', (req, res) => res.render('pricing'));
+app.get('/pricing', (req, res) => res.render('pricing', { page: 'pricing', title: 'Pricing' }));
 
-app.get('/contact', (req, res) => res.render('contact'));
+app.get('/contact', (req, res) => res.render('contact', { page: 'contact', title: 'Contact Us' }));
+
+app.post('/contact', (req, res) => {
+  const { name, email, subject, message } = req.body;
+  console.log('Contact form submission:', { name, email, subject, message });
+  res.render('contact', { page: 'contact', title: 'Contact Us', success: true });
+});
 
 app.get('/products', async (req, res) => {
   const [featuredProducts, categories, tags] = await Promise.all([
@@ -72,7 +81,7 @@ app.get('/products', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getTags),
   ]);
-  res.render('products', { featuredProducts, categories, tags });
+  res.render('products', { featuredProducts, categories, tags, page: 'products', title: 'Products' });
 });
 
 app.get('/categories', async (req, res) => {
@@ -80,19 +89,19 @@ app.get('/categories', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getTags),
   ]);
-  res.render('categories', { categories, tags });
+  res.render('categories', { categories, tags, page: 'categories', title: 'Categories' });
 });
 
-app.get('/help', (req, res) => res.render('help'));
-app.get('/privacy', (req, res) => res.render('privacy'));
-app.get('/terms', (req, res) => res.render('terms'));
-app.get('/cookies', (req, res) => res.render('cookies'));
-app.get('/blog', (req, res) => res.render('blog'));
-app.get('/careers', (req, res) => res.render('careers'));
+app.get('/help', (req, res) => res.render('help', { page: 'help', title: 'Help Center' }));
+app.get('/privacy', (req, res) => res.render('privacy', { page: 'privacy', title: 'Privacy Policy' }));
+app.get('/terms', (req, res) => res.render('terms', { page: 'terms', title: 'Terms of Service' }));
+app.get('/cookies', (req, res) => res.render('cookies', { page: 'cookies', title: 'Cookie Policy' }));
+app.get('/blog', (req, res) => res.render('blog', { page: 'blog', title: 'Blog' }));
+app.get('/careers', (req, res) => res.render('careers', { page: 'careers', title: 'Careers' }));
 
 // 404
 app.use((req, res) => {
-  res.status(404).render('404');
+  res.status(404).render('404', { page: '404', title: 'Page Not Found' });
 });
 
 app.listen(PORT, () => {

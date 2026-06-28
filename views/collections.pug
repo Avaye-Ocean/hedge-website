@@ -51,10 +51,13 @@ block content
       .products-grid
         if featuredProducts && featuredProducts.length > 0
           each product, i in featuredProducts.slice(0, 4)
-            - const imgUrl = (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp'
+            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp'
             a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
               .product-card-img-wrap
-                img.product-card-img(src=imgUrl alt=product.name loading='lazy')
+                if product.video
+                  video.product-card-img(src=product.video autoplay muted loop playsinline)
+                else
+                  img.product-card-img(src=imgUrl alt=product.name loading='lazy')
               .product-card-info
                 span.product-card-name= product.name
                 span.product-price
