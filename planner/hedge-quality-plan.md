@@ -291,3 +291,53 @@ All TypeScript apps pass `tsc --noEmit` cleanly after fixes:
 ### Commits
 
 - `hedge-mobile-app` → `develop-extended` (bc530d0) — fix: wire AI orders to real order API; fix checkout success modal field paths
+
+---
+
+## 10. Deep Audit Round 3 — 2026-06-30
+
+**Status: CLOSED**
+
+### Scope
+
+Third full-sweep audit of all four repos: unwired hooks, empty handlers, broken navigation, dead API call
+sites with wrong field names, missing error/loading states, hardcoded placeholder data, unreachable screens,
+console.log in committed code, and TypeScript cleanliness.
+
+### Findings and resolutions
+
+| # | Priority | App | File | Issue | Fix |
+|---|----------|-----|------|-------|-----|
+| 1 | P0 | hedge-web-app | `components/views/explore/explore-view.tsx` | `useGetProducts` only destructured `{ data, isPending }` — `isError` and `refetch` missing. On API failure `feedItems` is `[]` and user silently sees "No products found" with no retry path | Added `isError` and `refetch` to destructure; inserted `isError` branch before empty-state check that renders "Failed to load products" + a Retry button calling `refetch()` |
+| 2 | P2 | hedge-web-app | `components/views/product/id/review-section.tsx` | `const customerImg = "/placeholder.jpg"` defined at line 4, never referenced anywhere in the file | Removed dead declaration |
+| 3 | P1 | hedge-web-app | `components/views/coin/bank-account-card.tsx` | Component never imported or used anywhere; its `Image src` pointed to `/placeholder.jpg` which does not exist in `public/` | Deleted file entirely |
+| 4 | P2 | hedge-web-app | `hooks/useCurrencyRate.ts` | Hook exported but never called from any page or component — web-app uses CoinRate context instead | Deleted file |
+| 5 | P2 | hedge-wears-admin | `hooks/useCurrencyRate.ts` | Hook exported but never called — admin uses `useCoinRate` instead; also contained a stray `console.error` | Deleted file |
+| 6 | P2 | hedge-mobile-app | `hooks/useGetTags.tsx` | Hook exported but never called — app uses `useGetCategoryTags` from categories apihooks instead | Deleted file |
+
+### Pages verified clean (no additional issues found)
+
+| App | Scope |
+|-----|-------|
+| hedge-web-app | All API hooks wired: product, order, category, review, reward, transaction, user hooks all called in pages |
+| hedge-wears-admin | All active hooks wired: `useCoinRate`, `useIsOwner`, `use-fcm-token` — all called in pages |
+| hedge-mobile-app | All active apihooks wired: ads, business, categories, orders, payments, posts, products, rewards, staff, transactions, user — all confirmed called in screens |
+| hedge-website | Server clean: no console.log, all routes covered by `safeApi()`, no dead code |
+| All four apps | No empty onPress/onClick handlers in live (non-commented) code |
+| All four apps | No unreachable screens found |
+| All four apps | No hardcoded placeholder data in live data paths |
+
+### TypeScript verification
+
+All three TypeScript apps pass `tsc --noEmit` cleanly after fixes:
+
+- `hedge-web-app` — no errors
+- `hedge-wears-admin` — no errors
+- `hedge-mobile-app` — no errors
+
+### Commits
+
+- `hedge-web-app` → `develop-extended` — fix: add error state to explore feed; remove dead variables and unused components
+- `hedge-wears-admin` → `develop-extended` — chore: remove dead useCurrencyRate hook
+- `hedge-mobile-app` → `develop-extended` — chore: remove dead useGetTags hook
+- `hedge-website` → `develop` — docs: Round 3 audit findings added to quality plan
