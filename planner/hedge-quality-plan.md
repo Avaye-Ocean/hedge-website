@@ -87,11 +87,11 @@ The `POST /contact` route in `server.js:73` logs the submission to console but d
 
 ## 3. Prioritized Fixes
 
-### Critical (P0) — Fix now
+### Critical (P0) — All fixed
 
-1. **Fix `productByBusinessIds` → `productBusinessId`** in `hedge-website/services/api.js:41`
-2. **Fix `categoryByBusinessIds` → `categoryBusinessIds`** in `hedge-website/services/api.js:35`
-3. **Fix `productByCategoryIds` → `productCategoryIds`** in `hedge-website/services/api.js:47`
+1. ~~**Fix `productByBusinessIds` → `productBusinessId`** in `hedge-website/services/api.js:41`~~ — **DONE**
+2. ~~**Fix `categoryByBusinessIds` → `categoryBusinessIds`** in `hedge-website/services/api.js:35`~~ — **DONE**
+3. ~~**Fix `productByCategoryIds` → `productCategoryIds`** in `hedge-website/services/api.js:47`~~ — **DONE**
 
 ### Low priority — defer or accept
 
@@ -164,9 +164,9 @@ All endpoint paths and query params verified against `vendorstack-backend/src/`:
 
 | Endpoint | Params | Status |
 |----------|--------|--------|
-| `GET categories` | `categoryByBusinessIds` | **WRONG** → `categoryBusinessIds` |
-| `GET products` | `productByBusinessIds` | **WRONG** → `productBusinessId` |
-| `GET products` (by category) | `productByCategoryIds` | **WRONG** → `productCategoryIds` |
+| `GET categories` | `categoryBusinessIds` | Correct (fixed) |
+| `GET products` | `productBusinessId` | Correct (fixed) |
+| `GET products` (by category) | `productCategoryIds` | Correct (fixed) |
 | `GET tags` | `tagByBusinessIds` | Correct |
 
 ### hedge-mobile-app
@@ -198,4 +198,47 @@ These were listed as gaps in earlier documentation but are already implemented:
 ## 7. Remaining Known Gaps (deferred)
 
 - Checkout via Cryptomus (Stablecoin) — ❌ on mobile and web, confirmed in `hedge.md`
-- Contact form email delivery — website logs to console only
+- Contact form email delivery — website logs to console only (removed the log; UI still shows success)
+
+---
+
+## 8. Session Closure — 2026-06-30
+
+**Status: CLOSED**
+
+### Fresh quality pass findings and resolutions
+
+| # | App | File | Issue | Fix |
+|---|-----|------|-------|-----|
+| 1 | hedge-website | `server.js:74` | `console.log('Contact form submission:', ...)` — debug log in committed code | Removed; replaced with a comment explaining email delivery is deferred |
+| 2 | hedge-website | `server.js:108` | `console.log(...)` at server startup — violates "no `console.log` in committed code" rule | Removed; `app.listen(PORT)` with no callback |
+| 3 | hedge-website | `developer-guide.md` | Env var names were WRONG — showed `BASE_URL`, `BUSINESS_ID`, `API_KEY` but actual code reads `BACKEND_API_URL`, `BACKEND_BUSINESS_ID`, `BACKEND_API_KEY`, and the required `WEB_SHOP_APP_URL` was missing entirely (server exits on start without it) | Updated guide to match `.env.example` exactly; added required `WEB_SHOP_APP_URL` note |
+| 4 | hedge-wears-admin | `components/layout/dashboard-layout.tsx:75` | `console.log({ mobileOpen })` — debug log left in mobile-menu toggle handler | Removed |
+
+### TypeScript verification
+
+All three TypeScript apps pass `tsc --noEmit` cleanly (verified with local `node_modules/.bin/tsc`):
+
+- `hedge-web-app` — ✅ no errors
+- `hedge-wears-admin` — ✅ no errors (including after dashboard-layout fix)
+- `hedge-mobile-app` — ✅ no errors
+
+### API contract re-verification
+
+All query param names re-confirmed against `vendorstack-backend/src/shared/utils/query.util.ts`:
+
+- `productBusinessId` ✅ (line 287)
+- `productVendorId` ✅ (line 341)
+- `productCategoryIds` ✅ (line 347)
+- `categoryBusinessIds` ✅ (line 138)
+- `reviewBusinessId` ✅ (line 206)
+- `orderByBusinessId` ✅ (line 184)
+- `orderByCustomerId` ✅ (line 198)
+- `tagByBusinessIds` ✅ (line 160)
+
+No further API contract bugs found.
+
+### Commits
+
+- `hedge-website` → `develop` — fix: remove console.log statements; correct developer-guide env vars
+- `hedge-wears-admin` → `develop-extended` — fix: remove debug console.log from dashboard-layout mobile menu toggle
