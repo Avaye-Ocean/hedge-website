@@ -341,3 +341,48 @@ All three TypeScript apps pass `tsc --noEmit` cleanly after fixes:
 - `hedge-wears-admin` → `develop-extended` — chore: remove dead useCurrencyRate hook
 - `hedge-mobile-app` → `develop-extended` — chore: remove dead useGetTags hook
 - `hedge-website` → `develop` — docs: Round 3 audit findings added to quality plan
+
+---
+
+## 11. Deep Audit Round 4 — 2026-06-30
+
+**Status: CLOSED**
+
+### Scope
+
+Fourth full-sweep: remaining dead code in hooks/, missing rate limits on public endpoints,
+useCallback dependency correctness, console.log in committed code, placeholder images,
+empty handlers. All four repos re-verified.
+
+### Findings and resolutions
+
+| # | Priority | App | File | Issue | Fix |
+|---|----------|-----|------|-------|-----|
+| 1 | P2 | hedge-mobile-app | `services/ai-shopping.ts` | `placeOrder()` export posted to `/ai/shopping/order` with wrong field names (`products` instead of `orderDetails`); never imported anywhere — dead and misleading | Removed the function entirely. `searchProducts` and `checkBalance` retained (still called from AI screen). Committed `76e8284`. |
+| 2 | P2 | hedge-web-app | `hooks/useWindowOpen.tsx`, `useSelectArray.tsx`, `useStringArray.tsx`, `useOutsideClick.ts` | Four utility hooks with zero import sites across the entire codebase | Deleted all four. Build and `tsc --noEmit` clean. Committed `b73a474`. |
+| 3 | P1 | hedge-web-app | `components/ai/ai-order-page.tsx:84` | `handleSearch` useCallback had `query.trim` (stable method reference, never changes) in deps instead of `query` — stale-closure risk, flagged by `react-hooks/exhaustive-deps` | Fixed dep to `query`. Lint clean. Committed `dedd431`. Build passes. |
+| 4 | P2 | hedge-wears-admin | `hooks/useWindowOpen.tsx`, `useSelectArray.tsx`, `useStringArray.tsx`, `useOutsideClick.ts`, `useSearch.tsx`, `useDebounce.tsx` | Six utility hooks with zero import sites | Deleted all six. Build and `tsc --noEmit` clean. Committed `d05434f`. |
+
+### Verified clean (no new issues found)
+
+| App | Scope |
+|-----|-------|
+| hedge-website | `server.js` clean: no console.log, no dead routes, `safeApi()` on all fetches, correct API params |
+| hedge-web-app | All remaining hooks (useAuth, useBreakpoints, useDebounce, useDisclosure, useToggleFavProduct, useCoinRate, use-fcm-token, use-timer) confirmed with at least one import site |
+| hedge-wears-admin | All remaining hooks (useIsOwner, useDisclosure, useBreakpoints, useCoinRate, use-fcm-token) confirmed active |
+| hedge-mobile-app | All services confirmed: ai-shopping (searchProducts/checkBalance only), order-services, payment-services, etc. No console.log in committed code |
+| All four apps | No placeholder images, no dead `href="#"`, no `window.location.reload()` |
+
+### TypeScript verification
+
+- `hedge-web-app` — ✅ 0 errors; build passes
+- `hedge-wears-admin` — ✅ 0 errors; build passes
+- `hedge-mobile-app` — ✅ 0 errors
+
+### Commits
+
+- `hedge-mobile-app` → `develop-extended` (76e8284) — chore: remove dead placeOrder export from ai-shopping service
+- `hedge-web-app` → `develop-extended` (b73a474) — chore: remove dead utility hooks
+- `hedge-web-app` → `develop-extended` (dedd431) — fix: correct useCallback dependency array in AI order page
+- `hedge-wears-admin` → `develop-extended` (d05434f) — chore: remove dead utility hooks
+- `hedge-website` → `develop` — docs: Round 4 audit findings added to quality plan
