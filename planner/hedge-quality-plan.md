@@ -386,3 +386,30 @@ empty handlers. All four repos re-verified.
 - `hedge-web-app` → `develop-extended` (dedd431) — fix: correct useCallback dependency array in AI order page
 - `hedge-wears-admin` → `develop-extended` (d05434f) — chore: remove dead utility hooks
 - `hedge-website` → `develop` — docs: Round 4 audit findings added to quality plan
+
+---
+
+## 10. Round 5 Final Verification — 2026-07-01
+
+### What was checked
+
+- Full re-scan of all four apps for: `console.log`, `picsum`, `via.placeholder`, `placehold.co`, `onPress={() => {}}`, `TODO`, `FIXME`
+- TypeScript re-verified: `hedge-mobile-app` `tsc --noEmit` → 0 errors
+- All git repos confirmed: 0 commits ahead of remote, 0 dirty files (all changes committed and pushed)
+- `developer-guide.md` present in all four repos ✅
+- `hedge.md` stale entries corrected: `Delivery pricing settings` updated to ✅ (mobile screen exists at `app/manage-store/delivery-pricing.tsx`); `Return order (submit to backend)` updated to ✅ (web: `ConfirmReturn` sends RETURN_CONFIRM); `Remaining Implementation Gaps` section rewritten to reflect all resolved gaps
+- `hasInsufficientBalance` verified implemented in `components/checkout/index.tsx:71` — disables "Complete Order" button and shows "Top Up" banner when `walletBalance < discountedTotal`
+- 4 `onPress={() => {}}` hits in `manage-store/index.tsx:330,336,342,348` confirmed dead code (inside JSX comment block `{/* ... */}` lines 307–351)
+
+### What was NOT found
+
+- No `console.log` in runtime source files across all four apps
+- No external placeholder image URLs in source
+- No empty active handlers
+- No TypeScript errors
+
+### Deferred items (unchanged from Round 4)
+
+- **Checkout via Cryptomus** — ❌ on web and mobile; frontend payment-type selector not built. Backend handles it. Deferred out of scope.
+
+### **STATUS: CLOSED — All four Hedge Wears apps fully audited and clean**
