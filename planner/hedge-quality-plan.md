@@ -242,3 +242,52 @@ No further API contract bugs found.
 
 - `hedge-website` → `develop` — fix: remove console.log statements; correct developer-guide env vars
 - `hedge-wears-admin` → `develop-extended` — fix: remove debug console.log from dashboard-layout mobile menu toggle
+
+---
+
+## 9. Deep Audit Round 2 — 2026-06-30
+
+**Status: CLOSED**
+
+### Scope
+
+Full eyes-on sweep of all four repos, going deeper than Round 1: AI order placement,
+checkout response field paths, manage-store order screens, admin pages (vouchers,
+customers, delivery-fees, analytics), web-app (product detail, withdraw, AI orders),
+and mobile service layer dead code.
+
+### Findings and resolutions
+
+| # | Priority | App | File | Issue | Fix |
+|---|----------|-----|------|-------|-----|
+| 1 | P0 | hedge-mobile-app | `app/(tabs)/ai-orders/index.tsx` | `handleOrder()` showed a success Toast but never called any order API — every AI order silently failed | Imported `usePlaceOrder` and `useUserStore`; replaced fake toast path with a real `placeOrder()` call with correct payload (`orderDetails`, `customerId`, `addressId`, `businessId`, `userId`, `sourceId`, `isWalletPayment: true`); validates delivery address before ordering |
+| 2 | P1 | hedge-mobile-app | `components/checkout/index.tsx` | Success modal read `data?.data?.transaction?.orderNumber` (`.transaction` nesting does not exist — the transaction IS `data.data`) and `data?.data?.orderDetails?._id` (no such field) — order number and deep-link were always `undefined` | Fixed to `data?.data?.orderNumber` and `data?.data?.orders?.[0]?._id`, matching the backend `createOrder` response shape (Transaction document with `.orderNumber` directly and `.orders[]` populated array) |
+
+### Pages verified clean (no bugs found)
+
+| App | Pages/Components |
+|-----|-----------------|
+| hedge-mobile-app | manage-store/orders/NewOrders, OrderDetail, OrderStatus, OrderStatus update flow |
+| hedge-wears-admin | vouchers view, customers view, delivery-fees view (store fees, continent fees, country fees tabs all wired to API) |
+| hedge-web-app | product detail (with related products), coin/withdraw, AI order page |
+| All apps | tsc --noEmit: 0 errors |
+
+### Dead code noted (not a bug, not fixed)
+
+`services/ai-shopping.ts` in mobile exports a `placeOrder()` function that posts to
+`/ai/shopping/order` with `{ products: [...] }`. This endpoint exists on the backend
+but the function is never imported or called — the AI screen now uses `usePlaceOrder`
+from `hooks/apihooks/orders.ts` directly. Left as-is to avoid scope creep; can be
+removed in a future cleanup pass.
+
+### TypeScript verification
+
+All TypeScript apps pass `tsc --noEmit` cleanly after fixes:
+
+- `hedge-mobile-app` — ✅ no errors (pre-commit hook confirmed)
+- `hedge-web-app` — ✅ no errors
+- `hedge-wears-admin` — ✅ no errors
+
+### Commits
+
+- `hedge-mobile-app` → `develop-extended` (bc530d0) — fix: wire AI orders to real order API; fix checkout success modal field paths
