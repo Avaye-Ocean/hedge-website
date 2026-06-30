@@ -26,18 +26,27 @@ npm run build
 
 ### Environment
 
-Create a `.env` file in the project root:
+Copy `.env.example` to `.env` and fill in your values:
 
 ```
-BASE_URL=https://dev-vendorstack-backend.herokuapp.com/api/v1/
-BUSINESS_ID=6471104cc17ea387218a737b
-VENDOR_ID=6471104cc17ea387218a736e
-SOURCE_ID=HEDGE_WEARSLY_LTD
-API_KEY=<app api key>
-PORT=3000
+PORT=6300
+NODE_ENV=development
+
+# Vendorstack API
+BACKEND_API_URL=https://dev-vendorstack-backend.herokuapp.com/api/v1/
+BACKEND_API_KEY=<app api key>
+BACKEND_SOURCE_ID=HEDGE_WEARSLY_LTD
+BACKEND_BUSINESS_ID=6471104cc17ea387218a737b
+
+# App URLs (used in templates — deep links and download badges)
+WEB_SHOP_APP_URL=https://dev-hedge-web-app-82768f1c25de.herokuapp.com
+IOS_SHOP_APP_URL=https://apps.apple.com/app/hedge-wears
+ANDROID_SHOP_APP_URL=https://play.google.com/store/apps/details?id=com.hedgewears
 ```
 
-Node 20.6+ loads `.env` natively via `--env-file`. No `dotenv` package is used.
+> `WEB_SHOP_APP_URL` is **required** — the server will exit if it is not set.
+
+Node 22+ loads `.env` natively via `--env-file`. No `dotenv` package is used.
 
 ---
 

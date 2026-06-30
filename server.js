@@ -70,8 +70,7 @@ app.get('/pricing', (req, res) => res.render('pricing', { page: 'pricing', title
 app.get('/contact', (req, res) => res.render('contact', { page: 'contact', title: 'Contact Us' }));
 
 app.post('/contact', (req, res) => {
-  const { name, email, subject, message } = req.body;
-  console.log('Contact form submission:', { name, email, subject, message });
+  // Contact form — email delivery not yet wired; submission acknowledged only
   res.render('contact', { page: 'contact', title: 'Contact Us', success: true });
 });
 
@@ -104,6 +103,4 @@ app.use((req, res) => {
   res.status(404).render('404', { page: '404', title: 'Page Not Found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Hedge Wears website running on http://localhost:${PORT}`);
-});
+app.listen(PORT);
