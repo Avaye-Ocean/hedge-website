@@ -32,19 +32,19 @@ async function apiGet(path) {
 
 const getCategories = () =>
   cachedFetch('categories', () =>
-    apiGet(`categories?categoryByBusinessIds=${BUSINESS_ID}&limit=12`)
+    apiGet(`categories?categoryBusinessIds=${BUSINESS_ID}&limit=12`)
       .then(d => d?.results ?? [])
   );
 
 const getFeaturedProducts = () =>
   cachedFetch('featured-products', () =>
-    apiGet(`products?productByBusinessIds=${BUSINESS_ID}&activeProduct=1&limit=8`)
+    apiGet(`products?productBusinessId=${BUSINESS_ID}&activeProduct=1&limit=8`)
       .then(d => d?.results ?? [])
   );
 
 const getProductsByCategory = (categoryId) =>
   cachedFetch(`products-cat-${categoryId}`, () =>
-    apiGet(`products?productByBusinessIds=${BUSINESS_ID}&activeProduct=1&productByCategoryIds=${categoryId}&limit=4`)
+    apiGet(`products?productBusinessId=${BUSINESS_ID}&activeProduct=1&productCategoryIds=${categoryId}&limit=4`)
       .then(d => d?.results ?? [])
   );
 
