@@ -103,8 +103,8 @@ app.post('/contact', async (req, res) => {
       // Still show success — user submitted the form; follow-up via direct email if needed
     }
   } else {
-    // SMTP not configured — log the submission for manual follow-up
-    console.log(`[contact] Submission (SMTP not configured) — name=${name}, email=${email}, subject=${subject}`);
+    // SMTP not configured — form submission received but no email sent.
+    // User still sees the success page (graceful degradation).
   }
   res.render('contact', { page: 'contact', title: 'Contact Us', success: true });
 });

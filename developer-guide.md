@@ -181,6 +181,6 @@ All templates receive `res.locals.version` (git hash) and `res.locals.year` auto
 
 ## Known Limitations
 
-- **Contact form** — submission is logged server-side only; no email delivery. Deferred.
+- **Contact form** — sends email via `nodemailer` when `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are set. When SMTP is not configured the user still sees the success page (graceful degradation).
 - **No dark mode** — static site, light mode only.
 - **30-min cache** — API responses are cached in process memory. Cache clears on dyno restart.
