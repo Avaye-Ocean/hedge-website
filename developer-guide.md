@@ -42,9 +42,18 @@ BACKEND_BUSINESS_ID=6471104cc17ea387218a737b
 WEB_SHOP_APP_URL=https://dev-hedge-web-app-82768f1c25de.herokuapp.com
 IOS_SHOP_APP_URL=https://apps.apple.com/app/hedge-wears
 ANDROID_SHOP_APP_URL=https://play.google.com/store/apps/details?id=com.hedgewears
+
+# Contact form SMTP (optional — graceful degradation if absent)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-smtp-user
+SMTP_PASS=your-smtp-password
+CONTACT_EMAIL_TO=hello@hedgewears.com
 ```
 
 > `WEB_SHOP_APP_URL` is **required** — the server will exit if it is not set.
+
+> **Contact form:** The `/contact` POST route sends the submission via `nodemailer` when `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are all set. If they are absent the submission is logged to stdout and the user still sees the success page. Use any standard SMTP provider (Gmail App Password, Mailgun SMTP relay, SendGrid, etc.).
 
 Node 22+ loads `.env` natively via `--env-file`. No `dotenv` package is used.
 

@@ -2,8 +2,25 @@
 
 const express = require('express');
 const path = require('path');
+const nodemailer = require('nodemailer');
 const { getVersion } = require('./scripts/version');
 const api = require('./services/api');
+
+// ── Contact-form mailer ──────────────────────────────────────────────────────
+// Configure via SMTP_* env vars. If not set, submissions are logged only and
+// the user still sees the success page (graceful degradation).
+function buildMailer() {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null;
+  return nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: Number(SMTP_PORT) || 587,
+    secure: Number(SMTP_PORT) === 465,
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+  });
+}
+const mailer = buildMailer();
+const CONTACT_TO = process.env.CONTACT_EMAIL_TO || 'hello@hedgewears.com';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -69,8 +86,26 @@ app.get('/pricing', (req, res) => res.render('pricing', { page: 'pricing', title
 
 app.get('/contact', (req, res) => res.render('contact', { page: 'contact', title: 'Contact Us' }));
 
-app.post('/contact', (req, res) => {
-  // Contact form — email delivery not yet wired; submission acknowledged only
+app.post('/contact', async (req, res) => {
+  const { name, email, subject, message } = req.body ?? {};
+  if (mailer) {
+    try {
+      await mailer.sendMail({
+        from: `"Hedge Wears Website" <${process.env.SMTP_USER || CONTACT_TO}>`,
+        replyTo: email || undefined,
+        to: CONTACT_TO,
+        subject: subject ? `[Contact] ${subject}` : '[Contact] New message from hedgewears.com',
+        text: `Name: ${name || '—'}\nEmail: ${email || '—'}\n\n${message || ''}`,
+        html: `<p><strong>Name:</strong> ${name || '—'}</p><p><strong>Email:</strong> ${email || '—'}</p><hr><p>${(message || '').replace(/\n/g, '<br>')}</p>`,
+      });
+    } catch (err) {
+      console.error('[contact] Failed to send email:', err.message);
+      // Still show success — user submitted the form; follow-up via direct email if needed
+    }
+  } else {
+    // SMTP not configured — log the submission for manual follow-up
+    console.log(`[contact] Submission (SMTP not configured) — name=${name}, email=${email}, subject=${subject}`);
+  }
   res.render('contact', { page: 'contact', title: 'Contact Us', success: true });
 });
 
