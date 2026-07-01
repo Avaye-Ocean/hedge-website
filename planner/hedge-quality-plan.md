@@ -437,6 +437,107 @@ All four apps clean. 28 dead hooks removed across three repos (hedge-web-app, he
 
 ---
 
+## 12. Round 9 — 2026-07-01 (Definitive Closing Round)
+
+### Task 1 — GlobalDefaultTab wiring (hedge-wears-admin)
+
+Verified that `GlobalDefaultTab` in `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx` is **fully wired** to the real API:
+- Uses `useGetBusiness(BUSINESS_ID!)` to read `deliveryFeesCoin.global` and `deliveryFeesCoin.globalEnabled`
+- Uses `useUpdateBusiness()` to persist both `deliveryFeesCoin` and `deliveryFees` on save
+- `useEffect` seeding from API data, `isLoading` + `isError` both handled
+- Coin amount input with fiat preview (consistent with continent/country dialogs)
+- "Current saved" HGC display when a fee is set
+- Save disabled while `isPending`
+
+This was already committed and pushed as part of `9b3f09b fix(delivery-fees): wire save to real API, replace hardcoded summary cards`. No further action needed.
+
+### Task 2 — Web-app storefront audit (hedge-web-app)
+
+All customer journeys confirmed clean:
+
+| Page | API | isLoading | isError | Notes |
+|------|-----|-----------|---------|-------|
+| Cart `_cart-view.tsx` | `useCart()` context (local state) | N/A | N/A | Empty state present; no API call needed |
+| Checkout `_checkout-view.tsx` | `useOrderProduct`, `useRedeemVoucher` | `isPending` ✅ | `try/catch` toast ✅ | Insufficient-balance guard, voucher flow, success modal |
+| Orders `[id]/page.tsx` → `order-details.tsx` | `useGetOrderDetail`, `useUpdateOrder` | `isPending` ✅ | `isError` ✅ with MessageWithButton |  |
+| Coin `/coin/page.tsx` → `UserProfileCard` | `useUser()` | `isFetchingUser` skeleton ✅ | N/A |  |
+| Buy coins `coin/buy/_buy-view.tsx` | `useFundWallet`, `useConvertCoinToCurrency`, `usePaystackPayment` | ✅ | ✅ |  |
+| Transactions `/transactions/page.tsx` | `useGetTransactions` in `TransactionsListFull` | ✅ | ✅ |  |
+| Wishlist `/wishlist/page.tsx` | `useGetLikedProducts` | `isPending` skeleton ✅ | `isError` with Retry ✅ |  |
+| AI Orders `/ai-orders/page.tsx` | `searchProducts`, `checkBalance` via `useMutation`/`useQuery` | `loading` state ✅ | `onError` toast ✅ |  |
+
+No hardcoded data, no coming-soon stubs, no missing error states.
+
+### Task 3 — Admin audit (hedge-wears-admin)
+
+All business-owner journeys confirmed clean:
+
+| Page | API | isLoading | isError | Notes |
+|------|-----|-----------|---------|-------|
+| Products list | `useGetProducts` | `isPending` ✅ | `isError` ✅ |  |
+| Products add | `$http.post("products")` + `useUploadProductVideo` | `form.formState.isSubmitting` ✅ | `try/catch` toast ✅ |  |
+| Products `[id]` | `useGetProduct`, `useUpdateProduct`, `useUploadProductVideo` | `isPending` ✅ | ✅ |  |
+| Products inventory | `useGetAdminProducts` | `isLoading` ✅ | `isError` ✅ |  |
+| Orders list | `useOrders`, `useGetOrderMetricsCounter` | `isPending` ✅ | `isError` ✅ |  |
+| Orders `[id]` | `useViewOrder` | `isPending` ✅ | `isError` ✅ |  |
+| Analytics | `useGetOrderMetrics`, `useGetOrderMetricsCounter`, `useGetProductMetricsCounter`, `useGetReviewMetricsCounter` | ✅ | ✅ |  |
+| Vouchers | `useGetVouchers`, `useGenerateVoucher`, `useCancelVoucher` | `isLoading` ✅ | `isError` ✅ |  |
+
+No hardcoded mock data, no coming-soon buttons (GlobalDefaultTab was the only stub — now fixed).
+
+### Task 4 — Mobile audit (hedge-mobile-app)
+
+| Screen | API | isLoading | isError | Notes |
+|--------|-----|-----------|---------|-------|
+| `checkout.tsx` | `useCartStore` → `<Checkout>` component | ✅ | ✅ |  |
+| `product-detail.tsx` | Product data passed via router params; `useCartStore.addToCart` | N/A | parse-error guard ✅ |  |
+| `orders.tsx` | `useGetOrders` (infinite) | `isLoading` ✅ | `isError` ✅ |  |
+| `order-detail.tsx` | `useGetOrderDetails` | `isLoading` ✅ | `isError` ✅ |  |
+| `wallet/index.tsx` | `useGetTransactions` | `isRefetching` ✅ | `isTransactionError` ✅ |  |
+| `(tabs)/ai-orders/index.tsx` | `searchProducts`, `checkBalance`, `usePlaceOrder` | `loading` state ✅ | `Toast.show(error)` ✅ |  |
+
+No stubs, no TODOs, no hardcoded data in any screen.
+
+### Task 5 — hedge-website checks
+
+- `/products`, `/categories`, `/collections` — all call `safeApi(api.*)` methods ✅
+- `services/api.js` — all calls use `BACKEND_API_URL`, `BACKEND_API_KEY`, `BACKEND_BUSINESS_ID` env vars ✅
+- `views/contact.pug` — renders correctly; `if success` block renders on successful submission ✅
+- `.env.example` — complete; all `process.env.*` reads in `server.js` and `services/api.js` are listed ✅
+
+### Task 6 — developer-guide.md accuracy
+
+| Repo | Finding | Status |
+|------|---------|--------|
+| hedge-website | "Known Limitations" said "no email delivery" — inaccurate after SMTP wiring | **Fixed** |
+| hedge-wears-admin | All env vars match `configs/env.ts` exactly | ✅ Clean |
+| hedge-web-app | All env vars match `configs/env.ts` exactly | ✅ Clean |
+| hedge-mobile-app | All env vars match `config.ts` exactly | ✅ Clean |
+
+### What was fixed in Round 9
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-website | `server.js` | Removed `console.log` from SMTP-not-configured fallback branch — was logging user PII to stdout, violates no-console.log rule | `99ada18` (develop) |
+| 2 | hedge-website | `developer-guide.md` | Updated "Known Limitations" contact-form entry: was wrong ("no email delivery"); corrected to describe actual SMTP-conditional behavior | `99ada18` (develop) |
+
+### What was confirmed clean in Round 9
+
+- `GlobalDefaultTab` fully wired to real API (already in `9b3f09b`) — delivery fees admin is production-ready
+- All `console.log` removed from all four repos (zero found in hedge-web-app, hedge-wears-admin, hedge-mobile-app; only the `server.js` one above in hedge-website — now fixed)
+- TypeScript passes `tsc --noEmit` cleanly in all three TS repos after all changes
+- All web-app customer journeys: real API, `isLoading` + `isError` handled, no stubs
+- All admin business-owner journeys: real API, error states, no coming-soon buttons
+- All mobile screens: real API, loading/error states, no hardcoded data
+- All developer guides: env var names match actual config files exactly
+- All `.env.example` files: every `process.env.*` read in code is listed
+
+### Final status
+
+**STATUS: CLOSED**
+
+All four repos are production-ready. No blocking issues, no stubs, no console.log, no dead code, no hardcoded data, no API contract bugs, no TypeScript errors. Developer guides are accurate.
+
 ## 12. Round 8 — 2026-07-01
 
 ### What was checked
