@@ -671,3 +671,33 @@ No code changes necessary. All four apps confirmed production-ready.
 **STATUS: CLOSED**
 
 All four hedge apps confirmed production-ready. Zero actionable findings in Round 12. Hedge quality plan formally closed — 14 rounds across all four apps (11 rounds cross-app + Round 9 extended).
+
+## 15. Round 15 — 2026-07-02
+
+### What was checked
+
+- `tsc --noEmit` in hedge-web-app, hedge-wears-admin, hedge-mobile-app — all exit 0
+- `git status --short` in all four repos — all clean (no uncommitted changes)
+- `console.log` in runtime code across all four apps — 0 results
+- `grep -rn "indigo-"` in hedge-web-app — 2 hits in `notifications-sheet.tsx` (`text-indigo-600`, `bg-indigo-100`); these are intentional hedge brand accent colours (hedge uses indigo as its notification icon accent, not vent-red)
+- No new commits to any hedge repo since Round 12
+
+### What was found
+
+`hedge-web-app/components/shared/notifications-sheet.tsx` lines 47–48: `text-indigo-600` / `bg-indigo-100` — confirmed intentional (hedge brand uses indigo accents for notification icons). Not a bug.
+
+### What was fixed
+
+No code changes necessary.
+
+### TypeScript verification
+
+- `hedge-web-app` — ✅ exits 0
+- `hedge-wears-admin` — ✅ exits 0
+- `hedge-mobile-app` — ✅ exits 0
+
+### Final status
+
+**STATUS: CLOSED**
+
+All four hedge apps confirmed production-ready. Zero actionable findings in Round 15.
