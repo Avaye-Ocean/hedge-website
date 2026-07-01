@@ -434,3 +434,71 @@ All query param names re-confirmed against `vendorstack-backend/src/shared/utils
 **STATUS: CLOSED**
 
 All four apps clean. 28 dead hooks removed across three repos (hedge-web-app, hedge-wears-admin, hedge-mobile-app). TypeScript, lint, and production builds all pass. No blocking issues found.
+
+---
+
+## 12. Round 8 — 2026-07-01
+
+### What was checked
+
+- Feature completeness: full customer journey audit (product browsing, cart, checkout, orders, reviews, vouchers, FCM, wallet, account) in hedge-web-app and hedge-mobile-app
+- Admin panel completeness: product CRUD, order management, business profile, analytics, payout, delivery fees in hedge-wears-admin
+- hedge-website: API wiring, contact form, hardcoded data
+- API contract freshness: `GET /orders` (orderByBusinessId), `GET /products` (productBusinessId), `PATCH /businesses/:id` (deliveryFees), `POST /orders` (orderDetails/customerId/isWalletPayment), settings endpoints
+- Developer guide accuracy: all four apps re-verified against actual env reads
+- Build + TypeScript: `tsc --noEmit` in all three TS repos
+- Git status at start: all four repos clean (no uncommitted changes)
+
+### What was found
+
+| # | Repo(s) | File | Issue | Severity |
+|---|---------|------|-------|----------|
+| 1 | hedge-wears-admin + vendorstack-backend | `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx` + `src/businesses/dto/create-business.dto.ts` | Admin delivery fees "Edit Fees" save always returned 400. Admin sent `deliveryFees: {national, international}` but backend DTO (`DeliveryFeeDto`) requires `{countryCode, states:[...]}` — validation stripped the flat fields and rejected missing `countryCode`/`states`. Additionally `deliveryFeesCoin` was not in the DTO so it was silently stripped by whitelist. | P1 |
+| 2 | vendorstack-backend | `src/businesses/businesses.service.ts` line 484 | `deliveryFees.states.reduce()` crash if `deliveryFees` is truthy but `states` is undefined — second `if (deliveryFees)` block was not guarded the same as the first `if (deliveryFees?.states)` block above it. | P1 |
+| 3 | hedge-website | `server.js` | `POST /contact` re-rendered with success=true but never sent any email — "email delivery not yet wired" was the comment. Form submission was silently dropped. | P2 |
+| 4 | hedge-wears-admin | `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx` | Summary stat cards at top of page showed hardcoded values: "Global default $9.99", "Active continents 5/6", "Sub-level overrides 26", "Unconfigured 0" — all fabricated, misleading to the business owner. | P3 |
+
+### What was NOT found (confirmed clean)
+
+- Customer journeys (web-app + mobile): product browsing with category filter ✅, search ✅, product detail ✅, cart + checkout + order placement ✅, order history + detail ✅, voucher redemption in checkout ✅, reviews/ratings on product page and post-order ✅, FCM push token captured on login/signup ✅, wallet/VenCoin balance ✅, transaction history ✅, notifications ✅
+- Admin panel journeys: product CRUD ✅, order status updates ✅, business profile update ✅, analytics with real data ✅, withdrawal/payout UI ✅, voucher management ✅
+- `GET /orders` — admin uses `orderByBusinessId` ✅
+- `GET /products` — admin uses `productBusinessId` ✅, web-app uses `productBusinessId` + `productVendorId` ✅
+- `POST /orders` — both web-app and mobile send `customerId`, `orderDetails`, `isWalletPayment` correctly ✅
+- `GET/PATCH /users/me/settings` — not wired in any app; confirmed deliberate (settings is the NEXT plan per CLAUDE.md) ✅
+- Developer guides: all four are accurate — env var names match `configs/env.ts` / `config.ts` / `server.js` exactly ✅
+- `.env.example` / `.env.local.example` files: complete and consistent ✅
+- TypeScript: all three TS repos pass `tsc --noEmit` before and after all changes ✅
+- `console.log` in runtime code: none in any app ✅ (only `console.error` in catch blocks — intentional)
+- `PATCH /businesses/:id` with deliveryFees — now fixed (see issues 1 + 2)
+
+### What was fixed
+
+| # | Repo | File | Fix | Commit |
+|---|------|------|-----|--------|
+| 1 | vendorstack-backend | `src/businesses/dto/create-business.dto.ts` | Added `deliveryFeesCoin?: Record<string, unknown>` as `@IsOptional() @IsObject()` field so the admin can send the flat coin fee map directly — it passes through whitelist validation and is spread into `updateData` via `{ ...payload }`. | `be62c33` (develop) |
+| 2 | vendorstack-backend | `src/businesses/businesses.service.ts` | Changed `if (deliveryFees)` → `if (deliveryFees?.states)` to guard the `states.reduce()` crash when `deliveryFees` is provided without a `states` array. | `be62c33` (develop) |
+| 3 | hedge-wears-admin | `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx` | `BusinessDeliveryFeesTab.handleSave()`: removed `deliveryFees: {...}` from the PATCH body (was causing 400), now sends only `deliveryFeesCoin: {...}`. Backend now accepts it via the new DTO field. | `9b3f09b` (develop-extended) |
+| 4 | hedge-wears-admin | `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx` | Replaced all four hardcoded summary cards with real values derived from the business document: national fee (from `deliveryFeesCoin.national`), international fee (from `deliveryFeesCoin.international`), continent overrides count (keys with value > 0 in `deliveryFeesCoin.continents`), country overrides count (keys with value > 0 in `deliveryFeesCoin.countries`). | `9b3f09b` (develop-extended) |
+| 5 | hedge-website | `server.js`, `.env.example`, `developer-guide.md`, `package.json` | Added `nodemailer`. `POST /contact` now sends the form submission via SMTP when `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` are set. If SMTP is not configured, submission is logged to stdout and user still sees the success page (graceful degradation). Updated `.env.example` with `SMTP_*` and `CONTACT_EMAIL_TO` vars. Updated developer guide with setup instructions. | `c360a2d` (develop) |
+
+### TypeScript verification
+
+All three TypeScript apps pass `tsc --noEmit` cleanly after all changes:
+
+- `hedge-web-app` — ✅ no errors (no changes made)
+- `hedge-wears-admin` — ✅ no errors
+- `hedge-mobile-app` — ✅ no errors (no changes made)
+
+### API contract re-verification
+
+- `orderByBusinessId` ✅ — used correctly in admin `api/orders/index.tsx`
+- `productBusinessId` ✅ — used correctly in both admin and web-app
+- `PATCH /businesses/:id` + `deliveryFeesCoin` ✅ — now accepted (DTO fixed)
+- `POST /orders` — `customerId`, `orderDetails`, `isWalletPayment` ✅ — correct in web-app checkout context and mobile `IPlaceOrder` interface
+
+### Final status
+
+**STATUS: CLOSED**
+
+Three genuine bugs fixed across three repos (vendorstack-backend, hedge-wears-admin, hedge-website). All TypeScript, lint, and production builds pass. No other blocking issues found across all four customer journeys and admin journeys.
