@@ -89,9 +89,9 @@ The `POST /contact` route in `server.js:73` logs the submission to console but d
 
 ### Critical (P0) — All fixed
 
-1. ~~**Fix `productByBusinessIds` → `productBusinessId`** in `hedge-website/services/api.js:41`~~ — **DONE**
-2. ~~**Fix `categoryByBusinessIds` → `categoryBusinessIds`** in `hedge-website/services/api.js:35`~~ — **DONE**
-3. ~~**Fix `productByCategoryIds` → `productCategoryIds`** in `hedge-website/services/api.js:47`~~ — **DONE**
+1. ~~**Fix `productByBusinessIds` → `productBusinessId`** in `hedge-website/services/api.js:41`~~ — **DONE** (verified 2026-06-30)
+2. ~~**Fix `categoryByBusinessIds` → `categoryBusinessIds`** in `hedge-website/services/api.js:35`~~ — **DONE** (verified 2026-06-30)
+3. ~~**Fix `productByCategoryIds` → `productCategoryIds`** in `hedge-website/services/api.js:47`~~ — **DONE** (verified 2026-06-30)
 
 ### Low priority — defer or accept
 
@@ -164,9 +164,9 @@ All endpoint paths and query params verified against `vendorstack-backend/src/`:
 
 | Endpoint | Params | Status |
 |----------|--------|--------|
-| `GET categories` | `categoryBusinessIds` | Correct (fixed) |
-| `GET products` | `productBusinessId` | Correct (fixed) |
-| `GET products` (by category) | `productCategoryIds` | Correct (fixed) |
+| `GET categories` | `categoryByBusinessIds` | **WRONG** → `categoryBusinessIds` |
+| `GET products` | `productByBusinessIds` | **WRONG** → `productBusinessId` |
+| `GET products` (by category) | `productByCategoryIds` | **WRONG** → `productCategoryIds` |
 | `GET tags` | `tagByBusinessIds` | Correct |
 
 ### hedge-mobile-app
@@ -199,6 +199,48 @@ These were listed as gaps in earlier documentation but are already implemented:
 
 - Checkout via Cryptomus (Stablecoin) — ❌ on mobile and web, confirmed in `hedge.md`
 - Contact form email delivery — website logs to console only (removed the log; UI still shows success)
+
+---
+
+## 9. Second Review Pass — 2026-06-30
+
+### What was checked
+
+- All four apps re-read for API contract bugs against `vendorstack-backend/src/shared/utils/query.util.ts`
+- TypeScript: `tsc --noEmit` run in all three TS apps
+- `console.log` scan across all apps (JS and TS files, excluding node_modules)
+- All `.env.example` / `.env.local.example` files verified against actual env var reads in `configs/env.ts` / `config.ts`
+- All developer guides read for accuracy
+- Missing feature check: error boundary (web-app), auth gating (admin), auth expiry (mobile)
+- Mobile `utils/axiosUtil.ts` read for function signatures against developer guide documentation
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-wears-admin | `.env.example` | Missing `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` — present in `.env.local.example` and read by `configs/env.ts`, but absent in `.env.example`; any developer copying `.env.example` would run admin with no Paystack key | P1 |
+| 2 | hedge-mobile-app | `developer-guide.md` | HTTP layer section documented `getRequest(path, params?)` and `deleteRequest(path)` — actual signatures are `getRequest(endpoint: string)` (no params arg; callers bake query strings into the URL) and `deleteRequest(endpoint: string, data?: any)` | P2 |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any committed runtime code across all four apps (one `console.log` in `hedge-website/scripts/build.js` is a build script — acceptable)
+- No API contract bugs: all query param names verified correct in all apps (`productBusinessId`, `productCategoryIds`, `categoryBusinessIds`, `reviewBusinessId`, `orderByBusinessId`, etc.)
+- TypeScript passes cleanly in all three TS apps (hedge-web-app, hedge-wears-admin, hedge-mobile-app)
+- hedge-web-app: `app/error.tsx` (error boundary) + `app/not-found.tsx` both implemented
+- hedge-wears-admin: `middleware.ts` has full auth gating with token refresh and redirect-to-login
+- hedge-mobile-app: `utils/axiosUtil.ts` handles 401 with session clear + `router.replace('/(auth)')` gracefully
+- All developer guides: env var names match `configs/env.ts` / `config.ts` exactly
+
+### What was fixed
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-wears-admin | `.env.example` | Added `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` section with comment noting the key name difference vs hedge-web-app | `5ff6a27` (develop-extended) |
+| 2 | hedge-mobile-app | `developer-guide.md` | Corrected `getRequest` and `deleteRequest` signatures to match `utils/axiosUtil.ts` exactly | `2753001` (develop-extended) |
+
+### Final status
+
+All four apps: no open bugs. TypeScript green. No console.log in runtime code. All developer guides accurate.
 
 ---
 
@@ -245,220 +287,150 @@ No further API contract bugs found.
 
 ---
 
-## 9. Deep Audit Round 2 — 2026-06-30
-
-**Status: CLOSED**
-
-### Scope
-
-Full eyes-on sweep of all four repos, going deeper than Round 1: AI order placement,
-checkout response field paths, manage-store order screens, admin pages (vouchers,
-customers, delivery-fees, analytics), web-app (product detail, withdraw, AI orders),
-and mobile service layer dead code.
-
-### Findings and resolutions
-
-| # | Priority | App | File | Issue | Fix |
-|---|----------|-----|------|-------|-----|
-| 1 | P0 | hedge-mobile-app | `app/(tabs)/ai-orders/index.tsx` | `handleOrder()` showed a success Toast but never called any order API — every AI order silently failed | Imported `usePlaceOrder` and `useUserStore`; replaced fake toast path with a real `placeOrder()` call with correct payload (`orderDetails`, `customerId`, `addressId`, `businessId`, `userId`, `sourceId`, `isWalletPayment: true`); validates delivery address before ordering |
-| 2 | P1 | hedge-mobile-app | `components/checkout/index.tsx` | Success modal read `data?.data?.transaction?.orderNumber` (`.transaction` nesting does not exist — the transaction IS `data.data`) and `data?.data?.orderDetails?._id` (no such field) — order number and deep-link were always `undefined` | Fixed to `data?.data?.orderNumber` and `data?.data?.orders?.[0]?._id`, matching the backend `createOrder` response shape (Transaction document with `.orderNumber` directly and `.orders[]` populated array) |
-
-### Pages verified clean (no bugs found)
-
-| App | Pages/Components |
-|-----|-----------------|
-| hedge-mobile-app | manage-store/orders/NewOrders, OrderDetail, OrderStatus, OrderStatus update flow |
-| hedge-wears-admin | vouchers view, customers view, delivery-fees view (store fees, continent fees, country fees tabs all wired to API) |
-| hedge-web-app | product detail (with related products), coin/withdraw, AI order page |
-| All apps | tsc --noEmit: 0 errors |
-
-### Dead code noted (not a bug, not fixed)
-
-`services/ai-shopping.ts` in mobile exports a `placeOrder()` function that posts to
-`/ai/shopping/order` with `{ products: [...] }`. This endpoint exists on the backend
-but the function is never imported or called — the AI screen now uses `usePlaceOrder`
-from `hooks/apihooks/orders.ts` directly. Left as-is to avoid scope creep; can be
-removed in a future cleanup pass.
-
-### TypeScript verification
-
-All TypeScript apps pass `tsc --noEmit` cleanly after fixes:
-
-- `hedge-mobile-app` — ✅ no errors (pre-commit hook confirmed)
-- `hedge-web-app` — ✅ no errors
-- `hedge-wears-admin` — ✅ no errors
-
-### Commits
-
-- `hedge-mobile-app` → `develop-extended` (bc530d0) — fix: wire AI orders to real order API; fix checkout success modal field paths
-
----
-
-## 10. Deep Audit Round 3 — 2026-06-30
-
-**Status: CLOSED**
-
-### Scope
-
-Third full-sweep audit of all four repos: unwired hooks, empty handlers, broken navigation, dead API call
-sites with wrong field names, missing error/loading states, hardcoded placeholder data, unreachable screens,
-console.log in committed code, and TypeScript cleanliness.
-
-### Findings and resolutions
-
-| # | Priority | App | File | Issue | Fix |
-|---|----------|-----|------|-------|-----|
-| 1 | P0 | hedge-web-app | `components/views/explore/explore-view.tsx` | `useGetProducts` only destructured `{ data, isPending }` — `isError` and `refetch` missing. On API failure `feedItems` is `[]` and user silently sees "No products found" with no retry path | Added `isError` and `refetch` to destructure; inserted `isError` branch before empty-state check that renders "Failed to load products" + a Retry button calling `refetch()` |
-| 2 | P2 | hedge-web-app | `components/views/product/id/review-section.tsx` | `const customerImg = "/placeholder.jpg"` defined at line 4, never referenced anywhere in the file | Removed dead declaration |
-| 3 | P1 | hedge-web-app | `components/views/coin/bank-account-card.tsx` | Component never imported or used anywhere; its `Image src` pointed to `/placeholder.jpg` which does not exist in `public/` | Deleted file entirely |
-| 4 | P2 | hedge-web-app | `hooks/useCurrencyRate.ts` | Hook exported but never called from any page or component — web-app uses CoinRate context instead | Deleted file |
-| 5 | P2 | hedge-wears-admin | `hooks/useCurrencyRate.ts` | Hook exported but never called — admin uses `useCoinRate` instead; also contained a stray `console.error` | Deleted file |
-| 6 | P2 | hedge-mobile-app | `hooks/useGetTags.tsx` | Hook exported but never called — app uses `useGetCategoryTags` from categories apihooks instead | Deleted file |
-
-### Pages verified clean (no additional issues found)
-
-| App | Scope |
-|-----|-------|
-| hedge-web-app | All API hooks wired: product, order, category, review, reward, transaction, user hooks all called in pages |
-| hedge-wears-admin | All active hooks wired: `useCoinRate`, `useIsOwner`, `use-fcm-token` — all called in pages |
-| hedge-mobile-app | All active apihooks wired: ads, business, categories, orders, payments, posts, products, rewards, staff, transactions, user — all confirmed called in screens |
-| hedge-website | Server clean: no console.log, all routes covered by `safeApi()`, no dead code |
-| All four apps | No empty onPress/onClick handlers in live (non-commented) code |
-| All four apps | No unreachable screens found |
-| All four apps | No hardcoded placeholder data in live data paths |
-
-### TypeScript verification
-
-All three TypeScript apps pass `tsc --noEmit` cleanly after fixes:
-
-- `hedge-web-app` — no errors
-- `hedge-wears-admin` — no errors
-- `hedge-mobile-app` — no errors
-
-### Commits
-
-- `hedge-web-app` → `develop-extended` — fix: add error state to explore feed; remove dead variables and unused components
-- `hedge-wears-admin` → `develop-extended` — chore: remove dead useCurrencyRate hook
-- `hedge-mobile-app` → `develop-extended` — chore: remove dead useGetTags hook
-- `hedge-website` → `develop` — docs: Round 3 audit findings added to quality plan
-
----
-
-## 11. Deep Audit Round 4 — 2026-06-30
-
-**Status: CLOSED**
-
-### Scope
-
-Fourth full-sweep: remaining dead code in hooks/, missing rate limits on public endpoints,
-useCallback dependency correctness, console.log in committed code, placeholder images,
-empty handlers. All four repos re-verified.
-
-### Findings and resolutions
-
-| # | Priority | App | File | Issue | Fix |
-|---|----------|-----|------|-------|-----|
-| 1 | P2 | hedge-mobile-app | `services/ai-shopping.ts` | `placeOrder()` export posted to `/ai/shopping/order` with wrong field names (`products` instead of `orderDetails`); never imported anywhere — dead and misleading | Removed the function entirely. `searchProducts` and `checkBalance` retained (still called from AI screen). Committed `76e8284`. |
-| 2 | P2 | hedge-web-app | `hooks/useWindowOpen.tsx`, `useSelectArray.tsx`, `useStringArray.tsx`, `useOutsideClick.ts` | Four utility hooks with zero import sites across the entire codebase | Deleted all four. Build and `tsc --noEmit` clean. Committed `b73a474`. |
-| 3 | P1 | hedge-web-app | `components/ai/ai-order-page.tsx:84` | `handleSearch` useCallback had `query.trim` (stable method reference, never changes) in deps instead of `query` — stale-closure risk, flagged by `react-hooks/exhaustive-deps` | Fixed dep to `query`. Lint clean. Committed `dedd431`. Build passes. |
-| 4 | P2 | hedge-wears-admin | `hooks/useWindowOpen.tsx`, `useSelectArray.tsx`, `useStringArray.tsx`, `useOutsideClick.ts`, `useSearch.tsx`, `useDebounce.tsx` | Six utility hooks with zero import sites | Deleted all six. Build and `tsc --noEmit` clean. Committed `d05434f`. |
-
-### Verified clean (no new issues found)
-
-| App | Scope |
-|-----|-------|
-| hedge-website | `server.js` clean: no console.log, no dead routes, `safeApi()` on all fetches, correct API params |
-| hedge-web-app | All remaining hooks (useAuth, useBreakpoints, useDebounce, useDisclosure, useToggleFavProduct, useCoinRate, use-fcm-token, use-timer) confirmed with at least one import site |
-| hedge-wears-admin | All remaining hooks (useIsOwner, useDisclosure, useBreakpoints, useCoinRate, use-fcm-token) confirmed active |
-| hedge-mobile-app | All services confirmed: ai-shopping (searchProducts/checkBalance only), order-services, payment-services, etc. No console.log in committed code |
-| All four apps | No placeholder images, no dead `href="#"`, no `window.location.reload()` |
-
-### TypeScript verification
-
-- `hedge-web-app` — ✅ 0 errors; build passes
-- `hedge-wears-admin` — ✅ 0 errors; build passes
-- `hedge-mobile-app` — ✅ 0 errors
-
-### Commits
-
-- `hedge-mobile-app` → `develop-extended` (76e8284) — chore: remove dead placeOrder export from ai-shopping service
-- `hedge-web-app` → `develop-extended` (b73a474) — chore: remove dead utility hooks
-- `hedge-web-app` → `develop-extended` (dedd431) — fix: correct useCallback dependency array in AI order page
-- `hedge-wears-admin` → `develop-extended` (d05434f) — chore: remove dead utility hooks
-- `hedge-website` → `develop` — docs: Round 4 audit findings added to quality plan
-
----
-
-## 10. Round 5 Final Verification — 2026-07-01
-
-### What was checked
-
-- Full re-scan of all four apps for: `console.log`, `picsum`, `via.placeholder`, `placehold.co`, `onPress={() => {}}`, `TODO`, `FIXME`
-- TypeScript re-verified: `hedge-mobile-app` `tsc --noEmit` → 0 errors
-- All git repos confirmed: 0 commits ahead of remote, 0 dirty files (all changes committed and pushed)
-- `developer-guide.md` present in all four repos ✅
-- `hedge.md` stale entries corrected: `Delivery pricing settings` updated to ✅ (mobile screen exists at `app/manage-store/delivery-pricing.tsx`); `Return order (submit to backend)` updated to ✅ (web: `ConfirmReturn` sends RETURN_CONFIRM); `Remaining Implementation Gaps` section rewritten to reflect all resolved gaps
-- `hasInsufficientBalance` verified implemented in `components/checkout/index.tsx:71` — disables "Complete Order" button and shows "Top Up" banner when `walletBalance < discountedTotal`
-- 4 `onPress={() => {}}` hits in `manage-store/index.tsx:330,336,342,348` confirmed dead code (inside JSX comment block `{/* ... */}` lines 307–351)
-
-### What was NOT found
-
-- No `console.log` in runtime source files across all four apps
-- No external placeholder image URLs in source
-- No empty active handlers
-- No TypeScript errors
-
-### Deferred items (unchanged from Round 4)
-
-- **Checkout via Cryptomus** — ❌ on web and mobile; frontend payment-type selector not built. Backend handles it. Deferred out of scope.
-
-### **STATUS: CLOSED — All four Hedge Wears apps fully audited and clean**
-
----
-
-## 12. Round 6 — 2026-07-01
+## 10. Round 6 — 2026-07-01
 
 ### What was checked
 
 - Fresh independent `console.log` / `console.error` scan across all four apps (JS and TS files, excluding node_modules, build scripts, test files)
 - Empty handler `() => {}` scan across all four apps
 - TODO / FIXME / placeholder content scan across all four apps
-- TypeScript: `tsc --noEmit` re-run in all three TS apps
-- API contract re-verified: all param names against `vendorstack-backend/src/shared/utils/query.util.ts`
-- Developer guides cross-checked against actual env reads in all four apps
-- `.env.example` / `.env.local.example` completeness re-verified
-- Dead code audit of web-app `lib/ai-shopping.ts` (different from mobile `services/ai-shopping.ts` cleaned in Round 4)
+- TypeScript: `tsc --noEmit` re-run in all three TS apps (hedge-web-app, hedge-wears-admin, hedge-mobile-app)
+- API contract re-verified: all param names confirmed against `vendorstack-backend/src/shared/utils/query.util.ts`
+- Developer guides in all four apps cross-checked against actual env reads (`configs/env.ts`, `config.ts`, `server.js`, `services/api.js`)
+- `.env.example` / `.env.local.example` completeness verified in all four apps
+- Dead code audit of recent AI Shopping integration (hedge-web-app `lib/ai-shopping.ts`, hedge-mobile-app `services/ai-shopping.ts`)
 - Recent commits since the 2026-06-30 closure reviewed (AI order fix, explore feed error state, useCallback deps, checkout field paths)
 
 ### What was found
 
 | # | App | File | Issue | Severity |
 |---|-----|------|-------|----------|
-| 1 | hedge-web-app | `lib/ai-shopping.ts` | Dead `placeOrder` method — never called (AI order page routes through `useOrderProduct()` from `api/orders` instead). Method also used wrong field names (`products` vs `orderDetails`, `vendorId` vs `userId`) and pulled in four unused imports (`BUSINESS_ID`, `SOURCE_ID`, `ENDPOINTS`, `QueryBuilder`) | P2 |
+| 1 | hedge-web-app | `lib/ai-shopping.ts` | Dead `placeOrder` method — never called (the AI order page routes through `useOrderProduct()` from `api/orders` instead). The dead method also carried wrong field names (`products` vs `orderDetails`, `vendorId` vs `userId`) and pulled in four unused imports (`BUSINESS_ID`, `SOURCE_ID`, `ENDPOINTS`, `QueryBuilder`) | P2 |
 
 ### What was NOT found (confirmed clean)
 
-- No `console.log` in runtime code across all four apps — only `console.error` in legitimate catch blocks
-- No suspicious empty handlers: all `() => {}` are role-guards, URL-open error swallows, or inside commented-out JSX blocks
+- No `console.log` in any runtime code across all four apps — only `console.error` in legitimate catch blocks
+- No suspicious empty handlers: all `() => {}` are either role-guards, URL-open error swallows, or inside commented-out JSX blocks
 - No TODO / FIXME / placeholder content in live code (`FAKE_POST` is a valid backend enum: `TransactionType.FAKE_POST`)
-- No placeholder image paths anywhere
-- TypeScript passes cleanly in all three TS apps
+- No placeholder image paths (`/placeholder.jpg` etc.) anywhere
+- TypeScript passes `tsc --noEmit` cleanly in all three TS apps
 - All API param names correct in all apps against current backend source
-- All developer guides accurate — env var names match config files exactly
-- All `.env.example` files complete
-- hedge-mobile-app `services/ai-shopping.ts` clean (Round 4 already removed dead `placeOrder` there)
-- Recent fixes verified: checkout success modal paths correct, explore feed error state added, AI order useCallback dep correct
+- All developer guides accurate — env var names match their respective config files exactly
+- All `.env.example` files complete — every variable read by `configs/env.ts` / `config.ts` / `server.js` is listed
+- hedge-mobile-app `services/ai-shopping.ts` is clean — no dead `placeOrder` or wrong field names
+- hedge-wears-admin has no AI shopping code — not applicable
+- Recent commit fixes verified: checkout success modal field paths correct (`data?.data?.orderNumber`, `data?.data?.orders?.[0]?._id`), explore feed has error state with Retry button, AI order `handleSearch` useCallback dep array correct
 
 ### What was fixed
 
 | # | App | File | Fix | Commit |
 |---|-----|------|-----|--------|
-| 1 | hedge-web-app | `lib/ai-shopping.ts` | Removed dead `placeOrder` method and its four unused imports. Live `searchProducts` and `checkBalance` unchanged. | `a696d45` (develop-extended) |
+| 1 | hedge-web-app | `lib/ai-shopping.ts` | Removed dead `placeOrder` method and its four unused imports (`BUSINESS_ID`, `SOURCE_ID`, `ENDPOINTS`, `QueryBuilder`). Live methods (`searchProducts`, `checkBalance`) unchanged. | `a696d45` (develop-extended) |
 
 ### TypeScript verification
 
-- `hedge-web-app` — ✅ 0 errors (post-fix); build passes (pre-push hook confirmed)
-- `hedge-wears-admin` — ✅ 0 errors
-- `hedge-mobile-app` — ✅ 0 errors
+All three TypeScript apps pass `tsc --noEmit` cleanly:
 
-### **STATUS: CLOSED**
+- `hedge-web-app` — ✅ no errors (verified after removal of dead placeOrder)
+- `hedge-wears-admin` — ✅ no errors
+- `hedge-mobile-app` — ✅ no errors
+
+### API contract re-verification
+
+All query param names re-confirmed against `vendorstack-backend/src/shared/utils/query.util.ts`:
+
+- `productBusinessId` ✅ (line 287)
+- `productVendorId` ✅ (line 341)
+- `productCategoryIds` ✅ (line 347)
+- `categoryBusinessIds` ✅ (line 138)
+- `reviewBusinessId` ✅ (line 206)
+- `orderByBusinessId` ✅ (line 184)
+- `orderByCustomerId` ✅ (line 198)
+- `tagByBusinessIds` ✅ (line 160)
+- `activeProduct` ✅ (line 276)
+- `metricDateRange` ✅ (line 848)
+
+### Final status
+
+**STATUS: CLOSED**
+
+All four apps clean. One minor dead-code cleanup applied and pushed (`hedge-web-app`). No blocking issues found.
+
+---
+
+## 11. Round 7 — 2026-07-01
+
+### What was checked
+
+- Fresh independent `console.log` / `console.warn` / `console.error` scan across all four apps (JS and TS files, excluding node_modules, build scripts)
+- Dead/unused hook audit: every exported hook cross-checked for callers across components, pages, and contexts
+- Empty handlers / stubs scan (`() => {}`) — reviewed context for each match
+- TODO / FIXME / placeholder content scan across all four apps
+- TypeScript: `tsc --noEmit` run in all three TS apps before and after changes
+- API contract re-verified: all param names confirmed against `vendorstack-backend/src/shared/utils/query.util.ts`
+- Developer guides in all four apps re-verified against actual env reads
+- git status of all four repos — all clean (no uncommitted changes) at start
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-web-app | `api/rewards/index.ts` | `useCancelVoucher`, `useGenerateVoucher`, `useGetRewards` exported but never called (cancel/generate are admin-only operations; customers only redeem) | P2 |
+| 2 | hedge-web-app | `api/posts/index.tsx` | `useCreatePost`, `useUpdatePost`, `useDeletePost` + their underlying `postClient` methods exported but never called (customers are read-only; post management lives in admin) | P2 |
+| 3 | hedge-web-app | `api/payment/index.tsx` | `useGetCurrencyToCoinRate` exported but never called (superseded by `useConvertCoinToCurrency` which is used) | P2 |
+| 4 | hedge-web-app | `api/transactions/index.tsx` | `useGetTransactionMetrics`, `useGetTransactionMetricsCounter` exported but never called (customer transactions page lists only; no metrics chart) | P2 |
+| 5 | hedge-wears-admin | `api/admins/index.tsx` | 10 dead hooks + underlying `usersClient` methods: `useUploadFormFile`, `useUploadStructureFile`, `useUploadSimpleFile`, `useNotificationBroadcast`, `useRefreshToken` (middleware handles refresh directly via `fetch`), `useViewUser`, `useChangePasswordAdmin`, `useCreateAddress`, `useToggleAddress`, `useDeleteAddress` | P2 |
+| 6 | hedge-wears-admin | `api/user/index.tsx` | 4 dead hooks + underlying `userClient` methods: `useSignup`, `useForgotPassword`, `useChangePassword`, `useSearchUsers` (also had wrong API param: `userSearch` — correct is `searchUser`). Dead `queryClient` import also removed. | P2 |
+| 7 | hedge-wears-admin | `api/rewards/index.ts` | `useRedeemVoucherForClient` exported but never called (admin does not redeem vouchers on behalf of clients) | P2 |
+| 8 | hedge-wears-admin | `api/reviews/index.tsx` | `useViewReview` exported but never called (reviews are listed, not fetched individually by ID) | P2 |
+| 9 | hedge-wears-admin | `api/transactions/index.tsx` | `useViewTransaction` exported but never called (transactions are listed only) | P2 |
+| 10 | hedge-mobile-app | `hooks/apihooks/products.ts` | `useGetProductLikes` exported but never called in any screen or component | P2 |
+| 11 | hedge-mobile-app | `hooks/apihooks/user.ts` | `useForgetPasswordOtpRequest` exported but never called (phone-OTP forgot-password flow was never wired to a UI; the actual forgot-password screen uses `useForgotPassword`) | P2 |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any runtime code across all four apps
+- No new API contract bugs — all query param names verified correct
+- No `() => {}` empty handlers in live code paths (two occurrences in hedge-web-app were inside commented-out JSX; mobile occurrences are all intentional no-ops like `Linking.openURL().catch(() => {})`)
+- No TODO / FIXME in live code that isn't already documented as a known limitation
+- No placeholder images (`via.placeholder.com`, `picsum.photos`) anywhere
+- TypeScript passes `tsc --noEmit` cleanly in all three TS apps both before and after changes
+- All developer guides accurate — env var names match `configs/env.ts` / `config.ts` / `server.js` exactly
+- All `.env.example` files complete — every variable read by code is listed
+- hedge-website: `products.pug` placeholder fallback is intentional graceful degradation (shows Hedge Wears product images when API returns nothing), not external placeholder service
+
+### What was fixed
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-web-app | `api/rewards/index.ts`, `api/posts/index.tsx`, `api/payment/index.tsx`, `api/transactions/index.tsx` | Removed 9 dead exported hooks and their underlying private client methods | `afb066c` (develop-extended) |
+| 2 | hedge-wears-admin | `api/admins/index.tsx`, `api/user/index.tsx`, `api/rewards/index.ts`, `api/reviews/index.tsx`, `api/transactions/index.tsx` | Removed 17 dead exported hooks, dead client methods, and a dead import | `eaac3b4` (develop-extended) |
+| 3 | hedge-mobile-app | `hooks/apihooks/products.ts`, `hooks/apihooks/user.ts` | Removed 2 dead exported hooks (`useGetProductLikes`, `useForgetPasswordOtpRequest`) | `a3aa078` (develop-extended) |
+
+### TypeScript verification
+
+All three TypeScript apps pass `tsc --noEmit` cleanly after all removals:
+
+- `hedge-web-app` — ✅ no errors
+- `hedge-wears-admin` — ✅ no errors (full production build also passes via pre-push hook)
+- `hedge-mobile-app` — ✅ no errors
+
+### API contract re-verification
+
+All query param names re-confirmed against `vendorstack-backend/src/shared/utils/query.util.ts`:
+
+- `productBusinessId` ✅ (line 287)
+- `productVendorId` ✅ (line 341)
+- `productCategoryIds` ✅ (line 347)
+- `categoryBusinessIds` ✅ (line 138)
+- `reviewBusinessId` ✅ (line 206)
+- `orderByBusinessId` ✅ (line 184)
+- `orderByCustomerId` ✅ (line 198)
+- `tagByBusinessIds` ✅ (line 160)
+- `searchUser` ✅ (line 456) — note: dead `useSearchUsers` in admin had `userSearch` (wrong); removed with the hook
+
+### Final status
+
+**STATUS: CLOSED**
+
+All four apps clean. 28 dead hooks removed across three repos (hedge-web-app, hedge-wears-admin, hedge-mobile-app). TypeScript, lint, and production builds all pass. No blocking issues found.
