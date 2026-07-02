@@ -1469,3 +1469,20 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 **Findings:** All clean — no issues found. No `console.log` in any runtime source. Pre-existing `ENG-TODO-9` comments in hedge-web-app (`post-detail-modal.tsx:168`) and hedge-mobile-app (`post-detail.tsx:44,186`) are known tracked items, not new. `onClick={() => {}}` in hedge-web-app (`order-details.tsx:495,505`) and `onPress={() => {}}` in hedge-mobile-app (`manage-store/index.tsx:330,336,342,348`) are all inside JSX comment blocks — not live code. TypeScript exits 0 on both TS repos (hedge-web-app, hedge-wears-admin). Developer guide coverage complete — all route groups and screens fully documented across all 4 apps. No new screens or commits since Round 33 in any app.
 **Fixes:** None required
 **STATUS: CLOSED**
+
+---
+
+## Round 35 (2026-07-02 — Session 99)
+
+**Apps audited:** hedge-web-app, hedge-wears-admin, hedge-mobile-app, hedge-website
+**Findings:** USE-CASES audit revealed that most previously-documented ❌ Missing items were in fact already implemented. The docs were stale.
+- **hedge-web-app:** UC-W-017 (cart persistence), UC-W-036 (transaction detail), UC-W-026 (checkout balance check), UC-W-048 (support form) — ALL already implemented. UC-W-044 (profile photo upload) was genuinely missing and was fixed.
+- **hedge-wears-admin:** UC-K-001 (wallet balance), UC-I-003 (post edit), UC-J-003 (ad edit), UC-C-009 (delete product), UC-E-003 (category edit page) — ALL already implemented. UC-G-003 (delete review button) existed but was commented out — uncommented.
+- **hedge-mobile-app:** UC-M-054 (edit product), UC-M-055/056/057 (toggle active/archive/pin), UC-M-027 (return order API), UC-M-005 (login redirect) — ALL already implemented. USE-CASES-MOBILE.md updated to ✅ Done: 55 / ⚠️ Partial: 20 / ❌ Missing: 1.
+
+**Fixes:**
+1. `hedge-web-app` — Profile photo upload added to `EditProfileModal` (Avatar preview, file input, `useUpdateProfilePhoto` via `PUT users/:userId/profile-photo`)
+2. `hedge-wears-admin` — Delete review button uncommented in `_reviews-view.tsx`
+3. `USE-CASES-WEB.md`, `USE-CASES-ADMIN.md`, `USE-CASES-MOBILE.md` — all updated to reflect actual implementation state
+
+**STATUS: CLOSED**
