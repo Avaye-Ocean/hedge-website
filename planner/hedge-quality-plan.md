@@ -1158,3 +1158,27 @@ All four hedge apps confirmed production-ready after Round 21 deep audit. 2 mobi
 | hedge-wears-admin | 0 errors (pre-push hook) |
 
 **STATUS: CLOSED** — Round 25 complete. One P1 broken edit-category form fixed in hedge-wears-admin; two P2 developer guide gaps filled across hedge-wears-admin and hedge-web-app. All four apps clean, all TypeScript and production builds pass.
+
+---
+
+## Round 26 — 2026-07-02
+
+### What was checked
+
+Developer guide completeness audit (session continuation from Round 25 gap analysis):
+- Cross-referenced all `app/` screen files against `## ` section headers in both hedge-mobile-app and hedge-web-app developer guides
+
+### What was found and fixed
+
+| # | App | Finding | Severity | Fix | Commit |
+|---|-----|---------|----------|-----|--------|
+| 1 | hedge-mobile-app | 6 sections missing from developer guide: Manage Store (dashboard + sub-routes), Wishlist/Favourites (`useGetUserLikedProduct` + FlashList), App Settings (settingsOptions nav + notification toggle), Notification Centre (`useGetNotifications`), Product Detail (JSON-param navigation pattern), Categories (`useGetCategories` + viewCategoryProducts) | P2 | Added all 6 sections with hooks, data flow, and navigation details | `c18a6bd` (develop-extended) — pushed |
+| 2 | hedge-web-app | 3 sections missing: Shopping Cart (CartContext + empty/non-empty/unauth states), Product Detail (ISR metadata + client-side `ProductDetail`), Contact (social links display, no form) | P2 | Added all 3 sections; updated Known Limitations with "no contact form" | `b101ff5` (develop-extended) — pushed |
+
+### What was NOT found
+
+- No bugs, no regressions — guide-only additions
+- TypeScript: all three TS repos remain at 0 errors (no code changed)
+- ESLint: 0 errors across all apps (no code changed)
+
+**STATUS: CLOSED** — Round 26 complete. 9 developer guide sections added across hedge-mobile-app and hedge-web-app. All four apps remain clean.
