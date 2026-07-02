@@ -77,6 +77,12 @@ function htmlEscape(str) {
     .replace(/"/g, '&quot;');
 }
 
+// Helper: pick the best available image URL from a product object
+function productImage(p) {
+  if (!p) return null;
+  return p.photo || (Array.isArray(p.thumbnailPhotos) && p.thumbnailPhotos[0]) || (Array.isArray(p.photos) && p.photos[0]) || null;
+}
+
 // ── Routes ──────────────────────────────────────────────
 
 app.get('/', async (req, res) => {
@@ -84,7 +90,8 @@ app.get('/', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getFeaturedProducts),
   ]);
-  res.render('index', { categories, featuredProducts, page: 'home', title: 'Home' });
+  const og_image = productImage(featuredProducts[0]) || (categories[0] && categories[0].photo) || null;
+  res.render('index', { categories, featuredProducts, page: 'home', title: 'Home', og_image });
 });
 
 app.get('/features', (req, res) => res.render('features', { page: 'features', title: 'Features' }));
@@ -98,7 +105,8 @@ app.get('/collections', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getFeaturedProducts),
   ]);
-  res.render('collections', { categories, featuredProducts, page: 'collections', title: 'Collections' });
+  const og_image = productImage(featuredProducts[0]) || (categories[0] && categories[0].photo) || null;
+  res.render('collections', { categories, featuredProducts, page: 'collections', title: 'Collections', og_image });
 });
 
 app.get('/pricing', (req, res) => res.render('pricing', { page: 'pricing', title: 'Pricing' }));
@@ -138,7 +146,8 @@ app.get('/products', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getTags),
   ]);
-  res.render('products', { featuredProducts, categories, tags, page: 'products', title: 'Products' });
+  const og_image = productImage(featuredProducts[0]) || null;
+  res.render('products', { featuredProducts, categories, tags, page: 'products', title: 'Products', og_image });
 });
 
 app.get('/categories', async (req, res) => {
@@ -146,7 +155,8 @@ app.get('/categories', async (req, res) => {
     safeApi(api.getCategories),
     safeApi(api.getTags),
   ]);
-  res.render('categories', { categories, tags, page: 'categories', title: 'Categories' });
+  const og_image = (categories[0] && categories[0].photo) || null;
+  res.render('categories', { categories, tags, page: 'categories', title: 'Categories', og_image });
 });
 
 app.get('/help', (req, res) => res.render('help', { page: 'help', title: 'Help Center' }));
