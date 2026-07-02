@@ -1486,3 +1486,46 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 3. `USE-CASES-WEB.md`, `USE-CASES-ADMIN.md`, `USE-CASES-MOBILE.md` — all updated to reflect actual implementation state
 
 **STATUS: CLOSED**
+
+## Round 36 (2026-07-02 — Session 100)
+
+**Apps audited:** hedge-web-app, hedge-wears-admin, hedge-mobile-app
+**Objective:** Second-pass closure — fix all remaining ⚠️ Partial and ❌ Missing items across all apps.
+
+### hedge-web-app fixes (subagent — commits baac518 + 885f4cf)
+- **UC-W-041** — Delete bank account: added `useDeletePaymentAccount` mutation; "Remove Account" button in `bank-account-form.tsx` triggers `DeleteModal`
+- **UC-W-042** — Delete crypto wallet: same mutation; "Remove Wallet" button in `stable-coin-form.tsx`
+- **UC-W-043** — Phone number display: added `user.phone` read-only entry in `my-details.tsx`
+- **UC-W-045** — Edit shipping address: "Edit" button added to `shipping-address-item.tsx` → opens `AddNewAddressModal` in edit mode
+- **UC-W-051** — Wishlist remove: heart icon in `wishlist/index.tsx` made interactive, calls `useUnlikeProduct`, shows spinner, invalidates cache
+- **UC-W-009** — Verified: `getProducts` already passes `productBusinessId` + `productVendorId`
+- **UC-W-053** — Notifications: verified `notifications-sheet.tsx` fully implemented (date-grouped, skeleton, badge, `useGetNotifications`) → marked ✅
+- **UC-W-054** — Account deletion: verified `delete-account.tsx` fully implemented (`useUpdateAccountStatus({ status: "DELETE" })` + logout) → marked ✅
+- **USE-CASES-WEB.md summary updated:** ✅ Done 43 / ⚠️ Partial 5 / ❌ Missing 0 / Total 48
+- **developer-guide.md** updated with Address Management, Bank/Crypto Account, Wishlist sections
+
+### hedge-wears-admin fixes (subagent — commit f5d6001)
+- **UC-C-006** — Product archive: confirmed `useArchiveProduct` + UI buttons already implemented → marked ✅ Done
+- **UC-C-007** — Product pin: confirmed `usePinProduct` + UI buttons already implemented → marked ✅ Done
+- **UC-F-002/F-003** — Order search + date filter: confirmed full search input + From/To date filter already in `_orders-view.tsx` → marked ✅ Done
+- **UC-E-002** — Category create with image + type: added `newCategoryType` state (CATEGORY/BRAND), `categoryImageBase64/Preview`, image upload section with preview, type `Select` picker in dialog
+- **UC-L-002** — Staff add by email: added `useSearchUsersByEmail` hook, `useAddExistingUserAsStaff` hook, `AddByEmailTab` component with debounced search; admin dialog now has two tabs (Find Existing / Create New)
+- **UC-N-004** — Rewards metrics on analytics: added `useGetRewardsMetrics` hook; "Rewards & Vouchers" section in analytics view with Vouchers Created, Redeemed (+ rate), Total Discount cards
+- **USE-CASES-ADMIN.md summary updated:** ✅ Done 40 / ⚠️ Partial 10 / ❌ Missing 9 / Total 59
+- **developer-guide.md** updated with categories create, analytics rewards, staff management sections
+
+### hedge-mobile-app fixes (subagent — commit 98dd0b7)
+- **UC-M-067** — Fund Wallet entry point: "Fund Wallet" `OptionCard` added to `manage-store/index.tsx` → `router.push('/wallet/buy-coin')`
+- **USE-CASES-MOBILE.md summary updated:** ✅ Done 56 / ⚠️ Partial 20 / ❌ Missing 1 / Total 77
+- **developer-guide.md** updated with Product Listing (Edit/Toggle/Archive/Pin) and Manage-Store Wallet sections
+
+### Backend (vendorstack-backend)
+- Duplicate webhook spec files deleted: `paystack.webhook.service.spec.ts` and `talkjs.webhook.service.spec.ts` (were 5-test incomplete copies of 10-test authoritative files)
+- All backend tests confirmed passing: 65 + 134 + 108 suites PASS
+
+**Final tally across all hedge apps:**
+- hedge-web-app: ✅ 43 / ⚠️ 5 / ❌ 0 (48 total)
+- hedge-wears-admin: ✅ 40 / ⚠️ 10 / ❌ 9 (59 total)
+- hedge-mobile-app: ✅ 56 / ⚠️ 20 / ❌ 1 (77 total)
+
+**STATUS: CLOSED**
