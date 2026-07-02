@@ -855,3 +855,30 @@ No code changes necessary. All four apps remain production-ready.
 **STATUS: CLOSED**
 
 All four hedge apps confirmed production-ready. Zero actionable findings in Round 19. No console.log, no live empty handlers, no TypeScript errors, no new stubs or hardcoded data.
+
+---
+
+## Round 20 (2026-07-02)
+
+### Scope
+
+Targeted hook audit on hedge-web-app prompted by cross-repo dead-hook sweep (P414).
+
+### Findings
+
+- `hooks/useCoinRate.ts` — 0 import sites across `app/`, `components/`, `providers/`, `context/`. Dead utility hook exported a `useCoinRate()` composable that fetched the NGN→VCN exchange rate from localStorage/API, but was superseded by inline coin-rate logic in checkout and product detail. **Removed.**
+- All other hooks (`useAuth`, `useBreakpoints`, `useDebounce`, `useDisclosure`, `useSearch`, `useToggleFavProduct`, `use-fcm-token`, `use-timer`) confirmed with active import sites — no further removals.
+
+### What was fixed
+
+- `hedge-web-app/hooks/useCoinRate.ts` deleted (dead code — P414). Committed `75ee328`, pushed to `develop-extended`.
+
+### TypeScript verification (post-fix)
+
+- `hedge-web-app` — ✅ exits 0 (build passes via pre-push hook)
+- `hedge-wears-admin` — ✅ exits 0 (unchanged)
+- `hedge-mobile-app` — ✅ exits 0 (unchanged)
+
+### Final status
+
+**STATUS: CLOSED**
