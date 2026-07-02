@@ -1672,3 +1672,27 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 - UC-M-080/081/082 (stubs — no backend APIs)
 
 **STATUS: CLOSED**
+
+---
+
+## Round 41 — Seventh Pass (2026-07-02 — session 104)
+
+**Apps touched:** hedge-wears-admin
+**Objective:** Wire UC-M-005 (delivery fee country/state overrides) to the real backend API — the last ❌ item in the admin app.
+
+### hedge-wears-admin (commit a475d50)
+- **UC-M-005** — Country Fees tab: replaced hardcoded `COUNTRIES` mock array and `toast.info("coming soon")` placeholder with real backend integration. Reads `business.deliveryFees.{countryCode, states}` from `GET /businesses/:id` on mount; owner can set ISO-2 country code, add/remove state rows with per-state Naira fees inline, and save via `useUpdateBusiness({ deliveryFees: { countryCode, states } })`. Removed `SubRow`, `CountryRow`, `EditOverrideData` interfaces and `EditOverrideDialog` component (mock-only paths). Summary card updated from "Country overrides" to "States configured" — reads live state count from `deliveryFees.states.length`. Developer guide updated with Country Fees and Continent Fees API patterns documented. → ✅ Done
+- USE-CASES-ADMIN.md: **✅ 73 / ⚠️ 0 / ❌ 0 (73/73 = 100%)**
+
+**Final tally across all hedge apps after Round 41:**
+- hedge-web-app: ✅ 48 / ⚠️ 1 / ❌ 0 (49 total)
+- hedge-wears-admin: ✅ 73 / ⚠️ 0 / ❌ 0 (73 total) — **100% complete**
+- hedge-mobile-app: ✅ 72 / ⚠️ 4 / ❌ 1 (77 total)
+
+**Remaining open (non-actionable without backend/product changes):**
+- UC-W-024 (web — pickup at checkout, product decision)
+- UC-M-043 (mobile — dark mode, NativeWind dark config)
+- UC-M-050 (mobile — language, no i18n library)
+- UC-M-080/081/082 (mobile — stubs, no backend APIs)
+
+**STATUS: CLOSED**
