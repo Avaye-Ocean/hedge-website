@@ -1433,3 +1433,12 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 | console.log in src/ | 0 (none outside seeders) |
 
 **STATUS: CLOSED** — Round 30 complete. All 4 hedge apps confirmed clean across all audit dimensions. ENG-TODO-6 already SHIPPED; coinbase.md already COMPLETE. Mobile developer-guide updated: added Onboarding and Post Detail sections. Backend: TS 0 errors, Jest 87 suites / 861 tests all passed.
+
+---
+
+## Round 31 (2026-07-02 — Session 94)
+
+**Apps audited:** hedge-web-app, hedge-wears-admin, hedge-mobile-app, hedge-website
+**Findings:** All clean — no issues found. Empty `onClick/onPress` hits in hedge-web-app (`order-details.tsx:495,505`) and hedge-mobile-app (`manage-store/index.tsx:330,336,342,348`) are both inside JSX comment blocks — not live code. `console.log` in `hedge-website/scripts/build.js` is a build-tool script, not runtime. TypeScript exits 0 on all TS repos; ESLint 0 errors on web-app and admin; developer guide coverage complete across all 4 apps.
+**Fixes:** None required
+**STATUS: CLOSED**
