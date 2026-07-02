@@ -1598,3 +1598,42 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 - mobile: UC-M-043 (dark mode), UC-M-011, UC-M-042, UC-M-079–082
 
 **STATUS: CLOSED**
+
+---
+
+## Round 39 — Fifth Pass (2026-07-02 — session 103)
+
+**Apps touched:** hedge-web-app, hedge-wears-admin, hedge-mobile-app
+**Objective:** Fifth-pass closure — tag filter, notification permission, manage-store wallet widget, financial report date range, product tags, bank name lookup, /feed page.
+
+### hedge-mobile-app (commit 4c225cf)
+- **UC-M-011** — Category→Tag filter: verified already implemented in `app/viewCategoryProducts.tsx` + `components/category/ViewCategoryProducts.tsx` → ✅ Done
+- **UC-M-018** — Ads on explore tab: verified already wired in `app/(tabs)/explore.tsx` → ✅ Done
+- **UC-M-042** — Notification toggle: now initializes from `messaging().hasPermission()` (actual device state); Toggle ON calls `requestNotificationPermission()`; Toggle OFF shows informational toast → ✅ Done
+- **UC-M-066** — Manage-store wallet: added wallet balance card above Store Management grid in `components/manage-store/index.tsx` — shows HGC + fiat equivalent, pressable navigates to `/wallet/buy-coin` → ✅ Done
+- **UC-M-079** — Financial report: `DateTimePickerModal` date pickers, `transactionDateRange` param, limit 50→100, Load More via `fetchNextPage` → ✅ Done
+- USE-CASES-MOBILE.md: ✅ 68 / ⚠️ 8 / ❌ 1 (from 61/15/1)
+
+### hedge-wears-admin (commits 291bf46 + b59dec1)
+- **UC-C-008 / UC-E-004** — Product tags: `useUpdateProductTags` hook added (`PUT products/:id/tags`), pill-style checkboxes in edit product sidebar from flattened category tags → ✅ Done
+- **UC-K-008** — Bank name lookup: replaced free-text bankCode inputs with Popover+Command combobox fetching `GET /users/banks` (1 h staleTime) → ✅ Done
+- **Developer guide**: fund wallet Cryptomus docs added, session re-validation note, Known Limitations corrected
+- USE-CASES-ADMIN.md: ✅ 72 / ⚠️ 0 / ❌ 1 (from 69/2/2) — **admin reaches 0 partial items**
+
+### hedge-web-app (commits 0f40975 + ea51cc0)
+- **UC-W-020** — `/feed` page: `app/(dashboard)/feed/page.tsx` + `_feed-view.tsx` with `useGetPosts({ limit: 20 })`, 2/3/4-column responsive grid, PostCard+PostDetailModal, 6-skeleton loading, empty state. "Feed" link added to desktop header nav + mobile sheet nav. `APP_PATHS.FEED = "/feed"` → ✅ Done
+- **UC-W-027** — Cryptomus at checkout: clarified as ✅ Done by design (Cryptomus funds HGC wallet; checkout debits HGC; no separate integration needed)
+- **Developer guide**: Cryptomus balance polling pattern documented with code sample, `useDisclosure` ordering note
+- USE-CASES-WEB.md: ✅ 48 / ⚠️ 1 / ❌ 0 / Total 49 (from 46/2/0/48)
+
+**Final tally across all hedge apps after Round 39:**
+- hedge-web-app: ✅ 48 / ⚠️ 1 / ❌ 0 (49 total)
+- hedge-wears-admin: ✅ 72 / ⚠️ 0 / ❌ 1 (73 total)
+- hedge-mobile-app: ✅ 68 / ⚠️ 8 / ❌ 1 (77 total)
+
+**Remaining deferred (non-blocking):**
+- web: UC-W-024 (pickup option — product decision)
+- admin: UC-M-005 (delivery fee overrides — no backend API)
+- mobile: UC-M-043 (dark mode — NativeWind dark config needed), UC-M-080/081/082 (announcements/reminders/messages — stub screens, no backend APIs)
+
+**STATUS: CLOSED**
