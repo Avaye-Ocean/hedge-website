@@ -98,6 +98,93 @@ const getCategories = () =>
 
 Cache is per-key (`cachedFetch(key, fetchFn)`). The cache clears on server restart.
 
+### Cache busting
+
+When products or categories are updated in the backend and you need the website to reflect the change immediately (without waiting 30 min):
+
+1. **Dyno restart** (Heroku): `heroku restart -a <app-name>` — clears all in-memory cache
+2. **Reduced TTL for development**: change `TTL_MS = 30 * 60 * 1000` in `services/api.js` to a smaller value (e.g. `60 * 1000` for 1 min) during local testing
+3. **Adding a new API call**: use the `cachedFetch(key, fetcherFn)` wrapper with a unique `key` string — never call `apiGet` directly in a route handler
+
+---
+
+## Contact Form SMTP Setup
+
+The `/contact` POST route in `server.js` uses `nodemailer` to send emails when all three SMTP env vars are set.
+
+### Supported providers
+
+| Provider | `SMTP_HOST` | `SMTP_PORT` | Notes |
+|----------|-------------|-------------|-------|
+| Mailgun (SMTP relay) | `smtp.mailgun.org` | `587` | Requires Mailgun account and verified domain |
+| SendGrid | `smtp.sendgrid.net` | `587` | Use API key as password |
+| Gmail App Password | `smtp.gmail.com` | `587` | Enable 2FA → generate App Password |
+| Zoho Mail | `smtp.zoho.com` | `587` | Business accounts |
+| AWS SES | `email-smtp.<region>.amazonaws.com` | `587` | IAM credentials |
+
+### Testing locally
+
+```bash
+# .env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password   # NOT your Gmail password
+CONTACT_EMAIL_TO=hello@hedgewears.com
+```
+
+Submit the contact form at `http://localhost:6300/contact` — check your inbox and the server stdout for `[contact] Failed to send email` errors if the SMTP credentials are wrong.
+
+If SMTP env vars are missing, the form still shows the success page but no email is sent (graceful degradation).
+
+---
+
+## Adding a New Section to the Home Page
+
+Example: adding a "Featured Looks" editorial section below the product grid.
+
+1. **Add an API call in `services/api.js`** (if data comes from the backend):
+
+```js
+const getFeaturedLooks = () =>
+  cachedFetch('featured-looks', () =>
+    apiGet(`posts?postByUserIds=${BUSINESS_ID}&limit=6`)
+      .then(d => d?.results ?? [])
+  )
+
+module.exports = { ..., getFeaturedLooks }
+```
+
+2. **Pass the data in the route handler** (`server.js`):
+
+```js
+app.get('/', async (req, res) => {
+  const [categories, featuredProducts, featuredLooks] = await Promise.all([
+    safeApi(api.getCategories),
+    safeApi(api.getFeaturedProducts),
+    safeApi(api.getFeaturedLooks),
+  ])
+  res.render('index', { categories, featuredProducts, featuredLooks, page: 'home', title: 'Home' })
+})
+```
+
+3. **Render in `views/index.pug`**:
+
+```pug
+section.featured-looks
+  h2 Featured Looks
+  if featuredLooks && featuredLooks.length
+    each look in featuredLooks
+      .look-card
+        img(src=look.photos[0] alt=look.comment loading='lazy')
+  else
+    p Looks coming soon.
+```
+
+4. **Style in `public/css/styles.css`** (inside the IIFE or as new class rules).
+
+5. **Run `npm run build`** to minify JS if you added client-side JS.
+
 ---
 
 ## Adding a New Page
