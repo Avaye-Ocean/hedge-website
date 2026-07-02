@@ -1529,3 +1529,36 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 - hedge-mobile-app: ✅ 56 / ⚠️ 20 / ❌ 1 (77 total)
 
 **STATUS: CLOSED**
+
+## Round 37 (2026-07-02 — Session 101)
+
+**Apps touched:** hedge-web-app, hedge-wears-admin, hedge-mobile-app, hedge-website
+**Objective:** Third-pass closure — remaining crypto wallet/funding gaps, Cryptomus WebView outcome, remove-staff UX, cart/wallet fiat display.
+
+### hedge-wears-admin (commit b47604f)
+- **UC-K-009** — Add crypto wallet: verified already fully implemented (`CryptoWalletDialog` existed); USE-CASES updated to ✅
+- **UC-K-005** — Fund via Cryptomus: added Bank/Crypto method selector to `FundWalletDialog`; Crypto path calls `useFundWallet({ paymentType: "CRYPTO" })`, opens `paymentLink` via `window.open`, shows "Awaiting Payment" state with Done button that invalidates wallet query
+- **UC-L-003** — Remove staff: replaced `window.confirm()` with `DeleteModal` pattern in `_admins-view.tsx` (matching `_reviews-view.tsx` + `_products-view.tsx` pattern)
+- **USE-CASES-ADMIN.md** — Recounted all status markers (true count: 73 total, not 59); updated summary to ✅ 64 / ⚠️ 7 / ❌ 2 / Total 73
+- Remaining ❌: UC-C-008 (tags management), UC-M-005 (delivery fee overrides — hardcoded mock)
+
+### hedge-mobile-app (commit 173852b)
+- **UC-M-033** — Cryptomus WebView outcome detection: added balance polling (5s interval) as primary mechanism — polls `GET users/me`, compares `wallet.currentBalance` to pre-payment baseline; when balance increases: stops polling, closes WebView, refetches wallet, opens success modal. URL-pattern detection kept as secondary (`onNavigationStateChange`). Auto-stops after 120 polls (10 min)
+- **USE-CASES-MOBILE.md** — UC-M-033 → ✅; summary updated: ✅ 57 / ⚠️ 19 / ❌ 1 / Total 77
+
+### hedge-web-app (commit ef08492)
+- **UC-W-022** — Cart fiat equivalent: added `≈ {symbol}{fiatAmount}` line below HGC subtotal in `_cart-view.tsx` using `useCurrency()` + `coinToFiat()` pattern
+- **UC-W-033** — Wallet balance fiat: added fiat equivalent line in `hedgecoin-balance.tsx` (used by `/coin` page + checkout payment step)
+- **USE-CASES-WEB.md** — UC-W-022/033 → ✅; summary updated: ✅ 45 / ⚠️ 3 / ❌ 0 / Total 48
+- Remaining ⚠️: UC-W-020 (no /feed route — product decision), UC-W-024 (no pickup option), UC-W-027 (Cryptomus not at checkout), UC-W-038 (Cryptomus optimistic success)
+
+### hedge-website (commit 6953d6c)
+- **Security**: Added `express-rate-limit` — contact form `/contact POST` limited to 5 submissions per IP per 15 min; prevents contact form spam
+- developer-guide.md: updated Known Limitations to document rate limiting
+
+**Final tally across all hedge apps:**
+- hedge-web-app: ✅ 45 / ⚠️ 3 / ❌ 0 (48 total)
+- hedge-wears-admin: ✅ 64 / ⚠️ 7 / ❌ 2 (73 total)
+- hedge-mobile-app: ✅ 57 / ⚠️ 19 / ❌ 1 (77 total)
+
+**STATUS: CLOSED**
