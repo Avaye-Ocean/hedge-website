@@ -1312,3 +1312,71 @@ Developer guide completeness audit (session continuation from Round 25 gap analy
 | hedge-wears-admin | 0 errors (pre-push hook) |
 
 **STATUS: CLOSED** — Round 28 complete. One P2 guide gap fixed: 4 undocumented screens (Profile Tab, Personal Details, Address Management, Product Reviews) now have dedicated sections in hedge-mobile-app developer guide. All four apps confirmed clean across console.log, TODO/FIXME, empty handlers, TypeScript, ESLint, hardcoded URLs, env vars, and API contracts. Vent-web, vent-mobile, and backend all verified clean.
+
+---
+
+## Round 29 — 2026-07-02
+
+### What was checked
+
+- `console.log` in runtime source files (`app/`, `components/`) across all four apps
+- TODO / FIXME across all four apps — each hit inspected
+- Empty `onClick={() => {}}` / `onPress={() => {}}` handlers in live code paths
+- TypeScript (`npx tsc --noEmit`) — all three TS repos
+- ESLint (`node_modules/.bin/eslint . --ext .ts,.tsx --max-warnings=0`) — hedge-web-app and hedge-wears-admin
+- Hardcoded `localhost` / `127.0.0.1` URLs — none found
+- API contract: spot-checked `productBusinessId`, `categoryBusinessIds`, `productVendorId`, `productCategoryIds`, `reviewBusinessId`, `orderByBusinessId`, `orderByCustomerId` against `vendorstack-backend/src/shared/utils/query.util.ts` — all confirmed valid
+- Developer guide completeness:
+  - hedge-mobile-app: `## Wallet` section listed `stablecoin`, `bank`, `review-buycoin`, `review-withdrawcoin` in route table with "—" or bare component name — no UX flows or API hook documentation; `change-password` and `currency` listed in `## App Settings` nav table but had no dedicated `##` sections despite containing form logic and API calls
+  - hedge-wears-admin: cross-referenced all `app/(dashboard)/` subdirectories against guide sections — `## Storefront Management` and `## Account & Settings` accurately cover `storefront/` and `settings/`; all 14 routes covered
+  - hedge-web-app: `## HedgeCoin Wallet` and `## Transaction History` verified against actual implementation in `app/(dashboard)/coin/` and `app/(dashboard)/transactions/` — accurate; all 15 routes covered
+  - hedge-website: Node.js static server routes and contact form SMTP flow confirmed accurately described in developer guide
+- Backend quality: 0 new schema static calls without `retryProcess` in recent diff, 0 `console.log` in service/controller code, 87/87 test suites pass, TypeScript exits 0
+- Stale orchestrator P439 spec entry at ~line 4318 still showed "PLANNED — awaiting P438" despite being superseded by P440
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-mobile-app | `developer-guide.md` | `## Wallet` section listed 4 sub-screens (`stablecoin`, `bank`, `review-buycoin`, `review-withdrawcoin`) with only "—" or component name in the hook column — no UX flows, no API documentation | P2 |
+| 2 | hedge-mobile-app | `developer-guide.md` | `change-password` and `currency` listed in `## App Settings` nav table but no dedicated `##` sections despite having react-hook-form / yup validation / API calls (`useChangePassword`) and API hook + filtering (`useCountries`, `useCurrencyStore`) | P2 |
+| 3 | orchestrator | stale P439 spec entry | "PLANNED — awaiting P438" — superseded by P440 but never marked done | P3 |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any runtime code across all four apps (`console.error` in `ReviewBuycoin` and `ReviewWithdrawCoin` JSON parse fallbacks are appropriate)
+- No actionable TODO / FIXME stubs (ENG-TODO-8/-9 are intentional deferred labels)
+- Empty handlers in hedge-web-app (`order-details.tsx:495,505`) and hedge-mobile-app (`manage-store/index.tsx:330-348`) are inside `{/* ... */}` JSX comment blocks — not executed
+- No hardcoded `localhost` / `127.0.0.1` URLs
+- No API contract bugs — all query params confirmed valid
+- TypeScript exits 0 in all three TS apps
+- ESLint exits 0 in hedge-web-app and hedge-wears-admin
+- hedge-wears-admin developer guide: `## Storefront Management` and `## Account & Settings` accurately describe all storefront and settings routes
+- hedge-web-app developer guide: `## HedgeCoin Wallet` and `## Transaction History` accurately describe the actual implementation
+- Backend: 87/87 suites / 861/861 tests pass, 0 TS errors, no new retryProcess gaps
+
+### What was fixed
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-mobile-app | `developer-guide.md` | Added 4 sub-sections under `## Wallet`: Stablecoin (useGetAccounts/useAddWalletAccount/useDeletePaymentAccount, 3 display states), Bank (useGetBanks/useResolveBank auto-resolve/useAddBankAccount/useUpdateBankAccount), Buy confirmation (useFundWallet + Paystack WebView + Cryptomus WebView + URL pattern detection), Withdraw confirmation (useWithdrawCoin + bank/stablecoin selector + password input) | committed below |
+| 2 | hedge-mobile-app | `developer-guide.md` | Added `## Change Password` (react-hook-form + yup + useChangePassword) and `## Currency Selector` (useCountries + useCurrencyStore + FlashList search/filter) sections | committed below |
+| 3 | orchestrator | `orchestrator.md` | Added "DONE (covered by P440)" note to stale P439 spec entry | vendorstack-backend `develop` |
+
+### TypeScript verification
+
+| Repo | TypeScript |
+|------|-----------|
+| hedge-web-app | ✅ exits 0 |
+| hedge-wears-admin | ✅ exits 0 |
+| hedge-mobile-app | ✅ exits 0 |
+| hedge-website | — static (no tsconfig) |
+
+### ESLint verification
+
+| Repo | ESLint errors |
+|------|--------------|
+| hedge-web-app | 0 errors |
+| hedge-wears-admin | 0 errors |
+
+**STATUS: CLOSED** — Round 29 complete. 6 developer guide sections added to hedge-mobile-app: 4 wallet sub-screen flow docs (stablecoin, bank, review-buycoin, review-withdrawcoin) and 2 new `##` sections (Change Password, Currency Selector). Stale P439 orchestrator entry marked done. All four apps confirmed clean across all audit dimensions.
