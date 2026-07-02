@@ -1562,3 +1562,39 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 - hedge-mobile-app: ✅ 57 / ⚠️ 19 / ❌ 1 (77 total)
 
 **STATUS: CLOSED**
+
+---
+
+## Round 38 — Fourth Pass (2026-07-02 — session 102)
+
+**Apps touched:** hedge-web-app, hedge-wears-admin, hedge-mobile-app
+**Objective:** Fourth-pass closure — withdrawal verification, product search API, category CRUD, dashboard audit, session re-validation, Cryptomus polling.
+
+### hedge-mobile-app (commit dd43205)
+- **UC-M-034/035/071** — Withdrawal mutation: verified fully wired in `ReviewWithdrawCoin.tsx` (`useWithdrawCoin`, `mutateAsync` with password+amount+reason+paymentType); → ✅ Done
+- **UC-M-052** — Product search API: added `searchText`/`searchWord` state + lodash.debounce (400 ms) to `product-listing.tsx`; passes `productSearch: searchWord` to `useGetProducts`; `SearchInput` rendered in `ProductListing.tsx` header; `ProductActionMenu` (edit/toggle/archive/pin) already present per card → ✅ Done
+- **UC-M-059** — Category edit + delete: added `IUpdateCategory`, `updateCategory` (PATCH), `deleteCategory` (DELETE) to `category-services.ts`; added `useUpdateCategory` + `useDeleteCategory` hooks; three-dot button per category row with Alert.alert options → ✅ Done
+- **UC-M-022** — Checkout no-address: verified `DeliveryOptions.tsx` already shows "Add an Address" link when `!selectedAddress` → ✅ Done
+- USE-CASES-MOBILE.md updated: ✅ 61 / ⚠️ 15 / ❌ 1 (from 57/19/1)
+
+### hedge-wears-admin (commit 8a32dd8)
+- **UC-B-002/003/004** — Dashboard widgets: verified all fully wired (revenue-overview → `useTransactionMetrics`, recent-orders → `useOrders`, low-stock-alerts → `useGetAdminProducts`, pending-returns → `useOrders` filtered by RETURNED); all had skeleton loaders + error states → ✅ Done
+- **UC-A-003** — Session re-validation: added `useEffect` in `UserContextProvider` (`context/user-context.tsx`) that fires on every `useFetchMyProfile()` response; if `user.businesses.some(b => b._id === BUSINESS_ID)` is false, calls `logout()` (clears cookies, wipes query cache, redirects to `/auth`) → ✅ Done
+- **UC-C-004** — Status field in edit product: verified `_product-detail-view.tsx` already had status Select (live/draft/archived) wired to state + included in update payload → ✅ Done
+- USE-CASES-ADMIN.md updated: ✅ 69 / ⚠️ 2 / ❌ 2 (from 64/7/2)
+
+### hedge-web-app (commit 4593423)
+- **UC-W-038** — Cryptomus polling: replaced optimistic success with wallet balance polling (`startCryptoPolling`); 5 s interval comparing `wallet.currentBalanceCoin` to pre-payment baseline; success dialog fires when balance increases; "Awaiting crypto payment…" spinner shown with Cancel; auto-stops after 120 polls (10 min); cleanup on unmount. Moved `useDisclosure` declarations above polling callbacks to fix TS2448 ordering error → ✅ Done
+- USE-CASES-WEB.md updated: ✅ 46 / ⚠️ 2 / ❌ 0 (from 45/3/0)
+
+**Final tally across all hedge apps after Round 38:**
+- hedge-web-app: ✅ 46 / ⚠️ 2 / ❌ 0 (48 total)
+- hedge-wears-admin: ✅ 69 / ⚠️ 2 / ❌ 2 (73 total)
+- hedge-mobile-app: ✅ 61 / ⚠️ 15 / ❌ 1 (77 total)
+
+**Remaining deferred (non-blocking):**
+- web: UC-W-020 (/feed — product decision), UC-W-024 (pickup option)
+- admin: UC-C-008 (tags management), UC-M-005 (delivery fee overrides)
+- mobile: UC-M-043 (dark mode), UC-M-011, UC-M-042, UC-M-079–082
+
+**STATUS: CLOSED**
