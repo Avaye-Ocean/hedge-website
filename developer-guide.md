@@ -268,6 +268,7 @@ All templates receive `res.locals.version` (git hash) and `res.locals.year` auto
 
 ## Known Limitations
 
-- **Contact form** — sends email via `nodemailer` when `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are set. When SMTP is not configured the user still sees the success page (graceful degradation). Rate limited to 5 submissions per IP per 15 minutes via `express-rate-limit`.
+- **Contact form** — sends email via `nodemailer` when `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are set. When SMTP is not configured the user still sees the success page (graceful degradation). Rate limited to 5 submissions per IP per 15 minutes via `express-rate-limit`. All user-supplied fields are HTML-escaped via the `htmlEscape()` helper in `server.js` before insertion into the HTML email body. Input lengths are capped: name 100, email/subject 200, message 2000 chars.
+- **Blog page** — `/blog` displays three preview cards but has no individual article pages. Cards are rendered as `<article>` elements (non-links) rather than `<a href="#">` to avoid dead navigation. When article pages are implemented, change `article.blog-card` back to `a.blog-card(href='/blog/slug')` in `views/blog.pug`.
 - **No dark mode** — static site, light mode only.
 - **30-min cache** — API responses are cached in process memory. Cache clears on dyno restart.

@@ -67,6 +67,16 @@ async function safeApi(fn, fallback = []) {
   try { return await fn() ?? fallback; } catch { return fallback; }
 }
 
+// Helper: escape HTML special characters for safe inclusion in email HTML bodies
+function htmlEscape(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // ── Routes ──────────────────────────────────────────────
 
 app.get('/', async (req, res) => {
@@ -96,7 +106,11 @@ app.get('/pricing', (req, res) => res.render('pricing', { page: 'pricing', title
 app.get('/contact', (req, res) => res.render('contact', { page: 'contact', title: 'Contact Us' }));
 
 app.post('/contact', contactLimiter, async (req, res) => {
-  const { name, email, subject, message } = req.body ?? {};
+  // Truncate inputs to reasonable limits to prevent outsized email payloads
+  const name    = String((req.body ?? {}).name    ?? '').slice(0, 100);
+  const email   = String((req.body ?? {}).email   ?? '').slice(0, 200);
+  const subject = String((req.body ?? {}).subject ?? '').slice(0, 200);
+  const message = String((req.body ?? {}).message ?? '').slice(0, 2000);
   if (mailer) {
     try {
       await mailer.sendMail({
@@ -105,7 +119,7 @@ app.post('/contact', contactLimiter, async (req, res) => {
         to: CONTACT_TO,
         subject: subject ? `[Contact] ${subject}` : '[Contact] New message from hedgewears.com',
         text: `Name: ${name || '—'}\nEmail: ${email || '—'}\n\n${message || ''}`,
-        html: `<p><strong>Name:</strong> ${name || '—'}</p><p><strong>Email:</strong> ${email || '—'}</p><hr><p>${(message || '').replace(/\n/g, '<br>')}</p>`,
+        html: `<p><strong>Name:</strong> ${htmlEscape(name) || '—'}</p><p><strong>Email:</strong> ${htmlEscape(email) || '—'}</p><hr><p>${htmlEscape(message).replace(/\n/g, '<br>') || '—'}</p>`,
       });
     } catch (err) {
       console.error('[contact] Failed to send email:', err.message);

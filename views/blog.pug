@@ -17,10 +17,12 @@ block content
         p.page-hero-subtitle Fashion, culture, and business from the Hedge Wears community.
 
   //- ─── BLOG POSTS ─────────────────────────────────────────────────────────────
+  //- Blog articles are not individually published yet — cards are non-linked previews.
+  //- When article pages exist, swap article.blog-card back to a.blog-card(href='/blog/slug').
   section.section
     .container
       .blog-grid
-        a.blog-card(href='#')
+        article.blog-card
           .blog-card-img-wrap
             img.blog-card-img(
               src='https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp'
@@ -31,9 +33,8 @@ block content
             span.blog-card-date May 2025
             h2.blog-card-title How to build a wardrobe that earns rewards
             p.blog-card-excerpt Every purchase on Hedge Wears earns HedgeCoin — but with the right strategy you can stack your balance faster. Here's how our most loyal shoppers are doing it.
-            span.blog-card-link Read more →
 
-        a.blog-card(href='#')
+        article.blog-card
           .blog-card-img-wrap
             img.blog-card-img(
               src='https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp'
@@ -44,9 +45,8 @@ block content
             span.blog-card-date April 2025
             h2.blog-card-title Meet the designers behind the Meridian Collection
             p.blog-card-excerpt The Meridian Collection took eight months to develop — from initial sketches in Lagos to final samples reviewed in London. We sat down with the creative team.
-            span.blog-card-link Read more →
 
-        a.blog-card(href='#')
+        article.blog-card
           .blog-card-img-wrap
             img.blog-card-img(
               src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp'
@@ -57,7 +57,6 @@ block content
             span.blog-card-date March 2025
             h2.blog-card-title Why we built HedgeCoin
             p.blog-card-excerpt Most loyalty programmes feel like an afterthought. We wanted ours to feel like a real benefit — one that compounds over time and makes shopping genuinely rewarding.
-            span.blog-card-link Read more →
 
       p.blog-coming-soon More stories coming soon. Follow us on Instagram
         a.link(href='https://instagram.com/hedgewears' target='_blank' rel='noopener')  @hedgewears
