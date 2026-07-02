@@ -1394,16 +1394,18 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 
 | # | App/File | Finding | Severity | Fix |
 |---|----------|---------|----------|-----|
-| 1 | feature-review.md | ENG-TODO-6 stale PARTIAL — full start/end/live endpoints and mobile/web UI all shipped | P2 | Updated to ✅ SHIPPED with backend endpoint list, vent-mobile screens, vent-web routes; Phase 2 scoped to per-minute ad billing + native camera |
-| 2 | coinbase.md | No status marker at top despite all acceptance criteria met | P3 | Prepended COMPLETE status line with verified date |
+| 1 | feature-review.md | ENG-TODO-6 already marked ✅ SHIPPED (backend + mobile + web) | — | No change needed; already accurate |
+| 2 | coinbase.md | Already has COMPLETE status header | — | No change needed; already accurate |
+| 3 | hedge-mobile-app developer-guide.md | Missing `## Onboarding` section for `(onboarding)/welcome.tsx` + `walkthrough.tsx` | P3 | Added dedicated Onboarding section with flow description and MMKV flag logic |
+| 4 | hedge-mobile-app developer-guide.md | Missing `## Post Detail` section for `app/post-detail.tsx` | P3 | Added Post Detail section covering tag-to-buy rail, poll display, like action |
 
 ### Confirmed clean
 
-- All 4 apps: 0 `console.log` in runtime code
+- All 4 apps: 0 `console.log` in runtime code (hedge-website `scripts/build.js:23` is a build tool, not runtime code)
 - All 4 apps: 0 TODO/FIXME (ENG-TODO-8/-9 intentional labels only)
 - All 4 apps: 0 empty handlers in live code (hedge-web-app `order-details.tsx:495,505` inside JSX comment blocks)
 - All 4 apps: 0 hardcoded `localhost`/`127.0.0.1`
-- Developer guide coverage: all screens covered across all 4 apps
+- Developer guide coverage: mobile guide updated with 2 new sections (Onboarding, Post Detail); web-app and admin guides complete
 - coinbase criteria: all *Coin fields, currency.util.ts, coin configs verified
 
 ### TypeScript verification
@@ -1430,4 +1432,4 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 | Jest | 87 suites / 861 tests pass |
 | console.log in src/ | 0 (none outside seeders) |
 
-**STATUS: CLOSED** — Round 30 complete. All 4 hedge apps confirmed clean across all audit dimensions. ENG-TODO-6 updated from PARTIAL to SHIPPED in feature-review.md. coinbase.md marked COMPLETE. No developer guide gaps found.
+**STATUS: CLOSED** — Round 30 complete. All 4 hedge apps confirmed clean across all audit dimensions. ENG-TODO-6 already SHIPPED; coinbase.md already COMPLETE. Mobile developer-guide updated: added Onboarding and Post Detail sections. Backend: TS 0 errors, Jest 87 suites / 861 tests all passed.
