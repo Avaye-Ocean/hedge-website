@@ -1063,3 +1063,98 @@ All four hedge apps confirmed production-ready after Round 21 deep audit. 2 mobi
 | vent mobile | 0 errors |
 
 **STATUS: CLOSED** — Round 23 complete. Developer guide gaps filled across all four hedge apps (3 apps received new sections totalling 381 lines). All repos clean — zero bugs, zero console.logs, zero API contract mismatches.
+
+---
+
+## Round 24 — 2026-07-02
+
+### What was checked
+
+- TypeScript (`tsc --noEmit`) across hedge-web-app, hedge-wears-admin, hedge-mobile-app
+- ESLint errors (local `node_modules/.bin/eslint`) across hedge-web-app, hedge-wears-admin
+- `console.log` in runtime source files (app/, components/, hooks/, utils/, lib/, services/, store/)
+- TODO / FIXME stubs (excluding `ENG-TODO-*` deferred labels) across all four apps
+- `onClick={() => {}}` / `onPress={() => {}}` empty handlers and "coming soon" stubs
+- Developer guide completeness against the Round 24 checklist (setup, feature flows, API integration, deployment, push notifications)
+
+### What was fixed / added
+
+| # | App | File | Change |
+|---|-----|------|--------|
+| 1 | hedge-wears-admin | `developer-guide.md` | Added **Product Management** section (list, CRUD, archive, pin, variants, categories, brands, inventory sub-routes, API hooks) |
+| 2 | hedge-wears-admin | `developer-guide.md` | Added **Order Management** section (status tabs, search, date filter, status transitions, order detail tabs, returns approval flow, API hooks) |
+| 3 | hedge-wears-admin | `developer-guide.md` | Added **Analytics** section (KPI cards, revenue/order line charts, donut chart, date range selector, API hooks) |
+| 4 | hedge-mobile-app | `developer-guide.md` | Added **Push Notifications** section (Firebase FCM + Notifee, permission flow, token registration, foreground/background/killed delivery table, channel setup, Firebase credential setup, local test command) |
+
+### What was confirmed clean
+
+- TypeScript: hedge-web-app exits 0, hedge-wears-admin exits 0, hedge-mobile-app exits 0, hedge-website (no tsconfig — plain JS)
+- ESLint: hedge-web-app 0 errors, hedge-wears-admin 0 errors; hedge-mobile-app has no local eslint binary
+- `console.log`: zero occurrences in runtime code across all four apps
+- TODO / FIXME: zero actionable stubs (ENG-TODO-8, ENG-TODO-9 are intentional deferred labels; "More languages coming soon" in `components/langauge/index.tsx` is display copy, not a stub)
+- Empty handlers in hedge-web-app (`order-details.tsx:494–513`) and hedge-mobile-app (`manage-store/index.tsx:326–349`) are inside commented-out JSX blocks — not runtime code
+- hedge-web-app developer guide: all required sections present (setup, browse/cart/checkout/orders/auth, API pattern, deployment)
+- hedge-website developer guide: complete (setup, architecture, content editing, deployment)
+
+**STATUS: CLOSED** — Round 24 complete. Four developer guide sections added (3 admin, 1 mobile). All repos confirmed clean.
+
+---
+
+## Round 25 — 2026-07-02
+
+### What was checked
+
+- Developer guide completeness: all four guides cross-referenced against actual `app/` directory and `server.js` routes
+- `console.log` in runtime source files (app/, components/, hooks/, utils/, lib/, services/, store/) — 0 results
+- TODO / FIXME / "coming soon" / empty-handler stubs across all four apps
+- TypeScript (`tsc --noEmit`) — all three TS repos, before and after changes
+- ESLint errors (`node_modules/.bin/eslint`) — hedge-web-app and hedge-wears-admin
+- API contract spot-check — `productBusinessId`, `categoryBusinessIds`, `productCategoryIds`, `orderByBusinessId`, `reviewBusinessId` vs. backend `query.util.ts`
+- Git log for all four repos — reviewed recent commits for regressions
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-wears-admin | `app/(dashboard)/products/categories/[id]/edit/_edit-category-view.tsx` | Entire edit form (Card + Form + all FormField components) was wrapped in a JSX block comment, leaving only a heading and back button. Clicking the "Edit" dropdown item in the categories list navigated to this route and showed an empty shell — category data could not be edited. The hooks (`useViewCategory`, `useUpdateCategory`) and the form code were fully implemented but commented out. | P1 |
+| 2 | hedge-wears-admin | `developer-guide.md` | Route structure listed two ghost routes: `staff/` (staff management is at `admins/`, not `staff/`) and `business-settings/` (no such directory — store settings toggles live inside the products page via `StoreSettingsCard`). Also missing: `products/categories/[id]/edit/` was not listed even though it's now a functional route. | P2 |
+| 3 | hedge-web-app | `developer-guide.md` | `orders/[id]/return/` sub-route not documented — the route was missing from the route structure tree and there was no section describing the return order UX flow, item selection, quantity controls, reason toggle, or API call. | P2 |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any runtime code across all four apps
+- No TODO / FIXME / actionable stubs in live code (mobile "More languages coming soon" in `components/langauge/index.tsx` is display copy — established known limitation)
+- No dead exported hooks in any repo (no new hooks added since Round 24)
+- No empty handlers in live code paths
+- No API contract bugs — all query params confirmed correct against `vendorstack-backend/src/shared/utils/query.util.ts`
+- TypeScript exits 0 in all three TS apps with zero errors (before and after changes)
+- ESLint exits 0 in hedge-web-app and hedge-wears-admin (pre-push hooks verify this for each)
+- All `.env.example` files complete — no new env vars introduced
+- hedge-website routes: all routes in `server.js` already covered in the guide — no gaps
+- hedge-mobile-app guide: all `app/` screens are listed in the file structure and all key feature flows are covered in dedicated sections
+
+### What was fixed
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-wears-admin | `app/(dashboard)/products/categories/[id]/edit/_edit-category-view.tsx` | Removed the `{/* ... */}` block comment wrapper around the edit form. The Card, FormField components, and submit handler are now live. Clicking "Edit" in the categories dropdown opens a fully functional pre-filled form that patches the category via `useUpdateCategory` (PATCH `/categories/:id`). | `4ffb0e4` (develop-extended) |
+| 2 | hedge-wears-admin | `developer-guide.md` | Removed ghost routes `staff/` and `business-settings/` from the route structure. Updated `admins/` description to clarify it covers staff management. Added `products/categories/[id]/edit/` to the Products sub-pages table. | `4ffb0e4` (develop-extended) |
+| 3 | hedge-web-app | `developer-guide.md` | Added `orders/[id]/return/` to the route structure tree under `orders/[id]/`. Added a full "Return order" section documenting UX flow (item selection, quantity stepper, reason toggle, confirm button), all three UI states (loading skeleton, error with CTA, disabled confirm), and the API call (`POST /orders/:id/return`). | `e690922` (develop-extended) |
+
+### TypeScript verification
+
+| Repo | TypeScript |
+|------|-----------|
+| hedge-web-app | ✅ exits 0; production build passes (pre-push) |
+| hedge-wears-admin | ✅ exits 0; production build passes (pre-push) |
+| hedge-mobile-app | ✅ exits 0 (unchanged) |
+| hedge-website | — static (no tsconfig) |
+
+### ESLint verification
+
+| Repo | ESLint errors |
+|------|--------------|
+| hedge-web-app | 0 errors (pre-push hook) |
+| hedge-wears-admin | 0 errors (pre-push hook) |
+
+**STATUS: CLOSED** — Round 25 complete. One P1 broken edit-category form fixed in hedge-wears-admin; two P2 developer guide gaps filled across hedge-wears-admin and hedge-web-app. All four apps clean, all TypeScript and production builds pass.
