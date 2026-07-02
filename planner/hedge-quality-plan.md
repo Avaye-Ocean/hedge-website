@@ -1750,3 +1750,21 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 **ALL HEDGE APPS AT 100% — HEDGE QUALITY LOOP COMPLETE**
 
 **STATUS: CLOSED**
+
+---
+
+## Round 47 — 2026-07-02 (Session 173)
+
+**Route-group error.tsx audit + hedge-website og:image.**
+
+| App | Finding | Fix | Commit |
+|---|---|---|---|
+| hedge-web-app | `(dashboard)` route group had no `error.tsx` | Added `app/(dashboard)/error.tsx` matching root pattern | `1aed5ed` |
+| hedge-wears-admin | `(dashboard)` route group had no `error.tsx` | Added `app/(dashboard)/error.tsx` matching root pattern | `0cc5bd6` |
+| hedge-website | All pages shared one hardcoded og:image | `layout.pug` now uses `og_image` var with fallback; index/collections/products/categories routes pass first product/category photo as `og_image` | `64af27b` |
+| hedge-mobile-app | Not scanned this round | — | — |
+
+- TypeScript: hedge-web-app 0 errors · hedge-wears-admin 0 errors (confirmed before commit)
+- All lint hooks passed on commit
+
+**STATUS: CLOSED**
