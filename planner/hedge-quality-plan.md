@@ -1182,3 +1182,64 @@ Developer guide completeness audit (session continuation from Round 25 gap analy
 - ESLint: 0 errors across all apps (no code changed)
 
 **STATUS: CLOSED** — Round 26 complete. 9 developer guide sections added across hedge-mobile-app and hedge-web-app. All four apps remain clean.
+
+---
+
+## Round 27 — 2026-07-02
+
+### What was checked
+
+- `console.log` in runtime source files (`app/`, `components/`) across all four apps
+- TODO / FIXME across all four apps — each hit inspected for live vs. commented-out context
+- Empty `onClick={() => {}}` / `onPress={() => {}}` handlers — each hit verified as live or dead code
+- TypeScript (`npx tsc --noEmit`) — all three TS repos
+- ESLint (`node_modules/.bin/eslint . --ext .ts,.tsx --max-warnings=0`) — hedge-web-app and hedge-wears-admin
+- Developer guide completeness:
+  - hedge-web-app: cross-referenced `app/(dashboard)/` directory against `## ` section headers — `privacy-policy/` and `terms/` routes listed in route structure but had no dedicated section
+  - hedge-mobile-app: re-read guide before touching — Language selector entry at line 687 already lists all 5 languages; uncommitted diff confirmed and committed
+  - hedge-wears-admin: cross-referenced `app/(dashboard)/` directories — all routes covered
+  - hedge-website: complete (no tsconfig; guide checks done in prior rounds)
+- API contract: `useGetTaggedProducts(postId)` in hedge-mobile-app (`hooks/apihooks/posts.ts:42`) calls `GET posts/${postId}/tagged-products` via `post-services.ts:81` — confirmed against `vendorstack-backend/src/posts/posts.controller.ts:939` (`@Get(':postId/tagged-products')`)
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-web-app | `developer-guide.md` | `privacy-policy/` and `terms/` routes listed in route structure (lines 78–79) but no `## Legal Pages` section documenting the pages, their content structure, or the lack of API calls. | P2 |
+| 2 | hedge-mobile-app | `developer-guide.md` | Language selector entry (line 687) said "English only; placeholder for future locales" — stale since all 5 locales were wired in a prior session. Known Limitations entry also stale ("only English is active; More languages coming soon"). Uncommitted working-tree diff found. | P2 |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any runtime code across all four apps
+- No actionable TODO / FIXME stubs — ENG-TODO-9 labels in hedge-web-app `post-detail-modal.tsx:168` and hedge-mobile-app `post-detail.tsx:44,186` are intentional deferred-feature references; tag-to-buy is fully implemented (documented as such since Round 21)
+- Empty handlers in hedge-web-app (`order-details.tsx:495,505`) and hedge-mobile-app (`manage-store/index.tsx:330,336,342,348`) are inside JSX comment blocks (`{/* ... */}`) — not executed
+- No TypeScript errors in any TS repo before or after changes
+- No ESLint errors in hedge-web-app or hedge-wears-admin
+- hedge-wears-admin guide: all `app/(dashboard)/` routes covered (account, admins, analytics, content, customers, delivery-fees, orders, products+sub-pages incl. inventory/brands/variants/categories/[id]/edit, reviews, settings, storefront, support, transactions, vouchers)
+- hedge-website guide: complete; no changes since Round 26
+- API contract for `useGetTaggedProducts` → `GET /posts/:postId/tagged-products` confirmed correct
+
+### What was fixed
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-web-app | `developer-guide.md` | Added `## Legal Pages` section: table of two routes (`/privacy-policy`, `/terms`), note that both are static server components with full legal copy, no API calls, no auth required; listed section counts for each page and contact email. | `23b02e1` (develop-extended) — pushed |
+| 2 | hedge-mobile-app | `developer-guide.md` | Committed and pushed the uncommitted diff that updated the App Settings table (Language row: now lists all 5 locales with MMKV persistence) and Known Limitations (Language selector: i18n not wired, not "English only"). | `987c908` (develop-extended) — pushed |
+
+### TypeScript verification
+
+| Repo | TypeScript |
+|------|-----------|
+| hedge-web-app | ✅ exits 0; production build passes (pre-push) |
+| hedge-wears-admin | ✅ exits 0 (no code changed) |
+| hedge-mobile-app | ✅ exits 0; pre-push hook passes |
+| hedge-website | — static (no tsconfig) |
+
+### ESLint verification
+
+| Repo | ESLint errors |
+|------|--------------|
+| hedge-web-app | 0 errors (pre-push hook) |
+| hedge-wears-admin | 0 errors |
+
+**STATUS: CLOSED** — Round 27 complete. Two P2 developer guide gaps fixed: `## Legal Pages` section added to hedge-web-app, stale language selector entry committed in hedge-mobile-app. All four apps confirmed clean across console.log, TODO/FIXME, empty handlers, TypeScript, and ESLint. API contract for `useGetTaggedProducts` verified correct.
