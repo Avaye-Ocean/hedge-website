@@ -268,6 +268,6 @@ All templates receive `res.locals.version` (git hash) and `res.locals.year` auto
 
 ## Known Limitations
 
-- **Contact form** — sends email via `nodemailer` when `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are set. When SMTP is not configured the user still sees the success page (graceful degradation).
+- **Contact form** — sends email via `nodemailer` when `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are set. When SMTP is not configured the user still sees the success page (graceful degradation). Rate limited to 5 submissions per IP per 15 minutes via `express-rate-limit`.
 - **No dark mode** — static site, light mode only.
 - **30-min cache** — API responses are cached in process memory. Cache clears on dyno restart.

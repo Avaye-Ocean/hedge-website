@@ -3,6 +3,7 @@
 const express = require('express');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
 const { getVersion } = require('./scripts/version');
 const api = require('./services/api');
 
@@ -45,6 +46,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: 'Too many messages submitted. Please try again in 15 minutes.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use((req, res, next) => {
   res.locals.version = version;
   res.locals.year = new Date().getFullYear();
@@ -86,7 +95,7 @@ app.get('/pricing', (req, res) => res.render('pricing', { page: 'pricing', title
 
 app.get('/contact', (req, res) => res.render('contact', { page: 'contact', title: 'Contact Us' }));
 
-app.post('/contact', async (req, res) => {
+app.post('/contact', contactLimiter, async (req, res) => {
   const { name, email, subject, message } = req.body ?? {};
   if (mailer) {
     try {
