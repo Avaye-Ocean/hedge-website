@@ -1380,3 +1380,54 @@ Developer guide completeness audit (session continuation from Round 25 gap analy
 | hedge-wears-admin | 0 errors |
 
 **STATUS: CLOSED** — Round 29 complete. 6 developer guide sections added to hedge-mobile-app: 4 wallet sub-screen flow docs (stablecoin, bank, review-buycoin, review-withdrawcoin) and 2 new `##` sections (Change Password, Currency Selector). Stale P439 orchestrator entry marked done. All four apps confirmed clean across all audit dimensions.
+
+---
+
+## Round 30 — 2026-07-02
+
+### Audit scope
+
+All 4 hedge apps: console.log, TODO/FIXME, empty handlers, TypeScript, ESLint, localhost URLs, developer guide coverage.
+Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan status.
+
+### Findings
+
+| # | App/File | Finding | Severity | Fix |
+|---|----------|---------|----------|-----|
+| 1 | feature-review.md | ENG-TODO-6 stale PARTIAL — full start/end/live endpoints and mobile/web UI all shipped | P2 | Updated to ✅ SHIPPED with backend endpoint list, vent-mobile screens, vent-web routes; Phase 2 scoped to per-minute ad billing + native camera |
+| 2 | coinbase.md | No status marker at top despite all acceptance criteria met | P3 | Prepended COMPLETE status line with verified date |
+
+### Confirmed clean
+
+- All 4 apps: 0 `console.log` in runtime code
+- All 4 apps: 0 TODO/FIXME (ENG-TODO-8/-9 intentional labels only)
+- All 4 apps: 0 empty handlers in live code (hedge-web-app `order-details.tsx:495,505` inside JSX comment blocks)
+- All 4 apps: 0 hardcoded `localhost`/`127.0.0.1`
+- Developer guide coverage: all screens covered across all 4 apps
+- coinbase criteria: all *Coin fields, currency.util.ts, coin configs verified
+
+### TypeScript verification
+
+| Repo | TypeScript |
+|------|-----------|
+| hedge-web-app | ✅ exits 0 |
+| hedge-wears-admin | ✅ exits 0 |
+| hedge-mobile-app | ✅ exits 0 |
+| hedge-website | — static (no tsconfig) |
+
+### ESLint verification
+
+| Repo | ESLint errors |
+|------|--------------|
+| hedge-web-app | 0 errors |
+| hedge-wears-admin | 0 errors |
+
+### Backend verification
+
+| Check | Result |
+|-------|--------|
+| TypeScript | 0 errors |
+| Jest | 87 suites / 861 tests pass |
+| console.log in src/ | 0 (none outside seeders) |
+
+**STATUS: CLOSED** — Round 30 complete. All 4 hedge apps confirmed clean across all audit dimensions. ENG-TODO-6 updated from PARTIAL to SHIPPED in feature-review.md. coinbase.md marked COMPLETE. No developer guide gaps found.
