@@ -1442,3 +1442,12 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 **Findings:** All clean — no issues found. Empty `onClick/onPress` hits in hedge-web-app (`order-details.tsx:495,505`) and hedge-mobile-app (`manage-store/index.tsx:330,336,342,348`) are both inside JSX comment blocks — not live code. `console.log` in `hedge-website/scripts/build.js` is a build-tool script, not runtime. TypeScript exits 0 on all TS repos; ESLint 0 errors on web-app and admin; developer guide coverage complete across all 4 apps.
 **Fixes:** None required
 **STATUS: CLOSED**
+
+---
+
+## Round 32 (2026-07-02 — Session 95)
+
+**Apps audited:** hedge-web-app, hedge-wears-admin, hedge-mobile-app, hedge-website
+**Findings:** All clean — no issues found. No `console.log`, no TODO/FIXME/HACK in any source directory. TypeScript exits 0 on all TS repos. ESLint 0 errors on hedge-web-app and hedge-wears-admin. hedge-mobile-app and hedge-website remain clean as in previous rounds.
+**Fixes:** hedge-wears-admin `developer-guide.md` — added Auth/Login and Dashboard Overview sections (both pages were undocumented; auth form hooks and API calls now fully documented)
+**STATUS: CLOSED**
