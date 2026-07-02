@@ -762,3 +762,52 @@ All four hedge apps confirmed production-ready. Zero actionable findings in Roun
 **STATUS: CLOSED**
 
 All four hedge apps confirmed production-ready. Two developer-guide route-structure tables updated to match actual app directories. No functional bugs, no console.log, no hardcoded data, no stubs in live code paths, no TypeScript errors.
+
+---
+
+## 17. Round 18 — 2026-07-02 (session 68)
+
+### What was checked
+
+- `tsc --noEmit` in hedge-web-app, hedge-wears-admin, hedge-mobile-app — all exit 0
+- `git status --short` in all four repos — all clean (no uncommitted changes) at start
+- `console.log` in runtime code across all three TS apps — 0 results
+- TODO / FIXME / `onPress={() => {}}` / `onClick={() => {}}` grep across all four apps
+- Recent commits since Round 16 reviewed:
+  - hedge-web-app: docs (route structure update P383, newsletter section P153), newsletter footer form wiring, account error state, wishlist skeleton, auth redirect fix
+  - hedge-wears-admin: docs (route structure update P382, storefront management section, /account redirect), announcement maxLength fix (280→500), account→settings redirect, sidebar settings link
+  - hedge-mobile-app: skeleton loading for manage-store vouchers/categories/variants/reviews/orders (P146), DeliveryPricing/ReturnOrder/Staff skeletons (P145), analytics skeleton fixes (P144), developer-guide audit (P389)
+  - hedge-website: no new commits since Round 16
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-web-app | `components/views/orders/order-details.tsx:495,505` | Two `onClick={() => {}}` on "View Receipt" and "Download" buttons — both are inside a commented-out JSX block `{/* ... */}` and are not executed | Not actionable (dead code in comment) |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any runtime code across all four apps — 0 results in hedge-web-app, hedge-wears-admin, hedge-mobile-app
+- No live empty `onClick`/`onPress` handlers — the two occurrences found are inside commented-out JSX
+- No TODO / FIXME in live code paths
+- TypeScript passes `tsc --noEmit` cleanly in all three TS apps
+- No new pages added since Round 16 that are missing error/loading states — skeleton improvements in mobile-app (P144–P146) all properly add `isLoading`/`isError` guards
+- All API param names remain correct: `productBusinessId`, `categoryBusinessIds`, `productCategoryIds`, `orderByBusinessId`, `reviewBusinessId`
+- Developer guides: no new inaccuracies introduced by recent commits
+- hedge-mobile-app announcement maxLength aligned to backend (500) in wears-admin, consistent across all apps
+
+### What was fixed
+
+No code changes necessary. All four apps remain production-ready.
+
+### TypeScript verification
+
+- `hedge-web-app` — ✅ exits 0
+- `hedge-wears-admin` — ✅ exits 0
+- `hedge-mobile-app` — ✅ exits 0
+
+### Final status
+
+**STATUS: CLOSED**
+
+All four hedge apps confirmed production-ready. Zero actionable findings in Round 18. No console.log, no empty handlers in live code, no TypeScript errors, no new stubs or hardcoded data.
