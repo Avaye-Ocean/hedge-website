@@ -1808,3 +1808,42 @@ These are genuinely out-of-scope items, not bugs. Listed so the loop retains vis
 vendorstack-backend completed a full `@Throttle` rate-limit sweep (all public + guarded GETs) and 5 TOCTOU ownership-filter fixes (ads/posts/comments mutations) in session 115 (P487–P490). No hedge client change required — API contracts unchanged.
 
 **STATUS: CLOSED** — All four hedge apps production-ready. One real perf improvement (next/image migration) landed and build-validated; other three apps confirmed clean. Hedge quality work is formally closed; forward items are deferred with tracking. The loop should treat hedge as done unless a new backend contract change or feature requires propagation.
+
+---
+
+## Round 52 — Product/Order/Vendor-Content focus (2026-07-02 — hedge task runner)
+
+**Context:** Dedicated re-audit of product, order, and vendor-content-to-customer flows across the four hedge apps against the live vendorstack-backend order/product/business endpoints. Hedge was closed at Round 51, so gaps were expected to be narrow — the audit surfaced one genuine breakage per storefront plus a shared invalid-status bug across all three TS apps.
+
+### Audited
+
+- **Product:** listing params (`productBusinessId`/`productVendorId`/`productCategoryIds`/`productSearch`), detail, categories (`categoryBusinessIds`), reviews (`reviewBusinessId`/`reviewProductId`), wishlist/like — all verified against `src/shared/utils/query.util.ts`. Confirmed correct on web + mobile.
+- **Order:** cart → checkout (wallet-first `isWalletPayment`, insufficient-balance gating on `currentBalanceCoin`, delivery fee lookup, voucher) → placement → history/detail → tracking → returns/cancel. Verified against `POST /orders`, `PUT /orders/:id/status`, `PATCH /orders/:id/tracking`. Confirmed cancel already uses `PUT /status` (CANCELED) on web + mobile.
+- **Vendor content → customers:** storefront (`GET /businesses/:id/storefront`), "shop this post" tagged products (`GET /posts/:id/tagged-products`), product reviews, store toggles (taking-order / return-order / auto-accept). All wired and endpoints confirmed to exist.
+
+### Found + Fixed
+
+| App | Finding | Fix | Commit |
+|---|---|---|---|
+| hedge-web-app | Customer **return** flow POSTed to a **phantom `POST /orders/:id/return`** route (with per-item body) → 404. Backend has no per-item return endpoint; returns are `DELIVERED → RETURNED` via `PUT /orders/:id/status`. Return button also showed for `RECEIVED` (no allowed transition). | Rewired `return-order.tsx` to `useUpdateOrder` → `PUT /orders/:id/status` `{ status: "RETURNED", customerId, description }` (item reasons folded into `description`); removed phantom `useReturnOrder`/`ordersClient.returnOrder`/`ENDPOINTS.ORDERS.RETURN`; gated Return button to `DELIVERED` only. | `430b757` (+ docs `432a16b`) |
+| hedge-mobile-app | manage-store dashboard counter + analytics (insight/performance) filtered returns on invalid `'RETURN_CONFIRM'` (backend enum is `RETURN_CONFIRMED`) → matched no records, under-counted confirmed returns. | Changed 3 filter arrays to `RETURN_CONFIRMED`; removed invalid `'RETURN_CONFIRM'` from `OrderStatus` union in `services/order-services.ts`. | `322aa84` (+ docs `802c638`) |
+| hedge-wears-admin | Vendor **return approval** posted invalid status `'RETURN_CONFIRM'` (6 occurrences incl. the live `updateOrder` mutation) → backend status-movement check rejected it, so approving a return silently failed. | Changed all `RETURN_CONFIRM` → `RETURN_CONFIRMED` (approval mutation + badge/variant logic + type union). | `701c0c5` (+ docs `38606d2`) |
+
+### Confirmed clean (no changes needed)
+
+- **hedge-web-app checkout** — wallet-first, insufficient-balance banner + Top-Up link, delivery-fee lookup by country/state, voucher, coin+fiat display. Solid.
+- **hedge-mobile-app** — customer return already correctly `PUT /status` (RETURNED) and gated to `DELIVERED`; checkout wallet-first + voucher + variants + delivery options complete; storefront + tagged-products wired.
+- **hedge-website** — marketing/Express-Pug site, no product/order flows; not touched.
+
+### Backend gaps (recorded — no backend change made)
+
+1. **No per-item return endpoint.** `POST /orders/:id/return` does not exist; only whole-order `DELIVERED → RETURNED` is supported. Web item-level reasons are folded into a single `description` string. `description` is also **stripped** by the server `ValidationPipe` (`whitelist: true`) since `OrderStatusDto` only whitelists `orderId`/`customerId`/`status` — so return reasons do not persist server-side. A dedicated return DTO/endpoint would be needed to capture item-level returns and reasons.
+2. **No reject-return transition.** admin "Reject Return" posts `DELIVERED`, but `STATUS_MOVEMENT` allows `RETURNED → RETURN_CONFIRMED` only. Reject-return fails server-side; needs a backend transition or endpoint.
+
+### Validation
+
+- `npx tsc --noEmit` → **0 errors** on hedge-web-app, hedge-mobile-app, hedge-wears-admin.
+- hedge-web-app / hedge-wears-admin: no `test` script. hedge-mobile-app: `jest` suites are pre-existing Expo boilerplate (`StyledText-test.js` importing a non-existent module, plus stale copies under `.claude/worktrees/`) — fail to load independent of this change (touched only status-string literals + a type union with no test coverage).
+- All fixes committed incrementally and pushed to `develop-extended` on each repo.
+
+**STATUS:** Product/order/vendor-content re-audit complete. Three genuine order-flow bugs fixed (one phantom endpoint, two invalid-status), two backend gaps recorded. Storefronts otherwise confirmed clean.
