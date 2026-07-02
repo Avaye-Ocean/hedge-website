@@ -1243,3 +1243,72 @@ Developer guide completeness audit (session continuation from Round 25 gap analy
 | hedge-wears-admin | 0 errors |
 
 **STATUS: CLOSED** — Round 27 complete. Two P2 developer guide gaps fixed: `## Legal Pages` section added to hedge-web-app, stale language selector entry committed in hedge-mobile-app. All four apps confirmed clean across console.log, TODO/FIXME, empty handlers, TypeScript, and ESLint. API contract for `useGetTaggedProducts` verified correct.
+
+---
+
+## Round 28 — 2026-07-02
+
+### What was checked
+
+- `console.log` in runtime source files across all four apps (grep, excluding tests and comments)
+- TODO / FIXME across all four apps — each hit inspected (ENG-TODO-8/-9 are known intentional deferred labels)
+- Empty `onClick={() => {}}` / `onPress={() => {}}` handlers in live code paths — none found
+- TypeScript (`npx tsc --noEmit`) — all three TS repos
+- ESLint (`node_modules/.bin/eslint . --ext .ts,.tsx --max-warnings=0`) — hedge-web-app and hedge-wears-admin
+- Hardcoded localhost / 127.0.0.1 URLs — none found in any app
+- Env vars: cross-referenced `process.env.*` / `EXPO_PUBLIC_*` / `NEXT_PUBLIC_*` usages against `.env.example` files — all documented
+- API contract: query param names (`productBusinessId`, `categoryBusinessIds`, `productVendorId`, `productQuantity`, `reviewBusinessId`, `orderByBusinessId`, `productCategoryIds`, `orderByCustomerId`) confirmed against `vendorstack-backend/src/shared/utils/query.util.ts`
+- Developer guide completeness:
+  - hedge-web-app: all 14 routes in `app/(dashboard)/` confirmed covered including `## Account` section (found on audit); all sections present from prior rounds still intact
+  - hedge-wears-admin: all 14 routes including `settings/` (line 77 in guide, dedicated "Account & Settings" section) confirmed covered
+  - hedge-mobile-app: route structure table (lines 137–147) lists `address.tsx`, `personal-details.tsx`, `reviews.tsx` but no dedicated sections existed
+  - hedge-website: guide complete; no code changes since Round 27
+- Vent-web migration-gaps.md HIGH item (post-signup BusinessRegister funnel): verified P215 "Create Business" banner in `DashboardOverview.tsx` lines 101–117 — renders when `!hasBusiness`, links to `/dashboard/business/create`, uses vent-red brand color. UX solid, full auto-open wizard intentionally deferred.
+- Backend quality: 0 new missing retryProcess wraps in service code, 0 console.log in service/controller code (seeder scripts only), backend TypeScript exits 0, 87/87 test suites pass
+- Vent mobile: 0 no-explicit-any warnings (`npx eslint src/pages src/components --rule '{"@typescript-eslint/no-explicit-any": "warn"}'`), 0 console.log, 0 TypeScript errors
+
+### What was found
+
+| # | App | File | Issue | Severity |
+|---|-----|------|-------|----------|
+| 1 | hedge-mobile-app | `developer-guide.md` | 4 screens listed in the route structure table (lines 137–147) had no dedicated guide sections: Profile Tab navigation (profileOptions menu with Personal Details / My Orders / Wishlist / Shipping Address / Settings links), Personal Details (`useUpdateUser` PATCH /users/:id, photo upload), Address Management (`useAddAddress` / `useDeleteAddress` / `useToggleAddress`), and Product Reviews (`useGetProductReviews` with reviewProductId param + infinite scroll). | P2 |
+
+### What was NOT found (confirmed clean)
+
+- No `console.log` in any runtime code across all four apps (hedge-website `scripts/build.js` has one — build tooling, appropriate)
+- No actionable TODO / FIXME stubs — ENG-TODO-8 (Poll) and ENG-TODO-9 (Tag-to-Buy) labels are intentional deferred-feature references
+- No empty handlers in live code paths
+- No hardcoded localhost / 127.0.0.1 URLs
+- No API contract bugs — all query params confirmed valid in backend `query.util.ts`
+- No env var gaps — all `NEXT_PUBLIC_*` / `EXPO_PUBLIC_*` keys in code are documented in `.env.example`
+- TypeScript exits 0 in all three TS apps
+- ESLint exits 0 in hedge-web-app and hedge-wears-admin (pre-push hooks)
+- hedge-web-app developer guide: all routes covered including `## Account` (tab-based personal/orders/addresses/currency/password/support/delete)
+- hedge-wears-admin developer guide: all routes covered including settings/ redirect to `/settings` (implemented as NextJS `redirect()`)
+- Vent-web P215 CTA banner: working correctly in `DashboardOverview.tsx`; no code changes needed
+- Backend: 87 test suites pass, 0 TS errors, no new bare static calls missing retryProcess
+- Vent mobile: 0 no-explicit-any warnings confirmed, 0 TS errors
+
+### What was fixed
+
+| # | App | File | Fix | Commit |
+|---|-----|------|-----|--------|
+| 1 | hedge-mobile-app | `developer-guide.md` | Added 4 sections (103 lines): `## Profile Tab` (navigation menu table, photo upload, logout flow), `## Personal Details` (UX flow, hooks, API ref), `## Address Management` (UX flow + CRUD hooks + empty state), `## Product Reviews` (UX flow, infinite scroll, hook). | `11d2b0c` (develop-extended) — pushed |
+
+### TypeScript verification
+
+| Repo | TypeScript |
+|------|-----------|
+| hedge-web-app | ✅ exits 0 (pre-push hook) |
+| hedge-wears-admin | ✅ exits 0 (pre-push hook) |
+| hedge-mobile-app | ✅ exits 0; pre-push hook passes |
+| hedge-website | — static (no tsconfig) |
+
+### ESLint verification
+
+| Repo | ESLint errors |
+|------|--------------|
+| hedge-web-app | 0 errors (pre-push hook) |
+| hedge-wears-admin | 0 errors (pre-push hook) |
+
+**STATUS: CLOSED** — Round 28 complete. One P2 guide gap fixed: 4 undocumented screens (Profile Tab, Personal Details, Address Management, Product Reviews) now have dedicated sections in hedge-mobile-app developer guide. All four apps confirmed clean across console.log, TODO/FIXME, empty handlers, TypeScript, ESLint, hardcoded URLs, env vars, and API contracts. Vent-web, vent-mobile, and backend all verified clean.
