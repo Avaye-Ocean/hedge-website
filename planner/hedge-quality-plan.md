@@ -1637,3 +1637,38 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 - mobile: UC-M-043 (dark mode — NativeWind dark config needed), UC-M-080/081/082 (announcements/reminders/messages — stub screens, no backend APIs)
 
 **STATUS: CLOSED**
+
+---
+
+## Round 40 — Sixth Pass (2026-07-02 — session 103)
+
+**Apps touched:** hedge-mobile-app, hedge-wears-admin (docs), hedge-web-app (docs)
+**Objective:** Close remaining verifiable mobile gaps; update all developer guides for Round 39 features.
+
+### hedge-mobile-app (commit 1991286)
+- **UC-M-084** — PRODUCT push notification deep link: `case 'PRODUCT'` in `app/_layout.tsx` now calls `router.push({ pathname: '/product-detail', params: { id: entityId } })` → ✅ Done
+- **UC-M-086** — Paginated product listing: verified TanStack Query infinite query (`fetchNextPage`/`fetchPreviousPage`), `currentPage` tracking, and debounced `productSearch` correctly wired → ✅ Done
+- **UC-M-087** — Return request management: verified `ReturnRequestDetail.tsx` has `handleApprove` (status → RETURNED) and `handleReject` (status → CANCELED) via `useUpdateOrderStatus` → ✅ Done
+- **UC-M-058** — Product tags: clarified as ✅ Done by design — tags are sub-entities of categories; category CRUD (UC-M-059) covers full lifecycle
+- **UC-M-080/081/082** — Announcements/Reminders/Messages: clarified as deferred (no backend APIs)
+- USE-CASES-MOBILE.md: ✅ 72 / ⚠️ 4 / ❌ 1 (from 68/8/1)
+
+### Developer guide updates (admin eae0b15, web 4e234d9)
+- **Admin**: `useUpdateProductTags` hook documented, bank name lookup (`useGetBanks`) documented in transactions section
+- **Web**: `/feed` route added to architecture diagram in route structure section
+
+**Final tally across all hedge apps after Round 40:**
+- hedge-web-app: ✅ 48 / ⚠️ 1 / ❌ 0 (49 total)
+- hedge-wears-admin: ✅ 72 / ⚠️ 0 / ❌ 1 (73 total) — **0 partial items**
+- hedge-mobile-app: ✅ 72 / ⚠️ 4 / ❌ 1 (77 total)
+
+**All 4 developer guides fully current.**
+
+**Remaining open (non-actionable without backend/product changes):**
+- UC-W-024 (pickup option — product decision)
+- UC-M-005 (admin delivery fee overrides — no backend API)
+- UC-M-043 (dark mode — NativeWind full dark config, large scope)
+- UC-M-050 (language — no i18n library)
+- UC-M-080/081/082 (stubs — no backend APIs)
+
+**STATUS: CLOSED**
