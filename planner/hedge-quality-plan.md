@@ -1696,3 +1696,31 @@ Also: ENG-TODO-6 status update in vendorstack feature-review.md + coinbase plan 
 - UC-M-080/081/082 (mobile — stubs, no backend APIs)
 
 **STATUS: CLOSED**
+
+---
+
+## Round 42 — Eighth Pass (2026-07-02 — session 105)
+
+**Apps touched:** hedge-mobile-app, hedge-web-app
+**Objective:** Dark mode infrastructure + web UC-W-024 product closure.
+
+### hedge-mobile-app (commit 457f0ae)
+- **UC-M-043** — Dark mode: NativeWind v4 `darkMode: 'media'` config, `setColorScheme()` toggle in Settings, AsyncStorage persistence, dark variants on settings and home screens → ✅ Done
+- USE-CASES-MOBILE.md: ✅ 73 / ⚠️ 4 / ❌ 0 (77 total)
+
+### hedge-web-app (commit 350a409)
+- **UC-W-024** — Pickup option: closed as N/A by design (Hedge Wears is delivery-only, no physical pickup) → ✅ Done
+- USE-CASES-WEB.md: ✅ 49/49 (100%)
+
+**Final tally across all hedge apps after Round 42:**
+| App | ✅ Done | ⚠️ Partial | ❌ Missing | Total |
+|-----|--------|-----------|-----------|-------|
+| hedge-web-app | 49 | 0 | 0 | 49 — **100%** |
+| hedge-wears-admin | 73 | 0 | 0 | 73 — **100%** |
+| hedge-mobile-app | 73 | 4 | 0 | 77 |
+
+**Remaining open (non-actionable without backend/product changes):**
+- UC-M-050 (mobile — language, no i18n library)
+- UC-M-080/081/082 (mobile — stubs, no backend APIs)
+
+**STATUS: CLOSED**
