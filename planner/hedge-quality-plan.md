@@ -2226,3 +2226,70 @@ Not an audit. Two high-value features remained unbuilt; both are pattern-ports o
 - `GET /orders/invoice/:orderNumber` only returns a transaction while it is still `PENDING` (pre-payment), so it **cannot** serve a paid-order invoice. The client therefore renders the invoice from the order-detail payload instead. If a canonical server-side invoice (or PDF) is later desired, a paid-order-aware invoice endpoint would be needed. No client hack was made; no backend change was required to ship these features.
 
 **STATUS: Hedge R64 COMPLETE — both features built end-to-end (customer invoice: web print + mobile on-screen/share; vendor tracking: admin ShippingCard + mobile TrackingSection). tsc 0 across all touched repos; Next lint+build green. No new deps. No backend changes.**
+
+---
+
+## Round 65 — Delivery-fee client-side closure: saved-address state/lga key-matching
+
+BUILD/FIX round completing the R59/R60 delivery-fee initiative end-to-end. The backend
+(`resolveDeliveryFee`, precedence `lga > state > national > continent > international > global`)
+resolves per-vendor fees against the customer's **saved delivery address**, keyed as
+`deliveryFeesCoin[countryCode][stateName]` / `[`${stateName}_places`][lgaName]`. countryCode
+is ISO-2 (e.g. `NG`, `business.country`/`user.country` are stored as `Country.isoCode`);
+stateName is the full state name (e.g. `Lagos`, admin free-text in the Country Fees tab).
+Fees only apply if the saved address's `country`/`state` byte-match those keys.
+
+### Investigation — what the clients captured (the crux)
+- **hedge-wears-admin Country Fees** (`app/(dashboard)/delivery-fees/_delivery-fees-view.tsx`):
+  `countryCode` = free-text ISO-2 (uppercased), `stateName` = free-text ("e.g. Lagos"). No LGA
+  UI, so hedge vendors configure **state-level** fees only. → canonical key format = ISO-2
+  country + full state name.
+- **hedge WEB** (`components/views/checkout/add-new-address-modal.tsx`, `data/form.tsx`):
+  `country` correctly sent ISO-2 (`useFetchCountries` value = `isoCode`), BUT the state
+  dropdown (value = full state name via `useFetchStates`) was mislabelled **"City"** and stored
+  under `city`. The backend `whitelist:true` pipe silently strips unknown fields, so saved web
+  addresses carried **no `state`** → the per-state tier NEVER resolved on web. **THE web bug.**
+- **hedge MOBILE** (`components/address/AddressModal.tsx` → `components/address/index.tsx`):
+  `state` correctly sent `state.name`, BUT `country` was sent as the country **NAME**
+  (`countryName`, e.g. "Nigeria") — never matches the ISO-2 keyed fee map → per-state tier
+  never resolved on mobile. **THE mobile bug.** Separately, `placeOrder` sent
+  `addressId: selectedAddress._id` (Mongo `_id`), but backend `getDeliveryAddress` matches on
+  the address's `addressId` uuid — sending `_id` silently fell back to `user.currentAddress`,
+  so the order could be charged on a different state/lga than the checkout preview resolved.
+
+### Key-match verdict
+Both clients were BROKEN (each on a different field): web omitted `state` entirely; mobile
+sent country as name not ISO. Neither would ever resolve a per-state fee. The preview + order
+now both key off the same saved address with matching ISO country + full state name.
+
+### Fixes (files + commit hashes)
+- **hedge-web-app** (`develop-extended`, tip `45f0778`): `data/form.tsx` (rename address
+  form field `city`→`state`, dropdown fed by state names; schema `city`→`state`),
+  `components/views/checkout/add-new-address-modal.tsx` (edit defaults map `state`),
+  `developer-guide.md`. Commit `45f0778`.
+- **hedge-mobile-app** (`develop-extended`, tip `47ac2e4`): `components/address/AddressModal.tsx`
+  (payload carries `countryIso` + `countryName`), `components/address/index.tsx` (send
+  `country: countryIso`), `utils/helper.tsx` (new `countryNameFromIso` ISO→name helper from
+  `countries+states.json`, legacy-name fallback), `components/address/AddressContainer.tsx` +
+  `components/checkout/ShippingAddress.tsx` (display via `countryNameFromIso`),
+  `components/checkout/index.tsx` (`placeOrder` sends `addressId` uuid not `_id`),
+  `developer-guide.md`. Commit `47ac2e4`.
+- **hedge-website**: this close-out.
+
+### Validation
+- `npx tsc --noEmit` → **0** for both touched TS repos (hedge-web-app, hedge-mobile-app,
+  worktree noise excluded). No `test` script in web; mobile stale Expo jest watch suite not
+  chased. No new dependencies. Backend untouched (read-only reference).
+
+### Backend note (read-only — no change required)
+- Fee keys are ISO-2 country + full state name; both clients now send matching values, so
+  **no backend change is needed**. hedge admin exposes no LGA fee UI, so LGA-level fees are
+  not configured for hedge vendors; state-level resolution is the effective target and is now
+  fully wired. If LGA-level fees are later desired, admin would need an LGA (places) input and
+  the client address form an LGA selector emitting `lga` = the matching `lgaName`.
+
+**STATUS: Hedge R65 COMPLETE — delivery-fee path fully closed client-side. Web now persists
+`state` (full name) + ISO country; mobile now persists ISO `country` (+ correct `state.name`)
+and sends the order's `addressId` uuid so the charged address matches the previewed one. Both
+saved-address values byte-match the vendor fee-map keys. tsc 0 across both touched repos; no
+new deps; no backend changes.**
