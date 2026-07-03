@@ -2766,3 +2766,77 @@ Every coin KPI/row on both apps is shown coin-first (HGC glyph / `CoinIcon` / `L
 - `npx tsc --noEmit` → **0** in hedge-wears-admin (touched). hedge-mobile-app **not touched** (all analytics screens clean-with-evidence). hedge-web-app has **no owner-analytics surface** (customer-only — verified). Additive single-file fix; reused existing hooks/patterns; no new deps; no cosmetic churn.
 
 **STATUS: Hedge R78 COMPLETE — owner business analytics/metrics traced end-to-end (mobile manage-store + admin dashboard) against the live backend. MOBILE: all four analytics screens + manage-store home CLEAN-with-evidence — counters always carry `metricDateRange` (no bare/throwing counter), counts read `byCount`, money reads coin fields coin-first. ADMIN HOME: revenue tile CLEAN (R62 `byValueCoin` DELIVERED fix intact); all child widgets clean. ADMIN ANALYTICS: 2 bugs FIXED (`ad3d467`) — AOV now divides delivered revenue by the DELIVERED order count (was all-status, understating it); Total Discount Given now sums voucher `pointCoin` (was reading non-existent `amountCoin`/`amount` → always 0). Coin/naira labeling audit: PASS across both apps — every coin KPI coin-first + fiat, revenue = delivered coin field, no mislabels. hedge-web confirmed customer-only (no owner analytics). Backend gap: `/rewards/metrics` has no coin/counter aggregation (voucher tiles derive from a 50-cap list). tsc 0 admin (only touched repo). With delivery/orders/payments/auth/address/reviews/wishlist/product/notifications/settings/checkout/search/store-follow/storefront/media/cart/profile/wallet/analytics all now traced, hedge appears EXHAUSTIVELY CLOSED — no un-traced owner or customer surface remains.**
+
+---
+
+## Round 79 — Storefront owner-set UI (FEATURE BUILD, not audit)
+
+**Date:** 2026-07-03 · **Type:** feature build closing the last genuine gap.
+
+### Gap
+Backend supports an owner setting their storefront (`storeAnnouncement` + up to 8
+`featuredProductIds`) and the customer display rail already consumes
+`GET /businesses/:id/storefront` (R75). But **hedge-mobile-app had no owner UI to set
+those values**, so the rail sat empty. (hedge-wears-admin already shipped its
+storefront management page in a prior round — commits `82b9014`, `df31859`, `c66f6fc`
+— fully wired in the sidebar; verified present, no rebuild needed.)
+
+### Built — hedge-mobile-app (commit `df2f7c2`)
+New **Storefront Display** screen in `manage-store` (owner-only entry):
+- `app/manage-store/storefront.tsx` → `components/manage-store/StorefrontDisplay.tsx`
+- Owner-only menu entry added in `components/manage-store/index.tsx` (Shop icon, Store Management group)
+- `services/business.ts` — `updateStorefront(businessId, dto)` + `IUpdateStorefrontPayload`
+- `hooks/apihooks/storefront.ts` — `useUpdateStorefront` (invalidates `['storefront']` + `['business']`)
+- `developer-guide.md` — owner-set round-trip + PATCH contract documented
+
+**Announcement:** text input bound to current `storeAnnouncement`, capped at **500** chars
+(matches backend `@MaxLength(500)`), with live counter.
+**Featured products:** multi-select grid of the owner's own **active** products
+(`useGetProducts({ productBusinessId, productVendorId, activeProduct:'1', limit:'50' })`),
+coin-first price via `Logo` glyph + `formatAmount`, hard-capped client-side at **8**
+(toast on overflow — mirrors backend `@ArrayMaxSize(8)`, deduped server-side).
+Skeleton loading / error-retry / empty states throughout.
+
+### PATCH contract used
+`PATCH /businesses/:businessId/storefront` — body sends **only** the two whitelisted fields:
+```json
+{ "storeAnnouncement": "<=500 chars", "featuredProductIds": ["<=8 ids"] }
+```
+Extra keys are stripped server-side.
+
+### Ownership-guard verdict (backend, read-only)
+**OWNER-SCOPED — SECURE.** `businessesService.updateStorefront` runs
+`findOneAndUpdate({ _id: businessId, vendor: vendorId }, …)` and throws
+`400 "Business is not owned by vendor"` on mismatch; the vendorId comes from
+`req.user._id` under `JwtUsersGuard` (`@Throttle(10,60)`). No IDOR. No gap to log.
+
+### Round-trip confirmed
+Owner sets values → `PATCH /storefront` persists `storeAnnouncement` +
+`storeAnnouncementUpdatedAt` + deduped `featuredProductIds`, busts the
+`business:profile:<id>` redis cache → `GET /businesses/:id/storefront` returns
+`{ …business, featuredProductIds, storeAnnouncement, featuredProducts[] }` →
+customer rail (`app/(tabs)/index.tsx` → `components/shop/index.tsx` via
+`useGetStorefront`) renders the new banner + featured products. `useUpdateStorefront`
+invalidates both queries so the change reflects without a manual reload.
+
+### Files (hedge-mobile-app @ `df2f7c2`)
+- `app/manage-store/storefront.tsx` (new)
+- `components/manage-store/StorefrontDisplay.tsx` (new)
+- `components/manage-store/index.tsx` (owner-only menu entry)
+- `services/business.ts` (updateStorefront + payload iface)
+- `hooks/apihooks/storefront.ts` (useUpdateStorefront)
+- `developer-guide.md` (round-trip + contract)
+
+### Validation
+- `npx tsc --noEmit` → **0** in hedge-mobile-app (touched; expo typed-routes regenerated for the new route).
+- hedge-wears-admin — **already shipped** (verified present + pushed, working tree clean); not modified this round.
+- hedge-web-app — **customer-only**, no owner UI added (correct).
+- Additive only; reused existing DeliveryPricing/product-list patterns, hooks, `AppInput`/`AppButton`/`Logo`; no new deps; no cosmetic churn.
+
+**STATUS: Hedge R79 COMPLETE — storefront owner-set gap CLOSED. hedge-mobile-app now
+has the Storefront Display owner UI (announcement ≤500 + up to 8 featured products,
+8-cap enforced client-side) PATCHing the two whitelisted fields to the owner-scoped
+`/businesses/:id/storefront` route; hedge-wears-admin already had the equivalent web
+page. Round-trip verified end-to-end (owner PATCH → GET storefront → customer rail
+renders). tsc 0 on the only touched repo. The storefront display, previously empty for
+lack of an owner-set surface, is now fully populatable from both owner surfaces.**
