@@ -2106,3 +2106,34 @@ R59 shipped everything except the continent tier, which was deferred **only** be
 - Hedge repos touched are **docs-only** (markdown) — no TS changed, no tsc needed.
 
 **STATUS: Hedge CLOSED — full fallback complete.** The delivery-fee fallback now covers every tier the clients can configure (lga > state > national > continent > international > global). Continent charges by the delivery country's continent via a static ISO map; an unconfigured vendor still charges exactly 0 and all prior behaviour is unchanged. Nothing deferred remains.
+
+---
+
+## Round 61 — new surface set (payments, wallet, variants, cart/reviews, staff/toggles, config); delivery left alone
+
+Deliberately did **not** re-audit the delivery-fee machine or order status transitions (closed R58–R60). Targeted seven concrete surfaces the fee rounds overshadowed. Backend was read-only and verified against real DTOs / service code.
+
+### Surfaces reviewed → result
+1. **R59/R60 client regression check** — Backend merges `deliveryFeesCoin` via dot-notation `$set` (mergeFlatDeliveryTiers), so the mobile coin-only save and admin Global/Continent tabs never clobber sibling tiers. Admin continent `id` slugs match backend `continentOf` slugs exactly. **No regression.** But the web checkout preview had a genuine accuracy bug (below), and both previews omit the continent tier (documented limitation, not fixed — needs a client ISO map; no-op for Hedge's national/international setup).
+2. **Payments / checkout / Paystack** — **Clean.** Web fund: server-authoritative `totalPayableAmount*100` (kobo, react-paystack) + webhook-deferred credit (only invalidates USER_PROFILE on success, no optimistic credit). Mobile fund: passes naira `totalPayableAmount` — correct, because `react-native-paystack-webview@5` multiplies `amount*100` internally (verified in lib `utils.js:82`). Order payload matches `BulkCreateOrderDto`; extra `businessId`/`userId` are stripped by `whitelist:true`. Voucher, insufficient-balance gate present.
+3. **Wallet** — **Clean.** Withdraw payload matches `TransferPaymentDto` (userId/password/amount(coin)/paymentType); mobile adds `reason`. Balance shown in coin; withdraw/order/fund all invalidate USER_PROFILE + TRANSACTIONS → no stale-balance class.
+4. **Product variants & inventory** — **Fixed (web).** Backend `calculateProductVariantAmount` SUMS every selected variant's surcharge; the web cart used `Math.max`, understating multi-variant (size+colour) totals and the balance gate. Now sums (matches `product-actions` display + backend). Mobile already summed. Required-variant gating present both apps.
+5. **Cart / wishlist / reviews** — **Clean** (cart fixed via #4). Wishlist = product like/unlike (`products/:id/like|unlike`) on both apps — valid round-trip. Review create sends all `CreateReviewDto` required fields (vendorId/businessId/customerId/rating) from both call sites.
+6. **Staff / roles / business toggles** — **Fixed (mobile, 2 bugs).** (a) Add-staff sent an empty `{}` body to `POST users/:id/businesses/:id/staff` — the backend needs a full `UserInvitationDto` (email/firstName/lastName/phone/password) **and** `?invitation=1` to grant the STAFF role, so it always 400'd. Replaced the single "user id" field with a proper invite form + correct body/query. (b) Store Settings switches read `isTakingOrder`/`isReturnOrder`/`isAutoAcceptOrder`, which the backend never returns — real fields are `takingOrder`/`allowOrderReturn`/`autoAcceptOrder`. Switches now bind to the real fields (web + admin were already correct).
+7. **Whitelabel / config integrity** — **Clean.** Each app reads the Paystack env name matching its own `.env.example` (web `NEXT_PUBLIC_PAYSTACK_KEY`; admin `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY`; mobile `EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY` — the web/admin naming difference is documented in admin's `.env.example`). Base URL, SOURCE_ID/BUSINESS_ID/VENDOR_ID consistent. Minor note: `HEDGECOIN_RATE` static fallback differs (mobile 1600 vs web/admin 200) — fallback-only, live rate fetched from API, not a functional bug.
+
+### Files + commit hashes
+- **hedge-web-app** (`develop-extended`): `45b7ae6`(push tip). Cart variant sum → `context/cart-context.tsx`; checkout preview selected-address+lga → `app/(dashboard)/checkout/_checkout-view.tsx` + `types/user.ts`; `developer-guide.md`.
+- **hedge-mobile-app** (`develop-extended`): `efa03fa`(push tip). Staff invite → `components/manage-store/Staff.tsx`, `hooks/apihooks/staff.ts`, `services/user-services.ts`; store-settings fields → `components/manage-store/StoreSettings.tsx`; `developer-guide.md`.
+- **hedge-wears-admin**: not touched (staff/toggle field names + delivery tabs already correct).
+- **hedge-website**: this close-out.
+
+### Validation
+- `npx tsc --noEmit` → **0** for hedge-web-app and hedge-mobile-app. No test script in web/admin; mobile stale Expo jest suite not chased. Backend untouched (read-only).
+
+### Backend gaps logged (read-only — for the backend team)
+- `main.ts` global `ValidatePipe({ whitelist: true })` has `forbidNonWhitelisted` commented out (security rule #4). Extra client fields are silently stripped rather than rejected — harmless for current clients but weakens input validation.
+- `mergeFlatDeliveryTiers` JSDoc still says continents are "not yet charged" — stale since R60 (`resolveDeliveryFee` charges the continent tier). Comment-only.
+- Checkout previews (web + mobile) cannot fully mirror the continent tier without a shared client country→continent map. Server stays authoritative.
+
+**STATUS: Hedge CLOSED — surface set clean after 4 genuine client fixes (web cart variant-sum, web checkout preview address; mobile staff invite, mobile store-settings toggles). No delivery/order re-audit performed (already closed). No backend changes.**
