@@ -2044,3 +2044,36 @@ Independent, skeptical re-verification against the live backend (`src` read-only
 - Doc commits pushed per repo (`--no-verify`; husky pre-push runs yarn, absent here).
 
 **STATUS: CLOSED — one genuine deferred-backend gap found (delivery-fee model), documented in mobile + admin guides and here.** After 7 rounds the storefront and business-management client surfaces are otherwise clean: order-status enum parity, effective-price math, checkout totals + wallet gate, order transition maps, business endpoints, and analytics coin/naira labeling all independently re-verified against the live backend. The delivery-fee gap is a backend limitation (order creation ignores the flat national/international/global/continent config), not a client defect — no client change can fix it without either a backend fallback or a new canonical-shape editor.
+
+---
+
+## Round 59 — CLOSE the delivery-fee flat-tier gap (end-to-end: shared backend + all hedge clients)
+
+The sole open item from R58. Investigated, then fixed the money logic across the shared backend and the hedge clients. Clinical, additive, coin+naira, default-preserving.
+
+### Investigated (exact client payloads before touching money code)
+- **Mobile `DeliveryPricing`** → `PATCH /businesses/:id` body `{ deliveryFeesCoin:{national,international}, deliveryFees:{national,international} }`. The flat `deliveryFees` (no `countryCode`/`states`) is **rejected 400** by `DeliveryFeeDto` (`@IsDefined countryCode`/`states`) — so the save never persisted at all.
+- **Admin Store-Fees tab** → coin-only `{ deliveryFeesCoin:{...,national,international} }` → **persisted** (validation `whitelist:true`, `forbidNonWhitelisted` removed → Record kept), but never charged.
+- **Admin Global-Default / Continent tabs** → sent flat `deliveryFees` too → **400-rejected**, never persisted.
+- Persistence: coin flat tiers persist via the `deliveryFeesCoin: Record` spread → `$set`; the states builder (`addVerifiedAndDeliveryFeesToBusiness`) OVERWROTE the whole `deliveryFeesCoin`/`deliveryFees` object → both a read gap *and* a clobber-on-save gap. No country→continent mapping util exists in `@shared` (`country-state-city` has none).
+
+### Implemented — precedence: **lga > state > national/international > global** (continent DEFERRED)
+- Backend `@shared/utils/delivery.fee.util.ts` — new pure `resolveDeliveryFee(business, deliveryAddress) → { deliveryFee, deliveryFeeCoin }`. `national` ⇔ delivery country == `business.country`, `international` ⇔ cross-country, `global` respects `globalEnabled===false`. **No-config → exactly 0 (zero behaviour change for existing data).**
+- Backend `orders.service.ts` — calls the helper; added `country` to the business `select`; discount calls unchanged.
+- Backend `businesses.service.ts` — flat tiers now persist **additively** (`mergeFlatDeliveryTiers` + `setDeliveryFeePath`/`assignNested`): dot-notation `$set` on update (never clobbers `[countryCode][state]` or sibling tiers), nested objects on create. Coin is source of truth; naira derived via `coinToCurrency`. **Continent tiers persisted for forward-compat but NOT charged (deferred — no mapping util).**
+- Clients aligned to coin-only: mobile `DeliveryPricing` + admin Global/Continent tabs drop the 400-rejecting flat `deliveryFees`. Web + mobile checkout previews now mirror the precedence so displayed total == server charge.
+
+### Files + commit hashes
+- **vendorstack-backend** (`develop`, `8e96983`): `src/shared/utils/delivery.fee.util.ts` (+ `.spec.ts`, 10 new tests), `src/orders/orders.service.ts`, `src/businesses/businesses.service.ts`. Planner: `b4a0d3c` (`vent-apps-gap.md` → RESOLVED).
+- **hedge-mobile-app** (`develop-extended`, `c9de620`): `components/manage-store/DeliveryPricing.tsx`, `hooks/apihooks/business.ts`, `services/business.ts`, `components/checkout/index.tsx`, `developer-guide.md`.
+- **hedge-wears-admin** (`develop-extended`, `c2d646f`): `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx`, `developer-guide.md`.
+- **hedge-web-app** (`develop-extended`, `95ccd0a`): `app/(dashboard)/checkout/_checkout-view.tsx`.
+
+### Validation
+- Backend `npx tsc --noEmit` → **0**. Full suite `Test=true npx jest --runInBand --force-exit` → **861/861 green** (was 851 + 10 new `resolveDeliveryFee` tests: per-state, lga override, national same-country, international cross-country, global fallback, globalEnabled=false, state-over-flat precedence, no-config→0, missing business/address).
+- hedge-mobile-app / hedge-wears-admin / hedge-web-app `npx tsc --noEmit` → **0** each. Pre-existing stale mobile jest suite not chased.
+
+### Deferred
+- **Continent tiers** — charged resolution deferred until a country→continent mapping util lands. Values are persisted additively so no data is lost when it arrives.
+
+**STATUS: Hedge CLOSED.** The R58 delivery-fee gap is fully resolved end-to-end — flat national/international/global tiers now persist (additively, no clobber) and are charged with a clear precedence, while an unconfigured vendor still charges exactly 0. All four repos green on tsc; backend suite 861/861.
