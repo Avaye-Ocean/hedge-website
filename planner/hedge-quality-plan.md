@@ -2475,3 +2475,35 @@ Saved addresses store `country` as ISO-2 and `state`/`lga` as NAMES (lga byte-ma
 - Edit uses the PATCH endpoint — addressId preserved, no delete+add. Add mode unchanged. Additive; no new deps.
 
 **STATUS: Hedge R70 COMPLETE — mobile address CRUD is now complete (add / edit / delete / set-default). Edit consumes the R69 PATCH endpoint (addressId preserved), with the async country→state→lga prefill reconciled safely and the latent state-iso→isoCode bug fixed. tsc 0; Add mode untouched.**
+
+## Round 71 — End-to-end BUILD/VERIFY of two storefront flows: product reviews + wishlist (web + mobile)
+
+**Type:** END-TO-END TRACE/VERIFY + FIX. Scope: hedge-web-app + hedge-mobile-app (`develop-extended`); hedge-wears-admin review-moderation surface verified (no change). Every hop traced against the live backend `reviews`/`products` contracts — not a param-level read.
+
+### Backend contract (READ-ONLY, `vendorstack-backend/src`)
+- **Reviews:** `POST /reviews` body = `CreateReviewDto` → `{ vendorId, businessId, customerId, rating } ` required, `{ productId?, comment?, sourceId? }` optional. `customerId` **required** (the controller passes `req.user._id` only to `addReview`'s signature; the persisted `customer` comes from `payload.customerId`). Rating 1–5.
+- **IMAGE FINDING — reviews DO NOT support images.** `review.schema.ts` and `CreateReviewDto` carry **no** image/photo field; `addReview` persists only rating/comment/refs. The R63 base64-vs-multipart class does **not** apply here — there is nothing to upload. Neither client sends an image; correct, not fabricated. (Logged as: image on reviews is a backend gap if ever desired, not a client bug.)
+- **Can-review gate:** backend enforces **no purchase/received gate** — `validateDetails` only checks vendor↔business match, product↔vendor match, `customer !== vendor`, plus a unique index (one review per customer per vendor's business/product) + `subscriptionPermissions.allowRatingAndReview`. Both clients add a *UX* gate (entry only after DELIVERED/RECEIVED/SHIPPED) which is stricter than and compatible with the backend.
+- **Rating aggregate:** `calculateAvgReviewRating` updates `product.rating.reviewRatingAvg` (product review) or `business.rating.reviewRatingAvg`, plus vendor `overallReviewRatingAvg`, server-side per review.
+- **Wishlist/like:** `POST /products/:id/like` + `POST /products/:id/unlike` (empty body). "Is wishlisted" read back two ways: product-list responses carry `isLike: boolean` (`attachFollowLike` → `is<Type>` key, LIKE→`isLike`, authenticated non-admins); saved list = `GET /products/users/:userId/likes` → follow-like records with populated `entity` (product) and `type === "LIKE"`.
+
+### FLOW 1 — Product reviews
+- **Web — bug fixed (`64c9a66`).** Request shape verified correct end-to-end (`{vendorId=VENDOR_ID, businessId=BUSINESS_ID, customerId=user._id, productId, rating, comment, sourceId}`; extra `orderId` from the order dialog is harmlessly stripped by the backend `ValidationPipe({whitelist:true})`). **Break:** the product-page `useReviewProduct` (`api/product`) invalidated `[PRODUCTS, productId]` but **not** the review list (`[REVIEWS]`), and the order-dialog `useReviewProduct` (`api/orders`) invalidated **nothing** → a submitted review did not appear in the list without a reload. Both now invalidate `[PRODUCTS, REVIEWS]`. Gate (post-delivery `isCompleted`) and rating refresh (PRODUCTS prefix → product-detail) confirmed.
+- **Mobile — bug fixed (`3a8aafe`).** Request shape verified correct (`WriteReviewModal` → `addProductReview` → `POST /reviews` with all `CreateReviewDto` fields incl. `sourceId`). Gate = order `DELIVERED`/`RECEIVED` in `order-details`. **Break:** `useAddProductReview` invalidated only `[PRODUCTS]`, missing `[PRODUCT_REVIEWS]` (review list, `app/reviews.tsx`) and `[PRODUCT_DETAILS]` (rating) — masked only because the reviews screen refetches on mount. Now invalidates all three.
+
+### FLOW 2 — Wishlist
+- **Web — clean with evidence.** `product-card`/`useToggleFavProduct` read `product.isLike` (matches backend `attachFollowLike`); like/unlike hit `products/:id/like|unlike` and invalidate `[PRODUCTS, LIKED_PRODUCTS]`; wishlist page reads `GET /products/users/:id/likes` → `results[].entity`/`.type==="LIKE"`, removal round-trips via `LIKED_PRODUCTS` invalidation, persists across reload. No change needed.
+- **Mobile — bug fixed (`3a8aafe`).** Like/unlike previously called `refetchQueries({queryKey:[PRODUCTS, PRODUCT_LIKES]})` — a **compound key matching no registered query** (product list key is `[PRODUCTS, …filters]`, wishlist key is `[LIKED_PRODUCTS, userId]`; `PRODUCT_LIKES` is used by neither). Effectively a dead no-op; the UI only stayed correct via `ProductCard`'s local `isLiked` state and the wishlist screen's own `useFocusEffect`/post-unlike `refetch()`. Replaced with `invalidateQueries([PRODUCTS])` + `invalidateQueries([LIKED_PRODUCTS])` so the flag/list are server-refreshed too. `isLike` seed + saved-list read-back confirmed correct.
+
+### Admin (hedge-wears-admin) — verified, no change
+Review-moderation surface (`app/(dashboard)/reviews/`) endpoints match backend exactly: list `GET /reviews?reviewBusinessId=…`, `DELETE /reviews/:id` (backend soft-hides), `PUT /reviews/:id/toggle`. `useDeleteReview` lacks hook-level invalidation but the view wires an inline `onSuccess` that invalidates `REVIEWS_ADMIN`, so the list refreshes — no bug.
+
+### Backend gaps logged (not changed — READ-ONLY)
+1. Reviews have no image/photo field — if product-review photos are ever a requirement, it is a backend schema/DTO addition (base64 vs upload-endpoint TBD), not a client fix.
+2. No purchase/delivery gate on `POST /reviews` — any logged-in user may leave one review per product regardless of ownership; clients gate in UI only. Backend enforcement (require a RECEIVED order) would be a backend change.
+3. Backend `main.ts` `ValidationPipe` has `forbidNonWhitelisted` commented out (only `whitelist:true`); extra body props are silently stripped rather than 400'd — why the web order dialog's stray `orderId` is harmless. (Security-rule deviation, pre-existing, out of R71 scope.)
+
+### Validation
+- `npx tsc --noEmit` → **0** in hedge-web-app and hedge-mobile-app. Mobile stale Expo jest suite skipped per runner policy. Additive; no new deps; no cosmetic churn.
+
+**STATUS: Hedge R71 COMPLETE — both storefront flows traced end-to-end against the live backend. Reviews: real invalidation break fixed on web (review list stale) AND mobile (review list + rating stale); request bodies match CreateReviewDto exactly; reviews carry NO image field (confirmed, not fabricated). Wishlist: web clean-with-evidence; mobile dead-key invalidation no-op fixed. Admin moderation verified against contract, no change. tsc 0 both repos.**
