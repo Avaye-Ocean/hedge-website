@@ -2448,3 +2448,30 @@ A saved delivery address could only be added / toggled (set-default) / deleted. 
 - Ownership filter was NOT weakened for any reason; add/toggle/delete behavior unchanged.
 
 **STATUS: Hedge R69 COMPLETE — real backend address-update endpoint (PATCH, ownership-guarded, addressId-preserving) built + tested (876 green), web edit converted from delete+add to a single in-place update, mobile client adopted for parity. R67 "no address-update endpoint" gap resolved.**
+
+## Round 70 — hedge-mobile edit-saved-address UI (consumes the R69 PATCH; preserves addressId)
+
+**Type:** BUILD (mobile UI). Scope: hedge-mobile-app (`develop-extended`). Closes the R69-logged gap "mobile has the `useUpdateAddress` hook wired but NO edit UI to consume it".
+
+### The gap (from R69 close-out)
+R69 built the backend `PATCH /users/:userId/address/:addressId` (ownership-guarded, addressId-preserving) and wired the mobile `updateAddressRequest` + `useUpdateAddress` hook — but hedge-mobile surfaced only add/delete/set-default. Customers had no way to edit a saved delivery address on mobile. hedge-web-app already had the edit flow (R69 `094c520`) to mirror.
+
+### The build (files @ commit `b39ad94`, docs @ `99ef18a`)
+- **`components/address/AddressContainer.tsx`** — added an Edit (pencil, `Edit2`) affordance next to the existing delete/set-default actions on each saved-address row.
+- **`components/address/AddressModal.tsx`** — the shared add form now takes `mode='add'|'edit'` + `initialData`. Edit mode prefills every field from the saved address and switches the title/CTA copy. Add mode is byte-unchanged (same fields, same submit contract, default-toggle still add-only).
+- **`components/address/index.tsx`** — holds `editingAddress` state; pencil → `handleEdit(item)` opens the modal in edit mode. Submit branches: edit → `useUpdateAddress` (`PATCH /users/:id/address/:addressId`) with only mutable fields; **not** delete+add. Modal is `key`ed by `addressId` so each open remounts from clean state. List refreshes via `useGetUserInfo` refetch.
+- **`types/utils.ts`** — added optional saved-address fields (`addressId`, `_id`, `isDefault`, `city`, `zipCode`) to `IAddress` (additive; add-request body usage unaffected).
+
+### The make-or-break: async country→state→lga prefill chain
+Saved addresses store `country` as ISO-2 and `state`/`lga` as NAMES (lga byte-matches the admin Country-Fees keys for delivery-fee resolution). Dependent dropdowns are reconciled as option lists arrive, never blanked while loading:
+- **Country** — selector value IS the ISO-2, prefills directly; setting it loads that country's states. Display via `countryNameFromIso`.
+- **State** — saved value is only a NAME. A reconcile effect waits for the states list, resolves NAME→`isoCode` (`states.find(s => s.name === saved)`), and fills the state iso so its cities load. Guarded to the first reconcile (name present, iso empty) so a late list never clobbers a manual choice.
+- **LGA** — once cities load, the stored NAME matches an option and displays. A `prevStateIso` ref makes the "clear LGA on state change" logic fire only on a *real* state switch, never on the prefill reconcile — the saved LGA survives until its options arrive.
+- **Bug fixed en route:** the state option value was `state?.iso` (a field `country-state-city` does not return — it returns `isoCode`), so cities/LGA never loaded in add either. Corrected to `state?.isoCode`; the shared `useCountries`/`getCity` source is unchanged (no parallel list).
+
+### Validation
+- `npx tsc --noEmit` → **0** (pre-commit + pre-push husky TS checks also green).
+- Mobile stale Expo jest suite skipped per runner policy.
+- Edit uses the PATCH endpoint — addressId preserved, no delete+add. Add mode unchanged. Additive; no new deps.
+
+**STATUS: Hedge R70 COMPLETE — mobile address CRUD is now complete (add / edit / delete / set-default). Edit consumes the R69 PATCH endpoint (addressId preserved), with the async country→state→lga prefill reconciled safely and the latent state-iso→isoCode bug fixed. tsc 0; Add mode untouched.**
