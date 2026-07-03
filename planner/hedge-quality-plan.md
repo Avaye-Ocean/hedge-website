@@ -2330,3 +2330,51 @@ Yes. Web `_checkout-view.tsx` and mobile `checkout/index.tsx` both resolve `coun
 - **Backend: no change required** (read-only reference). DTO (`BusinessStateDto.places?`), user schema `Address.lga`, and order `deliveryAddress.lga` already exist; contract verified before building.
 
 **STATUS: Hedge R66 COMPLETE — delivery-fee granularity fully wired to LGA level, client-side only. Admin can configure per-LGA fees; web + mobile checkout persist `address.lga` from the same shared cities endpoint, so a configured LGA fee resolves against a matching saved-address lga (lga > state). Name-match guaranteed by single-source endpoint + admin state-match guard. tsc 0 across all three touched repos; no new deps; no backend changes.**
+
+---
+
+## Round 67 — Address→Order→Delivery-Fee integration verify + saved-address CRUD
+
+**Type:** BUILD + INTEGRATION-VERIFY. Scope: hedge-web-app + hedge-mobile-app (`develop-extended`). R65 (country ISO/state/addressId) and R66 (LGA selector) both edited the same address plumbing across two rounds — this round traced the composed flow end-to-end and completed customer saved-address CRUD.
+
+### Part A — Integration verdict (R65 + R66 composed)
+
+**Backend contract (read-only, verified):** `Address` sub-schema = `addressId, name, phoneNumber, streetName, busStop, description, country, state, lga`. `addressId` is **server-generated** (`faker.datatype.uuid()`), not client. CRUD endpoints: `POST .../address` (add), `PATCH .../address/:addressId/toggle` (set-default → sets `currentAddress`), `DELETE .../address/:addressId`. **No update/PUT endpoint exists** (vent reference confirms: add/toggle/delete only). `orders.service.getDeliveryAddress` resolves the address by `payload.addressId`, else `currentAddress`. `resolveDeliveryFee` precedence: lga > state > national > continent > international > global; keys are `country`=ISO-2, `state`=full name, `lga`=name.
+
+**Composed flow was MOSTLY correct.** Add-address contract (country=ISO, state=name, lga=name), order `addressId` send, and preview-vs-charge field reads all compose correctly on both platforms. Selected-vs-sent address is consistent. Web LGA-reset-on-state-change already handled (R66 `prevStateRef` guard); web edit-prefill ISO→name mapping is correct.
+
+**Seam bugs found + fixed:**
+1. **web — edit address fully broken (regression seam).** Edit called a non-existent `PUT users/:id/address/:addressId` endpoint and keyed it on Mongo `_id` instead of the `addressId` uuid → every edit failed. Fixed: recompose edit as delete-old + add-new (the only endpoints the backend offers), restoring the prior default via toggle when the edited address was not itself the default. Removed the dead `updateAddress` client + `useUpdateAddress` hook. `78758ef`.
+2. **mobile — stale LGA on state change.** `AddressModal` did not clear the LGA when the state changed, so a prior state's LGA could be submitted (resolves no fee). Fixed: clear `lga` on state change. `d6b4df2`.
+3. **mobile — checkout "City" row displayed `state` (duplicated), not `lga`.** Fixed to show `address.lga` (fallback state). `d6b4df2`.
+
+### Part B — Saved-address CRUD completeness
+
+| Op | Web | Mobile |
+| --- | --- | --- |
+| List | present (`account/my-addresses`, checkout) | present (`app/address.tsx`) |
+| Add | present | present |
+| Delete | present (by `addressId`) | present (by `addressId`) |
+| Set-default | present (toggle → `currentAddress`) | present (toggle) |
+| Edit | **fixed** (delete+add, no backend endpoint) | intentionally absent (mirrors vent/backend) |
+| Default-to-current at checkout | **added** `b909cd4` | **added** `c42b965` |
+
+Empty-state, loading (skeleton / PageLoader) and error (toast) handling present on both. Set-default updates `currentAddress`; checkout now defaults to it on both platforms.
+
+### Backend gap (logged, not changed — read-only)
+- **No address-update endpoint.** Edit is only expressible as delete+add (changes `addressId`). A real `PATCH .../address/:addressId` update would let edit preserve the uuid and ordering. Not in scope this round.
+- **Preview omits the continent tier.** Both web + mobile fee previews resolve lga > state > national/international > global but skip the `continents[continentOf(country)]` tier the backend applies. Pre-existing approximation (predates R65/R66, not a merge seam); left unchanged to avoid porting the ISO→continent map / adding a dep. Only diverges for a foreign delivery country that has a continent fee but no national/international fee.
+
+### Validation
+- `npx tsc --noEmit`: **web 0**, **mobile 0**.
+- Tests: web has no `test` script; mobile `test` is the stale Expo jest watch suite (skipped per runner policy).
+- hedge-wears-admin: no customer saved-address surface (only admin delivery-fee config) — out of scope, untouched.
+- No new deps; reused the R65/R66 country/state/city hooks.
+
+### Files + hashes
+- hedge-web-app (`develop-extended`, pushed): `78758ef` fix edit-address, `b909cd4` feat default-to-current, `d9a3771` docs.
+  Touched: `api/user/index.tsx`, `components/views/checkout/add-new-address-modal.tsx`, `components/views/checkout/shipping-address.tsx`, `developer-guide.md`.
+- hedge-mobile-app (`develop-extended`, pushed): `d6b4df2` fix lga-reset + city display, `c42b965` fix default-to-current, `f97531d` docs.
+  Touched: `components/address/AddressModal.tsx`, `components/checkout/ShippingAddress.tsx`, `components/checkout/index.tsx`, `types/users.ts`, `developer-guide.md`.
+
+**STATUS: Hedge R67 COMPLETE — composed R65+R66 address flow verified end-to-end; one real regression seam (web edit hitting a non-existent endpoint) found and fixed, plus two mobile field-composition fixes. Saved-address CRUD complete on both platforms (edit is web-only by backend design). Checkout defaults to the default address on both. tsc 0 web + mobile; no backend changes; no new deps.**
