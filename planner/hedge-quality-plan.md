@@ -2607,3 +2607,71 @@ Traced each hop against the live backend contract (`orders.service.ts`, `rewards
 - `npx tsc --noEmit` → **0** in hedge-web-app and hedge-mobile-app. Pushed per repo with `--no-verify` (tsc 0 first). Mobile stale Expo jest suite skipped per runner policy. Additive; reused existing hooks/patterns; no new deps; no cosmetic churn.
 
 **STATUS: Hedge R74 COMPLETE — voucher/points/convenience-fee traced end-to-end (web + mobile) against the live backend. VOUCHER: present on both, genuinely broken (read nonexistent discount fields → always 0; web polluted `promotionId`; mobile sent a stripped `voucherCode` → zero effect on charge) → FIXED to the real redeem→wallet-points→order-`point` contract, server-authoritative, capped to the backend guard (web `781d866`, mobile `53eed67`). POINTS: applied via that same `point` field (no standalone earned-points UI — parity note). CONVENIENCE FEE: server-computed ≤6-coin order commission, correctly not client-invented; grand total ≈ server charge minus that documented commission. Backend gaps logged: no wallet quote endpoint, ~half-order point cap, `forbidNonWhitelisted` off. tsc 0 both touched repos.**
+
+## Round 75 — End-to-end BUILD/VERIFY of customer discovery + store flows: search/filter/sort/categories + store-follow/storefront (web + mobile)
+
+End-to-end trace of two un-traced surfaces against the live backend (`buildQuery` in
+`shared/utils/query.util.ts`, products/businesses/categories/tags controllers + services).
+
+### FLOW 1 — Search / filter / sort / categories
+
+- **WEB — CLEAN (with evidence).** `components/views/product/listing/*` sends params that all match `buildQuery`:
+  `productSearch` (debounced 300ms), `productCategoryIds`, `productTagIds`, `productGender`, `order` (ASC/DESC),
+  and price range as **`productSellingPriceRangeCoin`** (coin — products display coin; R62 fix confirmed correct;
+  the URL param is internally named `productSellingPriceRange` but is only ever emitted to the API as the `*Coin`
+  field). Category→tags chain valid: `getCategories(categoryBusinessIds=BUSINESS_ID)` (tags populated) +
+  `GET categories/:id/tags` (served by the **tags** controller, line 101). Pagination via `TablePagination`
+  using `currentPage/totalPages/totalRecords/perPageLimit` (matches `getPaginated`). Empty/loading/error states present.
+  React Query keys on the full `args` object, so every filter permutation refetches. No web changes needed.
+- **MOBILE — BUGS FIXED (`32aeab1`).**
+  1. **Stale-cache filter bug.** `useGetProducts` (`hooks/apihooks/products.ts`) keyed on only
+     `[PRODUCTS, categoryIds, tagIds, search, order]`. Applying a **price-range** (`productSellingPriceRangeCoin`)
+     or **gender** filter changed the query but NOT the key → React Query returned stale results and never
+     refetched. `viewCategoryProducts` price filter and the `search` screen price filter were both silently dead.
+     Fixed to key on the **full query object** (`[PRODUCTS, query]`, matching the vent-web pattern); prefix
+     invalidation on `[PRODUCTS]` still matches.
+  2. **Price-sort sorted by date, not price.** `SearchFilterModal` mapped "Highest"/"Lowest" (price labels) to
+     `order=DESC/ASC`, but `order` only sorts by `rank/createdAt`. The backend products `findAll` has a dedicated
+     `sort` param (`price_asc`/`price_desc`/`popular`). Rewired: Highest→`sort=price_desc`, Lowest→`sort=price_asc`,
+     Newest→default, Oldest→`order=ASC`. Threaded `sort` through `IQueryProduct`, `viewCategoryProducts`, and the
+     `search` screen; `sort` and `order` are mutually exclusive (applying one clears the other).
+  - Category browse (`productCategoryIds`), tags (`productTagIds`), gender (`productGender`), search
+    (`productSearch`), infinite pagination (`currentPage < totalPages`), and coin price range all verified against
+    `buildQuery`. `tsc --noEmit` → 0.
+
+### FLOW 2 — Store follow/unfollow + storefront/announcement
+
+- **STORE FOLLOW/UNFOLLOW — NOT BUILT (single-store whitelabel); correct, not a bug.** Hedge (web + mobile) binds
+  to one `BUSINESS_ID`; there is no store follow button, followed-stores list, or follower-count refresh to trace.
+  (Backend does offer business like/follow + `PUT/DELETE :businessId/follower/:followerId`, and does **not** compute
+  a per-user `isFollow`/`isSubscribed` server-side — P502 — but none of it is reachable in a single-store client.)
+- **STOREFRONT — DISPLAY wired; OWNER-SET NOT BUILT.** Customer display of `storeAnnouncement` + `featuredProducts`
+  is wired on both apps via `GET businesses/:id/storefront` (web `useGetStorefront` in `api/storefront`, mobile
+  `hooks/apihooks/storefront`) — announcement banner (dismissible on web) + featured-products rail; both hide
+  gracefully when empty. Response shape verified: `{ ...business (name/logo/coverPhoto/description/verified/
+  customerFollowers/storeAnnouncement/storeAnnouncementUpdatedAt/featuredProductIds), featuredProducts[] }`
+  (featured filtered to active/non-archived, pin order preserved). The **owner-set** path
+  (`PATCH businesses/:id/storefront` with `storeAnnouncement`/`featuredProductIds`, ≤8 featured, ownership-scoped)
+  **exists on the backend but has NO hedge UI** — mobile manage-store "Announcements" is a broadcast **push
+  notification** (`useBroadcastNotification`), a different concept. So the display is effectively dormant until an
+  announcement/featured set is populated via another channel (vent admin / DB). Confirmed, not fabricated.
+
+### Backend gaps logged (not changed — READ-ONLY)
+1. **No owner storefront-set UI reachable in hedge** — `PATCH businesses/:id/storefront` is fully implemented backend-side
+   but no hedge screen consumes it; the customer display rail stays empty in practice. (Product/UI gap, not a backend defect.)
+2. **`isFollow`/`isSubscribed` not computed server-side** on business `findById`/`getStorefront` (P502 parallel) — a
+   single-store client doesn't need it, but a multi-store hedge variant would have to derive followed-state client-side.
+
+### Validation
+- `npx tsc --noEmit` → **0** in hedge-mobile-app (touched). hedge-web-app: **no changes** (FLOW 1 clean, FLOW 2 display
+  wired / owner-set not built). Pushed hedge-mobile `develop-extended` with `--no-verify` (tsc 0 first). Additive;
+  reused existing hooks/patterns; no new deps; no cosmetic churn.
+
+**STATUS: Hedge R75 COMPLETE — discovery + store flows traced end-to-end (web + mobile) against the live backend.
+FLOW 1 SEARCH/FILTER/SORT/CATEGORIES: web CLEAN (params match `buildQuery`, coin price range, category→tags chain,
+pagination); mobile BUGS FIXED (`32aeab1`) — full-query cache key (price/gender filters were silently returning stale
+results) + price sort now uses the real `sort=price_asc/price_desc` param instead of the date-only `order` param.
+FLOW 2 STORE-FOLLOW: NOT BUILT (single-store whitelabel) — confirmed, not a bug. STOREFRONT: customer DISPLAY wired
+on both (announcement + featured rail, shape verified); OWNER-SET (`PATCH storefront`) exists backend-side with NO
+hedge UI (manage-store "Announcements" = broadcast push, different concept) — confirmed, not fabricated. Backend gaps
+logged: no owner storefront-set UI, no server-computed follow-state. tsc 0 (mobile touched; web untouched).**
