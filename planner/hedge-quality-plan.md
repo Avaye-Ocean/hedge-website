@@ -2424,3 +2424,27 @@ The business country (ISO-2) was already available in both previews (R65 establi
 - Backend untouched (read-only). The R67 "preview omits continent" gap is now **RESOLVED**.
 
 **STATUS: Hedge R68 COMPLETE — continent tier ported client-side (byte-identical ISO→continent map, 242 codes) and slotted into both checkout previews at the correct precedence (national > continent > international). Preview == charge for all 7 tier outcomes. tsc 0 web + mobile; no backend changes; no new deps. R67-logged continent-preview gap resolved.**
+
+## Round 69 — Backend address-update endpoint + hedge client adoption (edit preserves addressId)
+
+**Type:** BUILD (backend feature + hedge client adoption). Scope: vendorstack-backend (`develop`) + hedge-web-app + hedge-mobile-app (`develop-extended`). Closes the R67-logged gap "No address-update endpoint".
+
+### The gap (from R67 close-out)
+A saved delivery address could only be added / toggled (set-default) / deleted. "Edit" was recomposed on the web client as delete-old + add-new + restore-default-via-toggle (R67 `78758ef`), which **changed the server-generated `addressId` uuid on every edit and lost list ordering**. No real in-place update existed on the backend.
+
+### The build
+- **Backend (`develop`, `db28f60`):** added `PATCH /users/:userId/address/:addressId` → `usersService.updateAddress(userId, addressId, dto)`. In-place partial update of the matching `addresses[]` element.
+  - **Ownership** enforced by the authenticated session (`req.user._id`), NEVER the route param (route `:userId` is ignored). Lookup scoped to `{ _id: userIdObj, 'addresses.addressId': addressId }`; mutation uses arrayFilters `[{ 'elem.addressId': addressId }]` against `{ _id: userIdObj }` — a different user can never reach another user's address.
+  - Only supplied fields `$set` (partial — siblings preserved); `addressId` preserved and never mutable; `currentAddress` kept in sync when it points at the edited address.
+  - New `UserUpdateAddressDto` (all fields optional, whitelisted — no inline types). Mirrors the existing add/toggle/delete methods (same JwtUsersGuard, same NotFound behavior). Purely additive.
+  - 5 unit tests added to `users.service.spec.ts` (ownership scope, partial-update-keeps-siblings, addressId preserved, currentAddress-sync guard, not-found).
+  - Planner `quality/vent-apps-gap.md` R67 gap flipped → **R69 RESOLVED** (`0ec640b`).
+- **hedge-web-app (`develop-extended`, `094c520`):** replaced the delete+add edit path in `components/views/checkout/add-new-address-modal.tsx` with a single `updateAddress` call; added `userClient.updateAddress` + `useUpdateAddress`. Edit now preserves the `addressId`, ordering, and default state. Dev guide updated.
+- **hedge-mobile-app (`develop-extended`, `a61e7ef`):** adopted the endpoint at the client layer — `updateAddressRequest` + `useUpdateAddress` (mirrors existing address service fns/hooks). Mobile has **no edit UI** to convert (only add/delete/set-default are surfaced), so the hook is wired for parity and ready to consume. Dev guide updated.
+
+### Validation
+- Backend: `npx tsc --noEmit` → **0**. Full suite `Test=true npx jest --runInBand --force-exit` → **876 tests passed, 0 failures** (871 baseline + 5 new). The "9 failed suites" are the known `jest.teardown` afterAll multi-DB close flake (DNS ETIMEOUT on connection close) — 0 real test failures.
+- hedge web + mobile: `npx tsc --noEmit` → **0 each**. Mobile stale Expo jest suite skipped per runner policy.
+- Ownership filter was NOT weakened for any reason; add/toggle/delete behavior unchanged.
+
+**STATUS: Hedge R69 COMPLETE — real backend address-update endpoint (PATCH, ownership-guarded, addressId-preserving) built + tested (876 green), web edit converted from delete+add to a single in-place update, mobile client adopted for parity. R67 "no address-update endpoint" gap resolved.**
