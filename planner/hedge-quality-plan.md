@@ -2077,3 +2077,32 @@ The sole open item from R58. Investigated, then fixed the money logic across the
 - **Continent tiers** — charged resolution deferred until a country→continent mapping util lands. Values are persisted additively so no data is lost when it arrives.
 
 **STATUS: Hedge CLOSED.** The R58 delivery-fee gap is fully resolved end-to-end — flat national/international/global tiers now persist (additively, no clobber) and are charged with a clear precedence, while an unconfigured vendor still charges exactly 0. All four repos green on tsc; backend suite 861/861.
+
+---
+
+## Round 60 — FINAL close: activate the CONTINENT tier (the one deferred piece of the full fallback)
+
+R59 shipped everything except the continent tier, which was deferred **only** because no country→continent map existed. R60 adds that map and wires it in — cleanly, additively, default-preserving. Full fallback is now complete.
+
+### Investigated (exact continent payload before touching money code)
+- **Admin Continent tab** (`hedge-wears-admin app/(dashboard)/delivery-fees/_delivery-fees-view.tsx`) writes `deliveryFeesCoin.continents` keyed by the static `CONTINENTS` list's **`id` slugs**: `africa` · `europe` · `north-america` · `south-america` · `asia` · `oceania`. Saves **coin only** (`{ deliveryFeesCoin: { ...existing, continents: { [id]: coin } } }`) — already R59-compliant, no shape change needed.
+- **Mobile** has **no** continent tab (`DeliveryPricing.tsx` = national/international only) — admin is the sole writer of continent keys.
+- **Country identifier**: `business.country` / `deliveryAddress.country` store a **2-letter ISO alpha-2 code** (`NG`, `GB`, `US`) — validated via `country-state-city` `getCountryByCode` in `create-business.dto.ts`; the R59 spec already asserts `NG`/`GB`/`US`. So the map is keyed by alpha-2 → continent slug.
+
+### Implemented — precedence: **lga > state > national > continent > international > global**
+- New `@shared/utils/country-continent.util.ts` — a plain static ISO-3166 alpha-2 → continent-slug lookup (no external dep), output slugs matching the admin keys exactly. `continentOf(country)` is case-insensitive/trimmed and returns `undefined` for unmapped codes (Antarctica `AQ` deliberately omitted — no admin tier).
+- `resolveDeliveryFee` extended: national (same-country) → **continent (`continents[continentOf(deliveryCountry)]`, keyed by the DELIVERY country's continent)** → international (any-foreign) → global. Continent is the regional grouping between same-country national and any-foreign international. Coin is source of truth; naira mirrors. Discount calls unchanged.
+- **HARD RULE preserved:** no-continent-config still returns exactly `{0,0}`; every existing per-state/national/international/global result is byte-for-byte unchanged. Unmapped delivery country simply skips the continent tier — no throw.
+- `orders.service.ts` — call-site comment updated to the new precedence; `country` already in the business `select` (R59). No other regression.
+
+### Files + commit hashes
+- **vendorstack-backend** (`develop`, `f80929e`): new `src/shared/utils/country-continent.util.ts`, `src/shared/utils/index.ts` (export), `src/shared/utils/delivery.fee.util.ts` (continent wiring + JSDoc), `src/shared/utils/delivery.fee.util.spec.ts` (+12 tests), `src/orders/orders.service.ts` (comment). Planner: `59cc30a` (`vent-apps-gap.md` → continent ACTIVE).
+- **hedge-wears-admin** (`develop-extended`, `c31f84a`): `developer-guide.md` (continent now charges).
+- **hedge-mobile-app** (`develop-extended`, `8ef5175`): `developer-guide.md` (full fallback incl. continent).
+- **hedge-web-app**: not touched (no continent config; checkout is server-authoritative).
+
+### Validation
+- Backend `npx tsc --noEmit` → **0**. Full suite `Test=true npx jest --runInBand --force-exit` → **871/871 tests green** (was 861 + 12 new: continent-hit foreign, national-beats-continent same-country, continent-fallthrough same-country, continent-beats-international foreign-same-continent, international-for-foreign-other-continent, unmapped-skips-continent, no-continent-config→0, plus `continentOf` mapping/case-insensitive/undefined). The only non-green suites are the known environmental `jest.teardown.ts` multi-DB connection-close flakiness (0 test failures) — unrelated to this change; the delivery-fee suite passes standalone.
+- Hedge repos touched are **docs-only** (markdown) — no TS changed, no tsc needed.
+
+**STATUS: Hedge CLOSED — full fallback complete.** The delivery-fee fallback now covers every tier the clients can configure (lga > state > national > continent > international > global). Continent charges by the delivery country's continent via a static ISO map; an unconfigured vendor still charges exactly 0 and all prior behaviour is unchanged. Nothing deferred remains.
