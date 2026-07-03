@@ -2293,3 +2293,40 @@ now both key off the same saved address with matching ISO country + full state n
 and sends the order's `addressId` uuid so the charged address matches the previewed one. Both
 saved-address values byte-match the vendor fee-map keys. tsc 0 across both touched repos; no
 new deps; no backend changes.**
+
+---
+
+## Round 66 — LGA-level (per-place) delivery fees
+
+**Date:** 2026-07-03
+**Type:** BUILD — complete delivery-fee granularity to LGA level (backend already supported it; R65 flagged the client gap).
+
+### What was built
+The full-granularity delivery-fee path (LGA overrides state overrides national/continent/international/global). Backend was already capable (`resolveDeliveryFee` reads `deliveryFeesCoin[country][`${stateName}_places`][lgaName]`; `businesses.service.ts` already reduces `deliveryFees.states[].places[]` into `${stateName}_places`). The gap was purely client-side and is now closed:
+- **hedge-wears-admin** — Country Fees tab: each state row gets a collapsible **LGA overrides** editor (new `StateFeeRow` component). LGA dropdown fed by the shared cities endpoint; persists `deliveryFees.states[].places[]` = `{ lgaName, deliveryFee }`. Also fixed the local interface (`placeName`→`lgaName`) and now actually sends `places` on save (previously dropped).
+- **hedge-web-app** — delivery-address form: dependent **LGA / City** dropdown (`useFetchCityOptions`), stores `address.lga` = city name; state ISO derived via `useFetchStatesRaw` (shared query key, no extra request). Preview already keyed the lga lookup → now equals server charge.
+- **hedge-mobile-app** — `AddressModal`: dependent **LGA / City** selector (`useCountries().getCity`/`cities`), submits `address.lga` = city name. Preview already keyed the lga lookup → now equals server charge.
+
+### Shared LGA-name source (the make-or-break detail)
+All three apps AND the admin read the **same** backend endpoints, both powered by the `country-state-city` library:
+- States: `GET /countries/:countryCode/states` → value = state `.name` (e.g. `Lagos`).
+- LGAs/cities: `GET /countries/:countryCode/states/:stateIso/cities` → value = city `.name` (e.g. `Ikeja`), with Nigeria LGA overrides from the backend `CountryConstants` (`NG_LA`, `NG_FC`, `NG_EN`).
+
+Because admin `lgaName` and every checkout LGA-selector value are drawn from this one endpoint, they are **byte-identical by construction** — no local list, no per-app formatting. Safeguard against the R65 mismatch class: the admin LGA editor is **only enabled when the typed `stateName` exactly matches an official state name** (needed to resolve its ISO code for the cities call); a non-matching state shows a warning and no editor, so the admin cannot persist a `${stateName}_places` key that checkout could never resolve.
+
+### preview == charge for LGA
+Yes. Web `_checkout-view.tsx` and mobile `checkout/index.tsx` both resolve `countryFeesCoin[`${state}_places`][lga]` first, and the order path pulls the full saved address by `addressId` (R65 plumbing) so `lga` flows into `resolveDeliveryFee` server-side. Preview and charge use the same key.
+
+### Files + hashes per repo
+- **hedge-wears-admin** (`develop-extended`, commit `8a330d8`): `app/(dashboard)/delivery-fees/_delivery-fees-view.tsx` (`b5afe0fc3`), `developer-guide.md` (`f114a0b11`).
+- **hedge-web-app** (`develop-extended`, commit `94b6d25`): `api/default/index.tsx` (`97b3ae00f`), `components/views/checkout/add-new-address-modal.tsx` (`ef9f131ce`), `data/form.tsx` (`739ed0804`), `developer-guide.md` (`7e782aec2`).
+- **hedge-mobile-app** (`develop-extended`, commit `6af5bb8`): `components/address/AddressModal.tsx` (`1de763756`), `components/address/index.tsx` (`44767ccb6`), `developer-guide.md` (`ebd2f767f`).
+- **hedge-website**: this close-out.
+
+### Validation
+- `npx tsc --noEmit` → **0** for all three touched TS repos (admin, web, mobile).
+- No `test` script in admin or web; mobile stale Expo jest suite not chased (per standing instruction).
+- No new dependencies — the `country-state-city` data is served by existing backend endpoints; all three apps already had countries/states/cities API hooks.
+- **Backend: no change required** (read-only reference). DTO (`BusinessStateDto.places?`), user schema `Address.lga`, and order `deliveryAddress.lga` already exist; contract verified before building.
+
+**STATUS: Hedge R66 COMPLETE — delivery-fee granularity fully wired to LGA level, client-side only. Admin can configure per-LGA fees; web + mobile checkout persist `address.lga` from the same shared cities endpoint, so a configured LGA fee resolves against a matching saved-address lga (lga > state). Name-match guaranteed by single-source endpoint + admin state-match guard. tsc 0 across all three touched repos; no new deps; no backend changes.**
