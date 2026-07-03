@@ -2378,3 +2378,49 @@ Empty-state, loading (skeleton / PageLoader) and error (toast) handling present 
   Touched: `components/address/AddressModal.tsx`, `components/checkout/ShippingAddress.tsx`, `components/checkout/index.tsx`, `types/users.ts`, `developer-guide.md`.
 
 **STATUS: Hedge R67 COMPLETE — composed R65+R66 address flow verified end-to-end; one real regression seam (web edit hitting a non-existent endpoint) found and fixed, plus two mobile field-composition fixes. Saved-address CRUD complete on both platforms (edit is web-only by backend design). Checkout defaults to the default address on both. tsc 0 web + mobile; no backend changes; no new deps.**
+
+---
+
+## Round 68 — Continent tier in checkout delivery-fee preview (preview == charge)
+
+**Type:** BUILD. Scope: hedge-web-app + hedge-mobile-app (`develop-extended`). Closes the R67-logged gap "Preview omits the continent tier". NO backend change (read-only reference).
+
+### The gap (from R67 close-out)
+Both checkout previews resolved the delivery fee as `lga > state > national/international > global` and **omitted the `continent` tier** the backend `resolveDeliveryFee` charges between `national` and `international`. Result: for a foreign delivery country that has a `deliveryFeesCoin.continents[slug]` fee but no national/international fee, the PREVIEW diverged from the actual server CHARGE.
+
+### What was ported
+- **Continent map source (authoritative, read-only):** backend `vendorstack-backend/src/shared/utils/country-continent.util.ts` — the ISO alpha-2 → continent-slug map `continentOf()`, slugs `africa · asia · europe · north-america · south-america · oceania` (Antarctica omitted). Copied EXACTLY into each app as a new client util (no new deps). Country-code coverage verified **byte-identical** to the backend (242 codes, same 6 groups, same slugs) in both apps.
+- **Precedence semantics** mirror `resolveDeliveryFee` faithfully: continent applies by the DELIVERY country's continent; national = same-country flat; international = any-foreign; global respects `globalEnabled`; skip-if-none → 0.
+
+### Precedence now in each preview (identical, coin-first — previews are coin-only)
+`lga > state` (via `deliveryFeesCoin[country][`${state}_places`][lga]` / `[state]`), then on miss:
+`national` (same-country) → `continents[continentOf(deliveryCountry)]` → `international` (foreign) → `global` (if `globalEnabled !== false`) → `0`.
+The business country (ISO-2) was already available in both previews (R65 established `business.country` is ISO-2) — no extra wiring needed.
+
+### Preview == charge across all 7 tier outcomes (verified vs `resolveDeliveryFee`)
+1. **lga** — `[`${state}_places`][lga]` hit → same. ✓
+2. **state** — `[state]` hit → same. ✓
+3. **national** (same country) — `national` set → same. ✓
+4. **continent** (foreign, delivery continent has a fee; also same-country when national is 0) — `continents[slug]` set → same. ✓
+5. **international** (foreign, no continent fee) — `international` set → same. ✓
+6. **global** — all above 0, `globalEnabled !== false`, `global` set → same. ✓
+7. **none** — nothing matches → 0 → same. ✓
+
+### Files + blob hashes
+- **hedge-web-app** (`develop-extended`, commit `81ee206`; docs in same commit):
+  - `lib/countryContinent.ts` (new, `1e9e17ef9`) — client mirror of backend map.
+  - `app/(dashboard)/checkout/_checkout-view.tsx` (`c83b06316`) — continent tier slotted into preview.
+  - `developer-guide.md` — "Checkout delivery-fee preview" section updated to full precedence incl. continent.
+- **hedge-mobile-app** (`develop-extended`, commit `a7207bd`; docs in same commit):
+  - `utils/countryContinent.ts` (new, `ff3fa7353`) — client mirror of backend map.
+  - `components/checkout/index.tsx` (`bcaa388d1`) — continent tier slotted into preview.
+  - `developer-guide.md` — new "Continent tier in checkout preview (R68)" subsection.
+- **hedge-website**: this close-out.
+
+### Validation
+- `npx tsc --noEmit` → **web 0**, **mobile 0** (before push).
+- Tests: web has no `test` script; mobile `test` is the stale Expo jest suite (skipped per runner policy).
+- Additive only — state/national/international/global preview behaviour unchanged when no continent fee is set; unmapped country (e.g. Antarctica) skips the tier; no new deps.
+- Backend untouched (read-only). The R67 "preview omits continent" gap is now **RESOLVED**.
+
+**STATUS: Hedge R68 COMPLETE — continent tier ported client-side (byte-identical ISO→continent map, 242 codes) and slotted into both checkout previews at the correct precedence (national > continent > international). Preview == charge for all 7 tier outcomes. tsc 0 web + mobile; no backend changes; no new deps. R67-logged continent-preview gap resolved.**
