@@ -2193,3 +2193,36 @@ Did **not** re-audit prior-closed surfaces (delivery/order status R58–R60; pay
 - No vendor-facing endpoint to manually start/end/cancel an ad. Status is cron-driven by dates and admin-only `cancel` exists (`PATCH ads/:adId/cancel`, admin guard). If vendor-initiated pause/cancel is a desired product feature, a user-guarded route would be needed. (No live client bug — the broken mobile UI has been removed.)
 
 **STATUS: Hedge CLOSED — surface set clean after 2 genuine client fixes (mobile: ad status field + removed phantom status-change endpoint; web: base64 profile-photo upload contract). Subscriptions/badge-verification intentionally unbuilt; a11y/error/empty/loading states and the marketing website are clean. No backend changes.**
+
+---
+
+## Round 64 — feature build (customer invoice download + vendor order-tracking add UI)
+
+Not an audit. Two high-value features remained unbuilt; both are pattern-ports of vent/vent-web using **existing** backend endpoints. Backend read-only, verified against real DTOs/services (`orders.controller.ts`, `orders.service.ts` `addTrackingInfo` + `getTransactionByOrderNumber`, `dto/tracking.dto.ts`, `transaction.schema.ts` `getTransactionById`). No backend changes.
+
+### Feature 1 — Customer invoice download (web + mobile)
+- **Render approach chosen: self-contained printable invoice, no PDF dep.** Reference `InvoiceDownloadBtn`/`TrackingSection` do **not** exist in vent-web; the vent-mobile invoice was a broken `invoiceUrl` opener (backend returns JSON, never a URL). So the invoice is rendered client-side from the order-detail payload, which already carries every invoice field.
+  - **Web (`hedge-web-app`):** `InvoiceDownloadButton` builds a full print-ready HTML invoice and prints via `window.open` + `window.print()` — hedge-web ships no PDF/print library and adding one was unnecessary. Coin-first amounts (`HC` prefix).
+  - **Mobile (`hedge-mobile-app`):** `expo-print` is **not** installed (only `expo-sharing`/`expo-file-system`/`expo-web-browser`), so per the brief the **lightweight fallback** was used: an on-screen formatted `InvoiceModal` + native `react-native` `Share` text export. **Deliberately did NOT** add `expo-print` or generate a PDF on mobile.
+- **Dep decision:** no new dependency added in any repo.
+- **Gating:** shown only when paid (`isTransactionPaid`) or status past `PENDING` (`ACCEPTED/DROP_SHIPPING/SHIPPED/DELIVERED/RECEIVED/RETURNED/RETURN_CONFIRMED`).
+
+### Feature 2 — Vendor order-tracking add UI (manage-store, web + mobile)
+- Replicates the vent `VendorOrders` pattern: courier + tracking-number form, submits `PATCH /orders/:orderId/tracking`, invalidates order/orders queries, loading + success toast, **renders only when `order.status === SHIPPED`**.
+  - **Web/admin (`hedge-wears-admin`):** revived the dead `ShippingCard` (was mock-prop dead code) to display existing tracking + submit form, and un-commented the **Fulfillment & Shipping** tab that hosts it.
+  - **Mobile (`hedge-mobile-app`):** added a `TrackingSection` to the manage-store order detail.
+- Payload sends only `trackingNumber`/`courierName` (backend `AddTrackingDto` whitelist, `forbidNonWhitelisted`); ownership enforced server-side against the authenticated vendor.
+
+### Files + commit hashes
+- **hedge-wears-admin** (`develop-extended`, tip `c3c1dfe`): Feature 2 → `components/navigation/dashboard/orders/detail/shipping-card.tsx`, `.../order-details.tsx`, `api/orders/index.tsx`, `constants/endpoints.ts`, `types/orders.ts`, `developer-guide.md` (`c3c1dfe`).
+- **hedge-mobile-app** (`develop-extended`, tip `6d4cc45`): Feature 2 → `services/order-services.ts`, `hooks/apihooks/orders.ts`, `components/manage-store/orders/OrderDetail.tsx` (`e79398a`); Feature 1 → `components/order-details/index.tsx`, `components/order-details/components/InvoiceModal.tsx`, `developer-guide.md` (`6d4cc45`).
+- **hedge-web-app** (`develop-extended`, tip `0b564fb`): Feature 1 → `components/views/orders/invoice-download-button.tsx`, `components/views/orders/order-details.tsx`, `developer-guide.md` (`0b564fb`).
+- **hedge-website**: this close-out.
+
+### Validation
+- `npx tsc --noEmit` → **0** for all three touched TS repos (hedge-wears-admin, hedge-mobile-app, hedge-web-app). Pre-push husky ran full lint+build for both Next apps (admin, web) — **passed**. No test script in web/admin; mobile stale Expo jest suite not chased. Backend untouched.
+
+### Backend note (read-only — for the backend team)
+- `GET /orders/invoice/:orderNumber` only returns a transaction while it is still `PENDING` (pre-payment), so it **cannot** serve a paid-order invoice. The client therefore renders the invoice from the order-detail payload instead. If a canonical server-side invoice (or PDF) is later desired, a paid-order-aware invoice endpoint would be needed. No client hack was made; no backend change was required to ship these features.
+
+**STATUS: Hedge R64 COMPLETE — both features built end-to-end (customer invoice: web print + mobile on-screen/share; vendor tracking: admin ShippingCard + mobile TrackingSection). tsc 0 across all touched repos; Next lint+build green. No new deps. No backend changes.**
