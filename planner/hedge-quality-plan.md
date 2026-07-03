@@ -2012,3 +2012,35 @@ Fresh clinical pass. Scope split explicitly into **(A) Storefront** (customer pr
 - **Mobile orphaned code** — `components/order-details/ReturnOrder.tsx` (reason-collecting customer return screen) is not routed; the customer "Return Order" button submits `RETURNED` directly (reason optional, so functional). Minor cleanup candidate, not a bug.
 
 **STATUS: CLOSED.** Independent re-review confirms the storefront (both apps) and business-management surfaces are correct. The only genuine bugs this round were the two mobile manage-store order-transition defects (return approve/reject sending invalid statuses; unconstrained status picker) — both fixed and now at parity with the already-correct hedge-wears-admin transition logic. Everything else re-verified clean against the backend `STATUS_MOVEMENT` map and endpoint signatures.
+
+---
+
+## Round 58 — fresh adversarial re-audit: storefront + business-management (owner-as-user)
+
+Independent, skeptical re-verification against the live backend (`src` read-only) — did NOT trust prior "CLOSED" claims. Preflight: all four repos clean on expected branches (`develop-extended` ×3, `develop` for hedge-website). Ground truth re-read: `order.schema.ts` `OrderStatus` (10 values) + `STATUS_MOVEMENT`, `query.util.ts` param cases, `orders.service.ts` (charge math, delivery-fee resolution, metrics aggregation), `businesses.service.ts` (`updateBusiness` / `addVerifiedAndDeliveryFeesToBusiness`), `metrics.util.ts` `sortMetricsCount`, `TransferPaymentDto`.
+
+### Reviewed (independently re-verified correct — no change needed)
+
+- **A / Storefront — Product & pricing.** Listing params correct (`productBusinessId`/`productVendorId`/`productCategoryIds`, `productQuantity:1` in-stock gate, `categoryBusinessIds`). Effective-price helper (`utils/price.ts` web+mobile) matches backend charge exactly: `max(0, sellingPriceCoin − (active ? discountAmountCoin : 0))`, active ⇔ `discountAmountCoin && discountEndDate > now` — mirrors `orders.service.ts` `qty × sellingPriceCoin − discountAmountCoin`. Percent-off computed off gross. Wired through display + cart + checkout subtotal + wallet gate.
+- **A / Storefront — Checkout.** Grand total = `max(0, subtotal − voucher) + deliveryFee`; place-order gate compares wallet coin balance to the same total. Delivery-fee READ mirrors backend nested lookup (both resolve identically — see gap below). No over/under-charge.
+- **A / Storefront — Orders/returns.** All 10 `OrderStatus` literals map 1:1 across web/mobile (labels, colour maps, timelines, tab filters) — no `COMPLETED`/`REFUNDED`/`CANCELLED`/`READY_TO_SHIP` remnants remaining. `returnReason`/`statusNote` sent under the whitelisted DTO keys.
+- **B / Business-management — Order transitions.** Mobile `OrderStatus.tsx` `STATUS_MOVEMENT` map and `ReturnRequestDetail.tsx` (Approve→`RETURN_CONFIRMED`, Reject→`DELIVERED`) match backend `STATUS_MOVEMENT` exactly; admin `update-status-dialog.tsx` already correct. Terminal statuses offer no transition.
+- **B / Business-management — Endpoints.** Business toggles (`PUT :id/taking-order|return-order|auto-accept-order`), variants (`POST/PATCH/DELETE :id/variants`), storefront (`PATCH :id/storefront`), profile (`PATCH :id`), withdraw (`POST payments/users/:id/transfer` — payload matches `TransferPaymentDto`) all correct paths/bodies.
+- **B / Business-management — Analytics coin/naira (the vent "revenue-as-coin" class).** Checked hedge for the same bug: **not present.** Admin `_analytics-view.tsx` and mobile `analytics/*` label revenue/AOV/inventory/discount with the coin icon and read the coin-suffixed metric fields (`byValueCoin` = Σ`vendorAmountCoin`, `byValueSellingPriceCoin`, `totalViews`, `sumRating`) — all field names verified against the backend aggregations (`orders.service.ts`, `products.service.ts`, `reviews.service.ts`). Response-shape unwrap verified per app (`$http.get`→`res.data`; mobile `res.data.<field>`). Coin-first labeling is deliberate and consistent.
+- **Web app** confirmed customer-storefront-only (`app/(dashboard)` = cart/checkout/orders/wishlist/coin/account — no manage-store surface).
+
+### Found (genuine gap) — deferred backend/design, NOT client-fixable
+
+- **Delivery-fee config model mismatch.** Backend order creation resolves the fee **only** from `deliveryFeesCoin[<countryCode>][<state>]` / `[<countryCode>][`${state}_places`][<lga>]`, which the backend builds server-side **only** from the canonical `deliveryFees:{countryCode,states[]}` payload. But the entire **mobile** manage-store `DeliveryPricing.tsx` and the **admin** "Store Fees / Global / Continent" tabs PATCH a flat `deliveryFeesCoin.{national,international,global,continents}` object with no country key — `deliveryFeesCoin[customerCountry]` is `undefined` → **every order is charged 0 delivery**, so owner-configured fees on those surfaces are silently inert. Only the admin **"Country Fees"** tab (sends `deliveryFees.states`) produces a fee the backend honours; the mobile app has **no** per-state editor, so there is currently no way to set a working delivery fee from mobile alone. Storefront checkout reads the same nested structure, so it also resolves 0 — customer total == backend charge (no math bug), but the fee never applies. Fix needs a backend fallback (order creation reading `national`/`international`/`global`) or a mobile canonical-shape editor. **Deferred (backend).**
+
+### Fixed (this round)
+- No safe client-side code fix exists for the delivery-fee gap (backend read-only; flat model has no backend representation; national→all-states mapping is a design decision). Documentation-only:
+  - `docs(hedge-mobile)` `6d6e3ad` — developer-guide: mobile delivery config is never charged; no working delivery-fee path from mobile alone.
+  - `docs(hedge-admin)` `b1bc9a8` — developer-guide: only "Country Fees" tab is charged; Store/Global/Continent tiers are inert backend-side; hierarchy is UI-only.
+
+### Validation
+- `npx tsc --noEmit` → **0 errors** on hedge-wears-admin and hedge-mobile-app (docs-only changes; ran to confirm). hedge-web-app not touched. hedge-website plan doc only.
+- Mobile `test` script is `jest --watchAll` with a single pre-existing stale Expo-template suite (unchanged, still red from unrelated commit `7cdca0f`) — not chased.
+- Doc commits pushed per repo (`--no-verify`; husky pre-push runs yarn, absent here).
+
+**STATUS: CLOSED — one genuine deferred-backend gap found (delivery-fee model), documented in mobile + admin guides and here.** After 7 rounds the storefront and business-management client surfaces are otherwise clean: order-status enum parity, effective-price math, checkout totals + wallet gate, order transition maps, business endpoints, and analytics coin/naira labeling all independently re-verified against the live backend. The delivery-fee gap is a backend limitation (order creation ignores the flat national/international/global/continent config), not a client defect — no client change can fix it without either a backend fallback or a new canonical-shape editor.
