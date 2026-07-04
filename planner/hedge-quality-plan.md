@@ -2840,3 +2840,27 @@ has the Storefront Display owner UI (announcement ≤500 + up to 8 featured prod
 page. Round-trip verified end-to-end (owner PATCH → GET storefront → customer rail
 renders). tsc 0 on the only touched repo. The storefront display, previously empty for
 lack of an owner-set surface, is now fully populatable from both owner surfaces.**
+
+---
+
+## R80 — Partial order refund (settle amount on return-confirm)
+
+Backend (vendorstack `5389942`) added an optional `amountToSettle` on the
+RETURN_CONFIRMED transition: when set, the customer is refunded exactly that
+amount (coin) and the vendor keeps the remainder; when omitted the full-refund
+flow is unchanged.
+
+### hedge-wears-admin (`2f82f14`)
+- `components/navigation/dashboard/orders/detail/update-status-dialog.tsx` — optional
+  "Refund amount (leave blank for full refund)" HedgeCoin input, shown only when the
+  chosen transition is `RETURN_CONFIRMED`. Client validation `0 < amount <= order.totalAmountCoin`;
+  disables Confirm + surfaces server error messages via `ProcessError`.
+- `api/orders/index.tsx` — `amountToSettle?` added to the update-status payload type;
+  omitted entirely for a full refund (coin is the source of truth, backend derives naira).
+
+### Validation
+- `npx tsc --noEmit` → **0** in hedge-wears-admin.
+- Additive only; reused existing Dialog/Input/CoinIcon/formatAmount patterns; no new deps.
+
+**STATUS: Hedge R80 COMPLETE — hedge-wears-admin order return-confirm now supports an
+optional partial refund amount (coin), sent as `amountToSettle` and omitted when blank.**
