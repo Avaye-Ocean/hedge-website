@@ -2864,3 +2864,122 @@ flow is unchanged.
 
 **STATUS: Hedge R80 COMPLETE — hedge-wears-admin order return-confirm now supports an
 optional partial refund amount (coin), sent as `amountToSettle` and omitted when blank.**
+
+---
+
+## R81 — Deep-close re-audit vs live API contract (all 4 apps)
+
+**Date:** 2026-07-04 · **Type:** rigorous contract re-audit + real-bug fixes +
+developer-guide refresh + CLOSE. Triggered by "hedge work seems light" — re-verified
+every backend call against the freshly-built API knowledge base
+(`vendorstack-backend/planner/docs/api-knowledge-base.md`) and the real controllers,
+rather than trusting prior round claims.
+
+### (a) Review & analysis vs the vent quality plans
+
+Applied the three vent lenses to hedge:
+- **`vent-apps-gap.md` (correct API surface):** enumerated every route literal in all
+  four clients (website `services/api.js`; web-app + admin `constants/endpoints.ts`;
+  mobile `services/*.ts`) and diffed method + path + filters + body + response against
+  the KB and controllers. Found 3 invented/mismatched routes in hedge-wears-admin
+  (below); website/web-app/mobile route surfaces are contract-clean.
+- **`ui-ux-improvement.md` (coin correctness, dead status keys, states):** found the
+  owner voucher surface used a status taxonomy that does not exist on the backend
+  (real `RewardStatus` = `PENDING|REDEEMED|CANCELED`), which broke cancel + badges +
+  filter on admin and the discount/badge on mobile. Loading/skeleton/error states were
+  already present from prior rounds (spot-checked, intact).
+- **`infrastructure-improvement.md` (caching/perf/images):** website already caches
+  (30-min in-memory), web-app/admin use React-Query with `bySourceIds`/business-scoped
+  queries, images use the optimized `CustomImage`/`next/image` wrappers with broken-image
+  fallback (R76). No new N+1 or `<img>` regressions introduced by clients. Deferred:
+  backend-owned indexing/compression (read-only, not a hedge concern).
+
+### (b) Real bugs fixed
+
+**hedge-wears-admin** (`develop-extended`):
+1. **Owner could never cancel a voucher.** `_vouchers-view.tsx` used
+   `ACTIVE/USED/EXPIRED/CANCELLED`, but the backend `RewardStatus` enum is
+   `PENDING/REDEEMED/CANCELED` (single-L). Result: status badges always fell back to
+   grey, the status filter matched nothing, and the Cancel button (gated on
+   `status === "ACTIVE"`) never rendered. Fixed to the real enum with a display map
+   (`PENDING→Active`, `REDEEMED→Used`, `CANCELED→Cancelled`); Cancel now shows while
+   `PENDING`.
+2. **Crypto-wallet list + delete hit non-existent routes.** `getCryptoWallets` called
+   `GET payments/accounts/wallet?userId=` and `deleteCryptoWallet` called
+   `DELETE payments/accounts/wallet/:walletId` — neither exists. The backend stores one
+   `PaymentAccount` doc per user (wallet on `addressId`/`addressType`). Fixed to
+   `GET /payments/accounts/:userId` (single doc → 0-or-1 wallet) and
+   `DELETE /payments/accounts/:paymentAccountId`; dropped the invented
+   `SINGLE_WALLET_ACCOUNT` endpoint.
+3. **Ad status dropdown 404'd.** `PUT ads/:adId/status` does not exist (no owner-facing
+   ad-status route — status is backend-derived via schedule/payment/cron). Removed the
+   broken status dropdown + `updateStatus` client + `useUpdateAdStatus` hook + `ADS.STATUS`
+   endpoint; owners retain Create/Edit/Delete. Logged as a genuine gap.
+
+**hedge-mobile-app** (`develop-extended`):
+4. **Owner voucher card wrong on three counts** (`components/manage-store/Vouchers.tsx`):
+   discount always showed **0** (read `discountAmountCoin/discountAmount/discount`,
+   none of which exist — the value lives in `pointCoin`/`point`); the Cancelled badge
+   never appeared (checked double-L `'CANCELLED'` + a non-existent `isCancelled`); and
+   the Cancel button showed for already-redeemed/cancelled vouchers. Fixed to read
+   `pointCoin ?? point`, render the real `PENDING/REDEEMED/CANCELED` states, and gate
+   Cancel on `PENDING`.
+
+### Header (`api-key` / `api-identity`) verdict — all 4 apps PASS
+- **website** — `services/api.js` `apiGet` sends both on every (GET) call.
+- **web-app** — Axios instance sets both; all requests JSON (no multipart).
+- **mobile** — `utils/axiosUtil.ts` sends both on JSON; video uploads
+  (`post-services`/`ad-services`) send both + `Content-Type: multipart/form-data` + auth.
+- **admin** — Axios instance sets both; `$http.post` unsets `Content-Type` for FormData
+  so multipart boundary is correct while both tenant headers still ride along.
+
+### Genuine gaps logged (no real route — NOT papered over)
+1. No owner (user-account) route to set an **ad's status**; owners create/edit/delete
+   only. `admins/ads/:id/cancel` requires `UserType.ADMIN`.
+2. Backend keeps **one payment-account doc per user** (single crypto wallet address) —
+   no multi-wallet list or per-wallet id route.
+3. `GET /rewards/metrics` still has no coin/counter aggregation (R78) — admin voucher
+   tiles derive from the 50-cap list.
+4. `POST /reviews` needs `vendorId+businessId+customerId`; hedge supplies these from the
+   single-tenant `VENDOR_ID`/`BUSINESS_ID` env, so not a gap for hedge (verified in
+   mobile `WriteReviewModal` + `IProductReview`).
+
+### Deferred (rationale)
+- Mobile `uploadFormData`/`useUploadFormData` helper posts FormData via the JSON
+  `request` wrapper (would mis-set `Content-Type`) — **unused** (only the base64/JSON
+  path is wired via `ProductMedia`), so no live impact; left rather than churn.
+- Admin transactions status→variant map has a dead `CANCELLED` key (TransactionStatus
+  has no such value) — inert; left to avoid cosmetic churn.
+- Admin `ICreateAd.adStatus` / create-dialog `adStatus:"NOT_STARTED"` — harmlessly
+  stripped by the backend (`whitelist:true`, `forbidNonWhitelisted` OFF), create still
+  works; left to avoid churn.
+
+### developer-guide.md refresh (all 4)
+- **website** — added Tenant Whitelabel Headers subsection (`api-key`/`api-identity` →
+  `BACKEND_API_KEY`/`BACKEND_SOURCE_ID`) + KB contract-rule link.
+- **web-app** — corrected the HTTP-layer note (was `x-source-id`; real headers are
+  `api-key` + `api-identity`) + KB link + JSON/base64-upload note.
+- **mobile** — corrected the header note (was `source-id`/`x-api-key`; real are
+  `api-key`/`api-identity`), documented multipart-upload headers, added an Owner Voucher
+  Management contract block (`pointCoin` + real `RewardStatus`) + KB link.
+- **admin** — added Backend Contract & Tenant Headers (user-account/owner-scoped APIs,
+  FormData Content-Type handling) + KB link; corrected the Vouchers section to the real
+  `RewardStatus` enum; added ad-status + single crypto-wallet limitations.
+
+### Validation
+- **hedge-wears-admin** — `npx tsc --noEmit` → **0**; `npm run build` → **success**
+  (all routes compiled). Touched: `api/ads`, `api/payments`, `constants/endpoints.ts`,
+  `app/(dashboard)/content/_content-view.tsx`, `app/(dashboard)/vouchers/_vouchers-view.tsx`,
+  `app/(dashboard)/transactions/_transactions-view.tsx`, `developer-guide.md`.
+- **hedge-mobile-app** — `npx tsc --noEmit` → **0** (no route added → no typed-routes
+  regen). Touched: `components/manage-store/Vouchers.tsx`, `developer-guide.md`.
+- **hedge-website / hedge-web-app** — docs-only (`developer-guide.md`); no code changed.
+- Additive only; reused existing hooks/patterns/components; no new deps; no cosmetic churn.
+
+**STATUS: Hedge CLOSED.** Every backend call across all four clients re-verified against
+the live controller contract + KB. All actionable contract mismatches and functional
+bugs found are fixed (4 clusters: admin voucher-cancel, admin crypto-wallet routes,
+admin ad-status 404, mobile voucher discount/badge/cancel); remaining items are genuine
+backend gaps (logged, not invented) or harmless dead-code (deferred with rationale).
+Headers verified on JSON + multipart across all four apps. Developer guides refreshed
+and made accurate to the code. tsc 0 + build green on both touched repos.

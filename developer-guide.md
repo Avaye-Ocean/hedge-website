@@ -229,6 +229,22 @@ The backend query params that this site uses:
 
 Using the wrong param names silently returns all records instead of filtering.
 
+### Tenant whitelabel headers
+
+Every backend call in `services/api.js` sends two headers (see `apiGet`):
+
+- `api-key: BACKEND_API_KEY` — the Hedge tenant key; the backend validates it against
+  its WEB/MOBILE key.
+- `api-identity: BACKEND_SOURCE_ID` (`HEDGE_WEARSLY_LTD`) — the tenant identity that
+  drives branding and the wallet COIN/NGN mode. `BACKEND_BUSINESS_ID` scopes catalog
+  queries to the Hedge store (`productBusinessId`, `categoryBusinessIds`,
+  `tagByBusinessIds`).
+
+**Contract rule:** clients use resource-route + query-param filters, never invented
+sub-routes. The authoritative route/filter/body/response contract is
+`vendorstack-backend/planner/docs/api-knowledge-base.md` — verify any new call against
+it and never formulate a route that does not exist.
+
 ---
 
 ## Design System
