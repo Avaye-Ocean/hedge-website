@@ -219,7 +219,8 @@ USERSCRIPT
     ln -sf "${DEPLOY_BIN_DIR}/npm"  /usr/local/bin/npm
     ln -sf "${DEPLOY_BIN_DIR}/npx"  /usr/local/bin/npx
     ln -sf "${DEPLOY_BIN_DIR}/pm2"  /usr/local/bin/pm2
-  fi  set -u
+  fi
+  set -u
   ok "Node.js $(node -v) / npm $(npm -v) installed."
   done_step "$STEP"
 fi
