@@ -187,11 +187,12 @@ else
   nvm use --lts
   nvm alias default lts/*
   NODE_BIN_DIR="$(dirname "$(nvm which current)")"
-  ln -sf "${NODE_BIN_DIR}/node" /usr/local/bin/node
-  ln -sf "${NODE_BIN_DIR}/npm"  /usr/local/bin/npm
-  ln -sf "${NODE_BIN_DIR}/npx"  /usr/local/bin/npx
-  ln -sf "${NODE_BIN_DIR}/pm2"  /usr/local/bin/pm2
-
+  if [ ! -x "/usr/local/bin/node" ]; then
+    ln -sf "${NODE_BIN_DIR}/node" /usr/local/bin/node
+    ln -sf "${NODE_BIN_DIR}/npm"  /usr/local/bin/npm
+    ln -sf "${NODE_BIN_DIR}/npx"  /usr/local/bin/npx
+    ln -sf "${DEPLOY_BIN_DIR}/pm2"  /usr/local/bin/pm2
+  fi
   sudo -u "$DEPLOY_USER" bash <<'USERSCRIPT'
     export NVM_DIR="$HOME/.nvm"
     if [[ -f "$NVM_DIR/nvm.sh" ]]; then
@@ -212,12 +213,13 @@ USERSCRIPT
     set +u; source "$NVM_DIR/nvm.sh" 2>/dev/null; set -u
     nvm which current
   ')
-  DEPLOY_BIN_DIR="$(dirname "$DEPLOY_NODE_VERSION")"
-  ln -sf "${DEPLOY_BIN_DIR}/node" /usr/local/bin/node
-  ln -sf "${DEPLOY_BIN_DIR}/npm"  /usr/local/bin/npm
-  ln -sf "${DEPLOY_BIN_DIR}/npx"  /usr/local/bin/npx
-  ln -sf "${DEPLOY_BIN_DIR}/pm2"  /usr/local/bin/pm2
-  set -u
+  NODE_BIN_DIR="$(dirname "$DEPLOY_NODE_VERSION")"
+  if [ ! -x "/usr/local/bin/node" ]; then
+    ln -sf "${DEPLOY_BIN_DIR}/node" /usr/local/bin/node
+    ln -sf "${DEPLOY_BIN_DIR}/npm"  /usr/local/bin/npm
+    ln -sf "${DEPLOY_BIN_DIR}/npx"  /usr/local/bin/npx
+    ln -sf "${DEPLOY_BIN_DIR}/pm2"  /usr/local/bin/pm2
+  fi  set -u
   ok "Node.js $(node -v) / npm $(npm -v) installed."
   done_step "$STEP"
 fi
