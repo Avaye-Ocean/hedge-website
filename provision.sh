@@ -429,7 +429,6 @@ if ! is_done "$STEP" || [[ "${1:-}" == "--redeploy" ]]; then
     export NVM_DIR=\"\$HOME/.nvm\"
     set +u; source \"\$NVM_DIR/nvm.sh\"; set -u
     npm install
-    npm run build
     PM2_APP_NAME="${PM2_ENV_PREFIX}-hedge-site" PM2_HOOK_NAME="${PM2_ENV_PREFIX}-hedge-site-hook" npm run pm2:start
   "
   ok "Apps started via PM2 (${PM2_ENV_PREFIX}-hedge-site + ${PM2_ENV_PREFIX}-hedge-site-hook)."
@@ -525,7 +524,6 @@ if [[ "${1:-}" == "--redeploy" ]]; then
     git reset --hard origin/${DEPLOY_BRANCH}
     npm install --include=dev --no-audit --no-fund
     npm install
-    npm run build
     PM2_APP_NAME="${PM2_ENV_PREFIX}-hedge-site" PM2_HOOK_NAME="${PM2_ENV_PREFIX}-hedge-site-hook" npm run pm2:start
   "
   ok "Redeploy complete."
