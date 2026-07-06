@@ -170,6 +170,9 @@ fi
 STEP=05
 if is_done "$STEP"; then
   skip "STEP ${STEP}: Node.js already installed."
+elif command -v node &>/dev/null && command -v npm &>/dev/null; then
+  ok "Node.js $(node -v) / npm $(npm -v) already installed (skipping)."
+  done_step "$STEP"
 else
   info "STEP ${STEP}: Installing Node.js LTS via nvm …"
   set +u
@@ -225,6 +228,9 @@ fi
 STEP=06
 if is_done "$STEP"; then
   skip "STEP ${STEP}: PM2 already installed."
+elif command -v pm2 &>/dev/null; then
+  ok "PM2 $(pm2 --version) already installed (skipping)."
+  done_step "$STEP"
 else
   info "STEP ${STEP}: Installing PM2 …"
   npm install -g pm2
@@ -247,6 +253,9 @@ fi
 STEP=07
 if is_done "$STEP"; then
   skip "STEP ${STEP}: Git credentials already configured."
+elif sudo -u "$DEPLOY_USER" git config --global user.name &>/dev/null; then
+  ok "Git credentials already configured (skipping)."
+  done_step "$STEP"
 else
   info "STEP ${STEP}: Configuring Git credentials for ${DEPLOY_USER} …"
   if [[ -z "$GIT_TOKEN" ]]; then
