@@ -37,7 +37,7 @@ block content
             a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
               .product-card-img-wrap
                 if product.video
-                  video.product-card-img(src=product.video autoplay muted loop playsinline)
+                  video.product-card-img(src=product.video autoplay muted loop playsinline aria-label=product.name)
                 else
                   img.product-card-img(src=imgUrl alt=product.name loading='lazy')
               .product-card-info

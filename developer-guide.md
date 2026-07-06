@@ -288,3 +288,15 @@ All templates receive `res.locals.version` (git hash) and `res.locals.year` auto
 - **Blog page** — `/blog` displays three preview cards but has no individual article pages. Cards are rendered as `<article>` elements (non-links) rather than `<a href="#">` to avoid dead navigation. When article pages are implemented, change `article.blog-card` back to `a.blog-card(href='/blog/slug')` in `views/blog.pug`.
 - **No dark mode** — static site, light mode only.
 - **30-min cache** — API responses are cached in process memory. Cache clears on dyno restart.
+
+
+## UI/UX craft conventions (R83)
+
+- **Media a11y parity** — product cards render `img.product-card-img(... alt=product.name)`
+  on the image branch; the `video.product-card-img` branch (autoplay/muted/loop product
+  previews) now carries `aria-label=product.name` so the accessible name matches. Keep both
+  branches labelled when adding new product grids (`index`, `products`, `collections`).
+- **Blog images** carry descriptive `alt` (multi-line pug attrs). Keep alt text on every
+  content `img`.
+- **Checklist glyphs** — the `span.check ✓` marks in `features.pug` are styled content
+  checkmarks (decorative, CSS-classed), acceptable; they are not interactive UI controls.

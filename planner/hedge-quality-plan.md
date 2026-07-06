@@ -3120,3 +3120,112 @@ currency-drift, 1 order-status mis-colour); the website is clean with no code ch
 all remaining items are genuine curated-UX or backend-preview gaps (logged, not
 invented). Headers re-confirmed on all three storefront surfaces. Dev guides corrected
 to match the code. tsc 0 + build green on the touched TS repos.
+
+---
+
+## R83 — Launch-grade UI/UX CRAFT sweep (all 4 apps)
+
+**Date:** 2026-07-06
+**Lens:** applied the same UI/UX craft rubric just run on vent-web + vent-mobile
+(`vendorstack-backend/planner/plans/quality/ui-ux-improvement.md`) to the Hedge apps —
+the first pass targeting **craft** rather than contract (R81) or storefront logic /
+currency drift (R82). Rubric: loading/empty/error states, design-system consistency,
+emoji/glyph-as-icon → the app's own icon set, accessibility (a11y labels/roles/alt),
+responsive/safe-area polish, micro-interactions. HedgeCoin brand (HGC), NOT vent indigo.
+
+### (a) Review & analysis vs the vent quality/ui-ux plan
+
+The vent sweep added shared `EmptyState`/`ErrorState` primitives, normalized brand
+tokens, replaced emoji-as-icons with the custom icon set, and added a11y labels/roles.
+Mapping that to Hedge, which already had **most of the infrastructure** the vent apps had
+to build from scratch:
+
+- **State primitives already exist and are reused** — no 3+ hand-rolled duplication that
+  warranted a new shared primitive:
+  - web-app: `shared/message-with-button.tsx`, `ui/skeleton.tsx` + `pagination-skeleton`,
+    `shared/custom-toast.tsx` (sonner).
+  - admin: `shared/empty-message.tsx` (filter-aware), `message-with-button.tsx`,
+    `components/skeletons/*`, `ui/stat-card.tsx`, sonner.
+  - mobile: `common/EmptyList.tsx` (Lottie), `common/PageLoader.tsx`, `common/Skeleton.tsx`.
+  R82 already confirmed loading/empty/error present on the key data screens (orders,
+  wallet, transactions). So no NEW state primitive was extracted — extracting one would
+  have been manufactured churn.
+- **Design tokens already normalized** — Tailwind theme scales (`greyscale/grey`,
+  `secondary`, `error`, `alert`) on all three TS apps; verified badges use a consistent
+  blue pill. No stray hardcoded-hex sprawl bypassing the theme was found in the touched
+  surfaces (R82 already closed HGC/coin drift).
+- **Icon libraries are consistent** — web/admin: `lucide-react` + bespoke SVG set
+  (`components/icons`); mobile: `iconsax-react-nativejs` + bespoke `react-native-svg` set.
+  The gap was **glyph-as-icon leakage**, not an inconsistent icon lib.
+
+Net: Hedge was already structurally close to the vent target; R83's real yield was
+**craft polish** — killing UI-control glyphs, an empty-state colour bug, and a11y labels.
+
+### (b) Improvement + work plan — FIXED
+
+**hedge-wears-admin** (`develop-extended`):
+1. **6 dialog close buttons used a `✕` text glyph** with `showCloseButton={false}` and no
+   accessible name (export-orders, process-refund, transfer-stock, adjust-stock,
+   update-status, refund). → lucide `XIcon` (`size-4`, `aria-hidden`) inside a
+   `<button aria-label="Close">`, matching the `DialogContent` default (XIcon + sr-only
+   "Close"). Consistency + a11y.
+2. **Verified pill used a `✓` glyph** (customer-detail, settings). → lucide `Check` +
+   "Verified".
+
+**hedge-web-app** (`develop-extended`):
+3. **Secure-payment modal used a `🔒` emoji and a `×` glyph close** (`coin/buy/_buy-view`).
+   → lucide `Lock` (green) + lucide `X` close with `aria-label="Close"`.
+4. **Verified pill `✓` glyph** (account index, coin user-profile-card). → lucide `Check`.
+
+**hedge-mobile-app** (`develop-extended`):
+5. **Empty-state colour bug** — `common/EmptyList.tsx` rendered "No items found" in
+   `text-error-400` (error red). An empty list is not an error → neutral `text-grey-500`.
+6. **Verified pill `✓ Verified` text glyph** (`profile/index`). → `TickCircle` (iconsax,
+   Bold, blue) + `Text` in a `flex-row` View (iconsax icons are View-based and cannot nest
+   in `<Text>` — restructured to a row).
+
+**hedge-website** (`develop`):
+7. **Video product-card a11y parity** — the `<img>` branch carried `alt=product.name` but
+   the `video.product-card-img` autoplay-preview branch had no accessible name
+   (`index`, `products`, `collections`). → added `aria-label=product.name`.
+
+### (b) Deferred — with rationale (NOT manufactured churn)
+
+- **`⚡` flash-sale mark** on discount badges (web-app product card/info + mobile
+  ProductCard) — genuine celebratory/content emphasis, consistent across web+mobile, not a
+  UI control. Kept (matches the vent rule to preserve content emoji).
+- **Small selection/step `✓` and search-clear `✕` on mobile** (currency/language selection
+  circles, `CheckoutStepper` completed step, shop announcement dismiss, currency search
+  clear) — these render reliably inside branded, correctly-sized containers with `hitSlop`
+  and are not broken; swapping them wholesale would be cosmetic churn with layout risk on a
+  View-vs-Text boundary. Left as-is; documented as the standing convention.
+- **`★` rating glyph** in admin analytics (`${avgRating} ★`) — a typographic rating
+  indicator inline with a number, not an interactive control. Kept.
+- **Pull-to-refresh wiring** — not added anywhere new; that would touch data-fetching
+  (out of scope for a craft sweep, and R81/R82 closed the data contract).
+- **`features.pug` `span.check ✓`** — styled, CSS-classed decorative content checkmarks,
+  not UI controls. Kept.
+
+### (c) Validation
+
+- **hedge-wears-admin** — `npx tsc --noEmit` → **0**; `next build` → **success**. 8 files.
+- **hedge-web-app** — `npx tsc --noEmit` → **0**; `next build` → **success**. 3 files.
+- **hedge-mobile-app** — `npx tsc --noEmit` → **0**. `jest` is the Expo scaffold default
+  (no real tests, per R82) — not run for a UI-only diff. 2 files.
+- **hedge-website** — all touched `.pug` compile (`pug.compileFile`); `npm run build`
+  (`scripts/build.js`) → success. 3 files.
+- Additive/in-place only; reused each app's own icon lib + state primitives + theme; no new
+  deps; no API/route/logic changes; no copy-meaning changes.
+
+Dev guides refreshed on all four repos with a **"UI/UX craft conventions (R83)"** section
+(icon-vs-glyph rule, verified-badge pattern, empty-state colour rule, a11y label/alt rule,
+state-primitive inventory).
+
+**STATUS: Hedge CLOSED (R83).** The UI/UX craft lens from the vent sweep has been applied
+to all four Hedge apps. Hedge already carried the state-primitive, token, and icon-library
+infrastructure the vent apps had to build — so the actionable yield was craft polish:
+7 concrete fixes across all four apps (6 UI-control glyphs → each app's icon set, 1
+empty-state error-colour bug, +a11y labels on the close buttons and `aria-label` parity on
+the website's video product cards), with content emoji, reliable small selection glyphs,
+and pull-to-refresh deliberately left untouched to avoid manufactured churn. tsc 0 + build
+green on every TS repo; pug compiles + website build green. No functional regressions.
