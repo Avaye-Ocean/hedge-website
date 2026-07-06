@@ -58,8 +58,6 @@ APP_DOMAIN="dev-site.hedgewears.com"
 WEBHOOK_DOMAIN="hook-dev-site.hedgewears.com"
 
 SSH_PORT=22
-APP_PORT=$((6130 + PORT_OFFSET))
-WEBHOOK_PORT=$((6134 + PORT_OFFSET))
 
 DEPLOY_BRANCH="develop"
 
@@ -67,6 +65,9 @@ DEPLOY_ENV="${DEPLOY_ENV:-dev}"
 PORT_OFFSET=0; PM2_ENV_PREFIX="dev"
 [[ "$DEPLOY_ENV" == "prod" || "$DEPLOY_ENV" == "main" || "$DEPLOY_ENV" == "production" ]] && { PORT_OFFSET=151; PM2_ENV_PREFIX="prod"; }
 [[ "$DEPLOY_ENV" == "stage" || "$DEPLOY_ENV" == "staging" ]] && { PORT_OFFSET=121; PM2_ENV_PREFIX="stage"; }
+
+APP_PORT=$(( 6130 + PORT_OFFSET))
+WEBHOOK_PORT=$(( 6134 + PORT_OFFSET))
 
 # ── Resolve public IP ────────────────────────────────────────
 info "Resolving server public IP …"
