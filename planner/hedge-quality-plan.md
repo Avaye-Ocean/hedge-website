@@ -2983,3 +2983,140 @@ admin ad-status 404, mobile voucher discount/badge/cancel); remaining items are 
 backend gaps (logged, not invented) or harmless dead-code (deferred with rationale).
 Headers verified on JSON + multipart across all four apps. Developer guides refreshed
 and made accurate to the code. tsc 0 + build green on both touched repos.
+
+---
+
+## R82 — Customer-storefront + Pug-website deep re-audit (NEW ground)
+
+**Date:** 2026-07-06 · **Type:** fresh rigorous deep-audit of the surfaces R81 did NOT
+deeply cover — the **customer storefront** (web-app + mobile) end-to-end, the
+**hedge-website** Pug/Express catalog site, and **cross-cutting currency/coin
+correctness**. R81 closed the management/admin surfaces (voucher enum, crypto-wallet
+routes, ad-status, mobile voucher card); this pass explicitly does not re-audit those.
+Every backend call re-verified against the live controllers + KB
+(`vendorstack-backend/planner/docs/api-knowledge-base.md`). Additive only, no churn.
+
+### (a) Review & analysis vs the vent quality plans
+
+- **`vent-apps-gap.md` (correct API surface):** re-diffed the storefront route literals.
+  Website `services/api.js` filters (`categoryBusinessIds`, `productBusinessId`,
+  `activeProduct`, `productCategoryIds`, `tagByBusinessIds`) all verified against
+  `products.controller.ts` / `categories.controller.ts` / `tags.controller.ts` — clean.
+  Order status contract verified: web-app `order-statuses.tsx` maps **all 10**
+  `OrderStatus` values (single-L `CANCELED`, no PENDING fallback — returns empty on
+  unknown); mobile `ORDER_STATUS` enum + `OrderDetailStates` cover all 10; the mobile
+  orders-list filter groups PENDING→`[ACCEPTED,PENDING,DROP_SHIPPING,SHIPPED]` and
+  DELIVERED→`[DELIVERED,RECEIVED]`, serialized comma-joined to the backend `orderStatus`
+  param (matches `orders.controller` GET). `orders/:orderId/status` PUT with
+  `customerId` matches on both clients. No invented routes anywhere.
+- **`ui-ux-improvement.md` (coin correctness, dead status keys, states):** ran a full
+  amount-render sweep on both clients. Cart/checkout subtotal, delivery-fee, voucher and
+  grand-total are all coin-denominated and mirror the backend `resolveDeliveryFee`
+  precedence (lga>state>national>continent>international>global, `globalEnabled`
+  respected) EXACTLY on both web-app and mobile. Skeletons/error/empty states present on
+  order detail, orders list, wallet, transactions.
+- **`infrastructure-improvement.md` (caching/perf/images):** website caches 30-min
+  in-memory with serve-stale-on-error and 8s fetch timeout; product media uses
+  `<video>` for `product.video` else lazy `<img>` with a hosted fallback. web-app uses
+  `next/image` + React-Query; mobile uses `FastImage` + `getValidImageUri`. No N+1 or
+  raw-`<img>` regressions.
+
+### (b) Real bugs fixed
+
+**hedge-web-app** (`develop-extended`):
+1. **VenCoin ("VCN") ticker leaked onto the HedgeCoin storefront.**
+   `components/views/posts/post-detail-modal.tsx` rendered tag-to-buy product prices as
+   `"… VCN"` — VCN is the vent parent app's VenCoin; Hedge's coin ticker is **HGC**
+   (per the website terms page + `HedgeCoin (HGC)`). Fixed to `HGC`.
+2. **AI product card fiat reference ignored the selected currency + used the naira
+   field.** `components/ai/ai-product-card.tsx` showed the primary price as `CoinText`
+   (correct) but the secondary reference as a hardcoded `"NGN <sellingPrice>"` (raw naira
+   field), so a user who selected USD still saw NGN. Every other web-app surface — and
+   the mobile `AiProductCard` — derives the reference via
+   `coinToFiat(sellingPriceCoin, coinRate)` + `selectedCurrencySymbol`. Aligned it to
+   that pattern; the struck-through original is now coin-based (`CoinText`) too.
+
+**hedge-mobile-app** (`develop-extended`):
+3. **VCN leak (mirror of #1).** `app/post-detail.tsx` tag-to-buy price used `"… VCN"`
+   → fixed to `HGC`.
+4. **`RETURN_CONFIRMED` order mis-coloured red.** `utils/helper.tsx` `getStatusColor`
+   had no `RETURN_CONFIRMED` case, so it fell through to `default → '#C73939'` (error
+   red) — while `getStatusIcon` renders it as a green success tick. A confirmed return
+   showed a green icon beside red text. Added `RETURN_CONFIRMED → '#1B741B'` (success
+   green), matching its icon and the web-app treatment.
+
+### (c) Verified clean (no edits — evidence)
+
+- **hedge-website (Pug/Express):** `server.js` + `services/api.js` are contract-clean —
+  valid filter params, `api-key`+`api-identity` on every call, `safeApi` graceful
+  fallbacks, coin-first display (`sellingPriceCoin` + HGC), no invented routes. No code
+  change.
+- **web-app cart/checkout:** cart is coin-denominated on the effective (discounted)
+  price, sums variant surcharges (matches backend), clamps to stock; checkout delivery
+  fee + voucher-cap + insufficient-balance gate all mirror the server. Clean.
+- **web-app orders/transactions/wallet-buy:** all amounts read `*Coin` fields inside
+  `CoinText`; transaction item reads `totalPayableAmountCoin/…Coin`. Clean.
+- **mobile wallet:** dual `BalanceCard` (coin `currentBalanceCoin` + fiat
+  `currentBalance`) — correct, not drift. Product detail / AI card / checkout all
+  coin-first with `coinToFiat` fiat reference.
+- **Reviews contract:** mobile `WriteReviewModal` POSTs `reviews` with
+  `vendorId=VENDOR_ID`, `businessId=BUSINESS_ID`, `customerId=user._id`, `rating`,
+  `comment` — satisfies the `POST /reviews` requirement from tenant env. Not a gap.
+
+### Currency / coin-drift findings (highest-value class)
+
+- **Two genuine drift bugs:** the `VCN` ticker leak (web + mobile) and the AI-card
+  hardcoded-NGN reference — both fixed above.
+- **No naira-as-coin drift found elsewhere.** Every `CoinText`/HGC-labelled amount on
+  both clients wraps a `*Coin` field; suspicious-looking locals (`displayPrice`,
+  `currentBalance`, transaction `amount`) all resolve to coin values on inspection.
+
+### Header (`api-key` / `api-identity`) re-confirm — all 3 storefront surfaces PASS
+
+- **website** `services/api.js` `apiGet` → both headers on every call.
+- **web-app** `configs/$http.ts` → both on the axios instance (JSON + the base64 path).
+- **mobile** `utils/axiosUtil.ts` → both on JSON; `ad-services`/`post-services`
+  multipart also send both.
+
+### Genuine gaps logged (no real route / product decision — NOT papered over)
+
+1. Order-list filter tabs (mobile) have no explicit `REJECTED` / `RETURN_CONFIRMED`
+   grouping — those terminal states surface under **All** only. Curated grouping, not a
+   bug; a future "Returned"→`[RETURNED,RETURN_CONFIRMED]` grouping (mirroring
+   DELIVERED→`[DELIVERED,RECEIVED]`) is a nice-to-have, deferred to avoid churn.
+2. The server-side delivery-fee **discount** (`calculateDeliveryFeeDiscount`) and the
+   ≤6-coin order commission are not previewed client-side (the checkout comments say so);
+   the previewed total is a safe slight over-estimate — the server total stays
+   authoritative. No client route to preview these; left as-is by design.
+
+### developer-guide.md refresh (accuracy fixes)
+
+- **web-app** — corrected the stale Currency/Coin snippet (was `useCurrencyStore` /
+  `hedgecoinRate` / `fiatSymbol`, none of which exist; real is `useCurrency` /
+  `coinRate` / `selectedCurrencySymbol`), documented the live conversion route, and
+  added a coin-first single-ticker rule (`HGC`, never `VCN`; fiat via `coinToFiat`).
+- **mobile** — corrected the stale snippet (`hedgecoinRate` → `coinRate`), added the
+  `HGC`-not-`VCN` ticker rule and an order-status colour/icon note (keep colour+icon in
+  sync; missing colour case falls through to red).
+
+### Validation
+
+- **hedge-web-app** — `npx tsc --noEmit` → **0**; `npm run build` → **success**.
+  Touched: `components/ai/ai-product-card.tsx`,
+  `components/views/posts/post-detail-modal.tsx`, `developer-guide.md`.
+- **hedge-mobile-app** — `npx tsc --noEmit` → **0** (no route added → no typed-routes
+  regen). The `jest --watchAll` suite is the Expo scaffold default
+  (`components/__tests__/StyledText-test.js` referencing a non-existent `../StyledText`)
+  — pre-existing suite-load failures, 0 real tests, unrelated to the touched files
+  (`utils/helper.tsx`, `app/post-detail.tsx`). Touched: `utils/helper.tsx`,
+  `app/post-detail.tsx`, `developer-guide.md`.
+- **hedge-website** — no code change (verified clean); docs-only (`hedge-quality-plan.md`).
+- Additive only; reused existing hooks/patterns/components; no new deps; no cosmetic churn.
+
+**STATUS: Hedge CLOSED (R82).** The customer storefront (web + mobile) and the Pug
+website — the ground R81 did not deeply cover — have been re-verified end-to-end against
+the live controller contract. Four real bugs found and fixed (2 VCN ticker leaks, 1 AI
+currency-drift, 1 order-status mis-colour); the website is clean with no code change;
+all remaining items are genuine curated-UX or backend-preview gaps (logged, not
+invented). Headers re-confirmed on all three storefront surfaces. Dev guides corrected
+to match the code. tsc 0 + build green on the touched TS repos.
