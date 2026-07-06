@@ -67,7 +67,7 @@ function deploy(pusher, commitMsg) {
   try {
     step('git fetch',    () => run(`git fetch origin ${BRANCH}; git checkout ${BRANCH}; git reset --hard origin/${BRANCH}`));
     step('npm install',  () => run('npm install --include=dev --no-audit --no-fund'));
-    step('pm2 restart',  () => run('npm run pm2:start'));
+    step('pm2 restart',  () => run('npm run pm2:start:app'));
     step('pm2 save',     () => run('pm2 save'));
     const elapsed = ((Date.now() - start) / 1000).toFixed(1);
     entry.status = 'success'; entry.finishedAt = new Date().toISOString(); entry.elapsedSecs = elapsed;
