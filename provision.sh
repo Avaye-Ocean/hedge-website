@@ -168,6 +168,11 @@ fi
 # STEP 5 — Node.js LTS via nvm
 # ============================================================
 STEP=05
+# NVM may not be in PATH for non-interactive shells (sudo bash).
+# Source it first so command -v node/npm checks find existing installs.
+export NVM_DIR="/root/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" 2>/dev/null
+
 if is_done "$STEP"; then
   skip "STEP ${STEP}: Node.js already installed."
 elif command -v node &>/dev/null && command -v npm &>/dev/null; then
@@ -178,13 +183,14 @@ else
   set +u
   export NVM_DIR="/root/.nvm"
   if [[ -f "$NVM_DIR/nvm.sh" ]]; then
-    info "nvm already installed for root — re-using."
+    info "nvm found — using existing installation."
+    source "$NVM_DIR/nvm.sh"
+    nvm use --lts 2>/dev/null || nvm install --lts
   else
     curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash -
+    source "$NVM_DIR/nvm.sh"
+    nvm install --lts
   fi
-  source "$NVM_DIR/nvm.sh"
-  nvm install --lts
-  nvm use --lts
   nvm alias default lts/*
   NODE_BIN_DIR="$(dirname "$(nvm which current)")"
   if [ ! -x "/usr/local/bin/node" ]; then
