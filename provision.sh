@@ -49,7 +49,7 @@ DEPLOY_USER="${SUDO_USER:-administrator}"
 DEPLOY_HOME=$(sudo -u "$DEPLOY_USER" bash -c 'echo $HOME')
 
 APP_REPO="https://github.com/Avaye-Ocean/hedge-website.git"
-APP_DIR="$(sudo -u "$DEPLOY_USER" bash -c 'echo $HOME')/hedge-website"
+APP_DIR="$(sudo -u "$DEPLOY_USER" bash -c 'echo $HOME')/dev/hedge-website"
 GIT_USERNAME="Avaye-Ocean"
 GIT_EMAIL="kezyolanipekun@gmail.com"
 GIT_TOKEN=""
