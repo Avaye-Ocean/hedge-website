@@ -3229,3 +3229,80 @@ empty-state error-colour bug, +a11y labels on the close buttons and `aria-label`
 the website's video product cards), with content emoji, reliable small selection glyphs,
 and pull-to-refresh deliberately left untouched to avoid manufactured churn. tsc 0 + build
 green on every TS repo; pug compiles + website build green. No functional regressions.
+
+---
+
+## R84 — Dead owner category/brand DELETE route removed (contract close-out)
+
+**Date:** 2026-07-09
+**Focus:** Fix the one genuine open contract gap — owner category/brand *delete*
+buttons calling a non-existent user route — then verify the apps are contract-clean
+and give a definitive close.
+
+### (a) The gap (backend-cited)
+
+Hedge owner category/brand **delete** actions POSTed to `DELETE /categories/:catId`,
+a route that **does not exist for users**. Backend fact (read-only,
+`src/categories/categories.controller.ts`):
+
+- User-facing category routes are **only**: `GET /categories` (list),
+  `POST /categories` (create), `PATCH /categories/:catId` (edit).
+- There is **no** user `DELETE /categories/:catId`. Category deletion is admin-only
+  (`DELETE admins/categories/:catId`) and even that admin route is annotated
+  `@ApiOperation({ summary: '[DISABLED] Category deletion is not allowed', deprecated: true })`.
+- "Brands" are categories with `type: BRAND` — no separate brand controller — so
+  brand delete = category delete = **no user route**.
+
+So every owner-side category/brand delete button hit a dead route (guaranteed 404 /
+auth failure). Create and edit are **valid** user routes and were kept.
+
+### (b) Fix (additive removal of dead UI + dead client code; no invented routes)
+
+**hedge-wears-admin** (branch `develop-extended`):
+- `api/categories/index.tsx` — removed `categoriesClient.delete` and the
+  `useDeleteCategory` hook; left a NOTE explaining no user delete route.
+- `app/(dashboard)/products/categories/_categories-view.tsx` — removed the "Delete"
+  dropdown item, `handleDeleteCategory`, `deletingId` state, and the `useDeleteCategory`
+  import. Create/edit/view-products kept.
+- `app/(dashboard)/products/brands/_brands-view.tsx` — removed the trash button,
+  `DeleteModal`, `deleteTarget` state, `confirmDelete`, `useDeleteCategory` import, and
+  now-unused `Trash2`/`DeleteModal` imports. Add/Edit brand kept.
+
+**hedge-mobile-app** (branch `develop-extended`) — same dead UI found and fixed:
+- `components/manage-store/categories.tsx` — removed `handleDelete` and the "Delete"
+  entry from the category options `Alert`; removed `useDeleteCategory` import/usage.
+- `hooks/apihooks/categories.ts` — removed `useDeleteCategory`.
+- `services/category-services.ts` — removed `deleteCategory` and the now-unused
+  `deleteRequest` import.
+
+**hedge-web-app** — grep confirmed **no** category/brand delete UI or client method; untouched.
+
+### (c) Other-route sweep
+
+Grepped all three client apps for admin-only route misuse and remaining category/brand/
+user-scoped delete calls. **No other dead route found.** The staff endpoints
+(`users/:vendorId/businesses/:businessId/staff…`) are user-scoped and valid. The recently
+added payments flow was spot-checked and is contract-clean: `GET users/banks`,
+`POST users/verify/account-number`, and `POST users/:userId/wallet/:amount/funds`
+(with `usePaylink=1` appended for BANK funding) all map to real user routes in
+`src/users/users.controller.ts`.
+
+### (d) Validation
+
+- **hedge-wears-admin** — `npx tsc --noEmit` → **0**; `next build` → **success**
+  (both `products/brands` and `products/categories` compiled). 3 files.
+- **hedge-mobile-app** — `npx tsc --noEmit` → **0**. `jest` is the Expo scaffold default
+  (no real tests) — not run. 3 files.
+- **hedge-web-app / hedge-website** — untouched by this pass.
+- Additive/in-place removal of dead code only; no new routes invented; no create/edit
+  behaviour changed; no new deps.
+
+Dev guides refreshed: hedge-wears-admin and hedge-mobile-app guides now state owners
+**cannot delete** categories/brands (create/edit only), with the backend reason.
+
+**STATUS: Hedge CLOSED (R84).** The single genuine open contract gap — owner
+category/brand delete hitting a non-existent user route — is fixed across the two apps
+that carried it (hedge-wears-admin, hedge-mobile-app); hedge-web-app never had it. Backend
+cite confirms no user `DELETE /categories/:catId` exists (admin-only, and that admin route
+is itself disabled). No other dead route remains; the payments flow is contract-clean. tsc
+0 + admin build green. Hedge is contract-clean and closed.
