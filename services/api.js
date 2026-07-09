@@ -30,10 +30,13 @@ async function apiGet(path) {
   return res.json();
 }
 
+// GET /categories and GET /tags return a BARE ARRAY by default (only paginated
+// `{ results }` when categoryFullPaging/tagFullPaging=1). Handle both shapes so
+// the list is never silently empty. GET /products always returns `{ results }`.
 const getCategories = () =>
   cachedFetch('categories', () =>
     apiGet(`categories?categoryBusinessIds=${BUSINESS_ID}&limit=12`)
-      .then(d => d?.results ?? [])
+      .then(d => (Array.isArray(d) ? d : d?.results ?? []))
   );
 
 const getFeaturedProducts = () =>
@@ -51,7 +54,7 @@ const getProductsByCategory = (categoryId) =>
 const getTags = () =>
   cachedFetch('tags', () =>
     apiGet(`tags?tagByBusinessIds=${BUSINESS_ID}&limit=20`)
-      .then(d => d?.results ?? [])
+      .then(d => (Array.isArray(d) ? d : d?.results ?? []))
   );
 
 module.exports = { getCategories, getFeaturedProducts, getProductsByCategory, getTags };
