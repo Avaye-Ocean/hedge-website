@@ -9,7 +9,7 @@ block metaDesc
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────
-  section.hero.hero--image.section(style='background-image: url("https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp")')
+  section.hero.hero--image.section(style='background-image: url("/img/brand/hedge-01.jpg")')
     .hero-overlay
     .container
       .hero-inner
@@ -28,7 +28,7 @@ block content
       .category-strip-scroll
         if categories && categories.length > 0
           each category in categories
-            - const catImg = category.photo || 'https://hedgewears.com/wp-content/uploads/2025/10/ctaimage.webp'
+            - const catImg = category.photo || '/img/brand/hedge-02.jpg'
             a.category-card(href=webShopUrl + '/?categories=' + category._id target='_blank' rel='noopener')
               .category-card-img-wrap
                 img.category-card-img(src=catImg alt=category.name + ' category' loading='lazy')
@@ -38,25 +38,25 @@ block content
         else
           a.category-card(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg' alt="Women's Bags" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-03.jpg' alt="Women's Bags" loading='lazy')
             .category-card-info
               span.category-card-name Women's Bags
               span.category-card-cta Shop →
           a.category-card(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp' alt="Women's Shoes" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-04.jpg' alt="Women's Shoes" loading='lazy')
             .category-card-info
               span.category-card-name Women's Shoes
               span.category-card-cta Shop →
           a.category-card(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/Card3.jpeg' alt="Men's Bags" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-05.jpg' alt="Men's Bags" loading='lazy')
             .category-card-info
               span.category-card-name Men's Bags
               span.category-card-cta Shop →
           a.category-card(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/card4.webp' alt="Men's Shoes" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-07.jpg' alt="Men's Shoes" loading='lazy')
             .category-card-info
               span.category-card-name Men's Shoes
               span.category-card-cta Shop →
@@ -72,7 +72,7 @@ block content
       .products-grid
         if featuredProducts && featuredProducts.length > 0
           each product, i in featuredProducts.slice(0, 8)
-            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp'
+            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || '/img/brand/hedge-08.jpg'
             a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
               .product-card-img-wrap
                 if product.video
@@ -88,7 +88,7 @@ block content
         else
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp' alt='Dress from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-09.jpg' alt='Dress from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Dress
               span.product-price
@@ -97,7 +97,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-shoe.webp' alt='Shoes from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-11.jpg' alt='Shoes from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Sneakers
               span.product-price
@@ -106,7 +106,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp' alt='Jewelry from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-12.jpg' alt='Jewelry from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Gold Layer Set
               span.product-price
@@ -115,7 +115,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp' alt='Handbag from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-13.jpg' alt='Handbag from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Structured Tote
               span.product-price
@@ -126,7 +126,7 @@ block content
         a.btn.btn-primary(href=webShopUrl target='_blank' rel='noopener') View all products →
 
   //- ─── EDITORIAL / CTA BAND ──────────────────────────────────────────────────
-  section.editorial-band.section.section--dark(style='background-image: url("https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp")')
+  section.editorial-band.section.section--dark(style='background-image: url("/img/brand/hedge-06.jpg")')
     .editorial-band-overlay
     .container
       .editorial-band-inner

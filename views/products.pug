@@ -27,13 +27,13 @@ block content
   //- ─── PRODUCT GRID ──────────────────────────────────────────────────────────
   section.products-section.section
     .container
-      - const placeholderImages = ['https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress-1.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-shoe.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-jewelry.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/Card2.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/card4.webp', 'https://hedgewears.com/wp-content/uploads/2025/10/trendy-dress.jpeg', 'https://hedgewears.com/wp-content/uploads/2025/10/card1.jpeg']
+      - const placeholderImages = ['/img/brand/hedge-36.jpg', '/img/brand/hedge-38.jpg', '/img/brand/hedge-39.jpg', '/img/brand/hedge-40.jpg', '/img/brand/hedge-41.jpg', '/img/brand/hedge-42.jpg', '/img/brand/hedge-43.jpg', '/img/brand/hedge-44.jpg']
       - const placeholderNames = ['Meridian Dress', 'Street Sneakers', 'Gold Layer Set', 'Structured Tote', 'Block Heel Mule', 'Derby Oxford', 'Tailored Blazer', 'Leather Shoulder Bag']
       - const placeholderPrices = [280, 320, 150, 410, 240, 290, 360, 380]
       .products-grid
         if featuredProducts && featuredProducts.length > 0
           each product in featuredProducts
-            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || 'https://hedgewears.com/wp-content/uploads/2025/10/trending-big.webp'
+            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || '/img/brand/hedge-47.jpg'
             a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
               .product-card-img-wrap
                 if product.video
