@@ -320,6 +320,13 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .categories-grid,
+  .categories-grid--large {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 
 /* --------------------------------------------------------------------------
    Product Cards (index.pug, products.pug, collections.pug)
