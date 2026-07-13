@@ -25,7 +25,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(6,7,8,0.82) 0%, rgba(11,15,16,0.60) 60%, rgba(11,15,16,0.40) 100%);
+  background: linear-gradient(160deg, rgba(6,7,8,0.88) 0%, rgba(8,10,12,0.74) 55%, rgba(11,15,16,0.62) 100%);
   z-index: 0;
 }
 
@@ -462,7 +462,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(6,7,8,0.85) 0%, rgba(11,15,16,0.65) 100%);
+  background: linear-gradient(160deg, rgba(6,7,8,0.9) 0%, rgba(11,15,16,0.74) 100%);
   z-index: 0;
 }
 
@@ -3145,4 +3145,15 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
+}
+
+
+/* Deeper overlay palette needs matching text separation on image sections */
+.hero--image .hero-title,
+.hero--image .hero-subtitle,
+.hero--image h1,
+.hero--image p,
+.editorial-band-title,
+.editorial-band-sub {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
