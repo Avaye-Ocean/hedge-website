@@ -3157,3 +3157,66 @@
 .editorial-band-sub {
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
+
+/* Download mockup — matches the real app home (header, tabs, cards, tab bar) */
+.phone-screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.phone-logo {
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 13px;
+  color: var(--primary-300, #0b0f10);
+}
+.phone-header-icons {
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #636363;
+}
+.phone-gender-tabs {
+  display: flex;
+  gap: 10px;
+}
+.phone-tab {
+  font-size: 10px;
+  color: #808080;
+  padding-bottom: 2px;
+}
+.phone-tab--active {
+  color: var(--primary-300, #0b0f10);
+  font-weight: 700;
+  border-bottom: 2px solid #c15006;
+}
+.phone-product-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+.phone-product-rating {
+  font-size: 8px;
+  color: #b45309;
+}
+.phone-product-price {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--primary-300, #0b0f10);
+}
+.phone-tabbar {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px 2px;
+  border-top: 1px solid #ececec;
+}
+.phone-tabbar-item {
+  font-size: 8px;
+  color: #9ca3af;
+}
+.phone-tabbar-item--active {
+  color: #c15006;
+  font-weight: 700;
+}
