@@ -19,11 +19,11 @@ block content
   //- ─── CATEGORY GRID ─────────────────────────────────────────────────────────
   section.categories-page.section
     .container
-      - const fallbackCategories = [{name: "Women's Bags", gender: "FEMALE", description: "Structured totes, crossbodies and clutches from African designers.", photo: '/img/brand/hedge-15.jpg'}, {name: "Women's Shoes", gender: "FEMALE", description: "Heels, mules, and sandals crafted for everyday elegance.", photo: '/img/brand/hedge-16.jpg'}, {name: "Men's Bags", gender: "MALE", description: "Duffels, backpacks, and briefcases built to last.", photo: '/img/brand/hedge-18.jpg'}, {name: "Men's Shoes", gender: "MALE", description: "Oxfords, sneakers, and loafers with intentional design.", photo: '/img/brand/hedge-19.jpg'}, {name: "Women's Clothing", gender: "FEMALE", description: "Dresses, blouses, and wide-leg trousers with cultural flair.", photo: '/img/brand/hedge-20.jpg'}, {name: "Men's Clothing", gender: "MALE", description: "Shirts, polo tops, and tailored trousers for every occasion.", photo: '/img/brand/hedge-21.jpg'}]
+      - const fallbackCategories = [{name: "Women's Bags", gender: "FEMALE", description: "Structured totes, crossbodies and clutches from African designers.", photo: ('/img/brand/hedge-15.jpg?v=' + version)}, {name: "Women's Shoes", gender: "FEMALE", description: "Heels, mules, and sandals crafted for everyday elegance.", photo: ('/img/brand/hedge-16.jpg?v=' + version)}, {name: "Men's Bags", gender: "MALE", description: "Duffels, backpacks, and briefcases built to last.", photo: ('/img/brand/hedge-18.jpg?v=' + version)}, {name: "Men's Shoes", gender: "MALE", description: "Oxfords, sneakers, and loafers with intentional design.", photo: ('/img/brand/hedge-19.jpg?v=' + version)}, {name: "Women's Clothing", gender: "FEMALE", description: "Dresses, blouses, and wide-leg trousers with cultural flair.", photo: ('/img/brand/hedge-20.jpg?v=' + version)}, {name: "Men's Clothing", gender: "MALE", description: "Shirts, polo tops, and tailored trousers for every occasion.", photo: ('/img/brand/hedge-21.jpg?v=' + version)}]
       .categories-grid.categories-grid--large
         if categories && categories.length > 0
           each category in categories
-            - const catImg = category.photo || '/img/brand/hedge-22.jpg'
+            - const catImg = category.photo || ('/img/brand/hedge-22.jpg?v=' + version)
             - const truncDesc = category.description ? category.description.slice(0, 80) + (category.description.length > 80 ? '…' : '') : ''
             a.category-card.category-card--large(href=webShopUrl + '/?categories=' + category._id target='_blank' rel='noopener')
               .category-card-img-wrap

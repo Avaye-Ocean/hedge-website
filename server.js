@@ -42,7 +42,9 @@ const shopUrls = {
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
+// Static assets are cache-busted with ?v=<git commit> (rotates each deploy),
+// so browsers can hold them for a month safely.
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '30d' }));
 
 app.use(express.urlencoded({ extended: true }));
 

@@ -9,7 +9,7 @@ block metaDesc
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────
-  section.collections-hero.hero--image.section(style='background-image: url("/img/brand/hero-collections.jpg")')
+  section.collections-hero.hero--image.section(style=`background-image: url("/img/brand/hero-collections.jpg?v=${version}")`)
     .hero-overlay
     .container
       .collections-hero-inner
@@ -22,7 +22,7 @@ block content
     .container
       .collection-editorial-inner
         .collection-editorial-img-wrap
-          img.collection-editorial-img(src='/img/brand/hedge-24.jpg' alt='Model wearing a dress from the Meridian Collection' loading='lazy')
+          img.collection-editorial-img(src='/img/brand/hedge-24.jpg?v=' + version alt='Model wearing a dress from the Meridian Collection' loading='lazy')
         .collection-editorial-content
           span.section-eyebrow Collection 01
           h2.collection-editorial-title The Meridian Collection
@@ -39,8 +39,8 @@ block content
           p.collection-editorial-desc Bold colourways and relaxed fits built for the city. Street &amp; Sport blends performance silhouettes with fashion-forward details — sneakers, crossbodies, and layered separates that hold up wherever the day takes you.
           a.btn.btn-primary(href=webShopUrl target='_blank' rel='noopener') Shop Street &amp; Sport
         .collection-editorial-img-pair
-          img.collection-editorial-img.collection-editorial-img--half(src='/img/brand/hedge-65.jpg' alt="Women's shoes from the Street and Sport collection" loading='lazy')
-          img.collection-editorial-img.collection-editorial-img--half(src='/img/brand/hedge-66.jpg' alt="Men's shoes from the Street and Sport collection" loading='lazy')
+          img.collection-editorial-img.collection-editorial-img--half(src='/img/brand/hedge-65.jpg?v=' + version alt="Women's shoes from the Street and Sport collection" loading='lazy')
+          img.collection-editorial-img.collection-editorial-img--half(src='/img/brand/hedge-66.jpg?v=' + version alt="Men's shoes from the Street and Sport collection" loading='lazy')
 
   //- ─── COLLECTION PICKS ──────────────────────────────────────────────────────
   section.collection-picks.section
@@ -51,7 +51,7 @@ block content
       .products-grid
         if featuredProducts && featuredProducts.length > 0
           each product, i in featuredProducts.slice(0, 4)
-            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || '/img/brand/hedge-27.jpg'
+            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || ('/img/brand/hedge-27.jpg?v=' + version)
             a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
               .product-card-img-wrap
                 if product.video
@@ -67,7 +67,7 @@ block content
         else
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-28.jpg' alt='Meridian Dress' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-28.jpg?v=' + version alt='Meridian Dress' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Dress
               span.product-price
@@ -76,7 +76,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-29.jpg' alt='Street Sneakers' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-29.jpg?v=' + version alt='Street Sneakers' loading='lazy')
             .product-card-info
               span.product-card-name Street Sneakers
               span.product-price
@@ -85,7 +85,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-31.jpg' alt='Structured Tote' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-31.jpg?v=' + version alt='Structured Tote' loading='lazy')
             .product-card-info
               span.product-card-name Structured Tote
               span.product-price
@@ -94,7 +94,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-32.jpg' alt='Tailored Blazer' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-32.jpg?v=' + version alt='Tailored Blazer' loading='lazy')
             .product-card-info
               span.product-card-name Tailored Blazer
               span.product-price

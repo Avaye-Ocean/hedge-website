@@ -9,7 +9,7 @@ block metaDesc
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────
-  section.hero.hero--image.section(style='background-image: url("/img/brand/hero-home.jpg")')
+  section.hero.hero--image.section(style=`background-image: url("/img/brand/hero-home.jpg?v=${version}")`)
     .hero-overlay
     .container
       .hero-inner
@@ -31,11 +31,11 @@ block content
             -
               // Pick a related brand image per category when the API has no photo.
               const catName = (category.name || '').toLowerCase()
-              let catFallback = '/img/brand/hedge-02.jpg'
-              if (catName.includes('accessor') || catName.includes('bag') || catName.includes('watch') || catName.includes('jewel')) catFallback = '/img/brand/hedge-48.jpg'
-              else if (catName.includes('shoe') || catName.includes('sneaker') || catName.includes('foot')) catFallback = '/img/brand/hedge-28.jpg'
-              else if (catName.includes('active') || catName.includes('sport') || catName.includes('gym') || catName.includes('track')) catFallback = '/img/brand/hedge-20.jpg'
-              else if (catName.includes('cloth') || catName.includes('shirt') || catName.includes('dress') || catName.includes('wear')) catFallback = '/img/brand/hedge-31.jpg'
+              let catFallback = ('/img/brand/hedge-02.jpg?v=' + version)
+              if (catName.includes('accessor') || catName.includes('bag') || catName.includes('watch') || catName.includes('jewel')) catFallback = ('/img/brand/hedge-48.jpg?v=' + version)
+              else if (catName.includes('shoe') || catName.includes('sneaker') || catName.includes('foot')) catFallback = ('/img/brand/hedge-28.jpg?v=' + version)
+              else if (catName.includes('active') || catName.includes('sport') || catName.includes('gym') || catName.includes('track')) catFallback = ('/img/brand/hedge-20.jpg?v=' + version)
+              else if (catName.includes('cloth') || catName.includes('shirt') || catName.includes('dress') || catName.includes('wear')) catFallback = ('/img/brand/hedge-31.jpg?v=' + version)
               const catImg = category.photo || catFallback
             a.category-card(href=webShopUrl + '/?categories=' + category._id target='_blank' rel='noopener')
               .category-card-img-wrap
@@ -46,25 +46,25 @@ block content
         else
           a.category-card(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='/img/brand/hedge-03.jpg' alt="Women's Bags" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-03.jpg?v=' + version alt="Women's Bags" loading='lazy')
             .category-card-info
               span.category-card-name Women's Bags
               span.category-card-cta Shop →
           a.category-card(href=webShopUrl + '/?productGender=FEMALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='/img/brand/hedge-04.jpg' alt="Women's Shoes" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-04.jpg?v=' + version alt="Women's Shoes" loading='lazy')
             .category-card-info
               span.category-card-name Women's Shoes
               span.category-card-cta Shop →
           a.category-card(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='/img/brand/hedge-05.jpg' alt="Men's Bags" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-05.jpg?v=' + version alt="Men's Bags" loading='lazy')
             .category-card-info
               span.category-card-name Men's Bags
               span.category-card-cta Shop →
           a.category-card(href=webShopUrl + '/?productGender=MALE' target='_blank' rel='noopener')
             .category-card-img-wrap
-              img.category-card-img(src='/img/brand/hedge-07.jpg' alt="Men's Shoes" loading='lazy')
+              img.category-card-img(src='/img/brand/hedge-07.jpg?v=' + version alt="Men's Shoes" loading='lazy')
             .category-card-info
               span.category-card-name Men's Shoes
               span.category-card-cta Shop →
@@ -80,7 +80,7 @@ block content
       .products-grid
         if featuredProducts && featuredProducts.length > 0
           each product, i in featuredProducts.slice(0, 8)
-            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || '/img/brand/hedge-08.jpg'
+            - const imgUrl = product.photo || (product.thumbnailPhotos && product.thumbnailPhotos[0]) || (product.photos && product.photos[0]) || ('/img/brand/hedge-08.jpg?v=' + version)
             a.product-card(href=webShopUrl + '/product/' + product._id target='_blank' rel='noopener')
               .product-card-img-wrap
                 if product.video
@@ -96,7 +96,7 @@ block content
         else
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-09.jpg' alt='Dress from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-09.jpg?v=' + version alt='Dress from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Dress
               span.product-price
@@ -105,7 +105,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-11.jpg' alt='Shoes from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-11.jpg?v=' + version alt='Shoes from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Meridian Sneakers
               span.product-price
@@ -114,7 +114,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-12.jpg' alt='Jewelry from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-12.jpg?v=' + version alt='Jewelry from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Gold Layer Set
               span.product-price
@@ -123,7 +123,7 @@ block content
             span.product-card-link View →
           a.product-card(href=webShopUrl target='_blank' rel='noopener')
             .product-card-img-wrap
-              img.product-card-img(src='/img/brand/hedge-13.jpg' alt='Handbag from the Meridian Collection' loading='lazy')
+              img.product-card-img(src='/img/brand/hedge-13.jpg?v=' + version alt='Handbag from the Meridian Collection' loading='lazy')
             .product-card-info
               span.product-card-name Structured Tote
               span.product-price
@@ -134,7 +134,7 @@ block content
         a.btn.btn-primary(href=webShopUrl target='_blank' rel='noopener') View all products →
 
   //- ─── EDITORIAL / CTA BAND ──────────────────────────────────────────────────
-  section.editorial-band.section.section--dark(style='background-image: url("/img/brand/hedge-06.jpg")')
+  section.editorial-band.section.section--dark(style=`background-image: url("/img/brand/hedge-06.jpg?v=${version}")`)
     .editorial-band-overlay
     .container
       .editorial-band-inner
