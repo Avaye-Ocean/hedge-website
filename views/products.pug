@@ -6,6 +6,30 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Discover fashion from African designers on Hedge Wears. Browse bags, shoes, dresses, jewelry and more — priced in HGC.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Products', path: '/products' }])
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://hedgewears.com/products#collection',
+    name: 'Our Products — Hedge Wears',
+    description: 'The full Hedge Wears catalogue of premium African fashion — apparel, footwear, and accessories, priced in HedgeCoin (HGC).',
+    url: 'https://hedgewears.com/products',
+    isPartOf: { '@id': 'https://hedgewears.com/#website' },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: (featuredProducts || []).map(function(p, i) {
+        return {
+          '@type': 'ListItem',
+          position: i + 1,
+          name: p.name,
+          url: webShopUrl + '/product/' + p._id
+        };
+      })
+    }
+  })
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

@@ -1,0 +1,68 @@
+//- JSON-LD helper mixin.
+//- Usage: +jsonld({ '@context': 'https://schema.org', ... })
+//- Emits a well-formed <script type="application/ld+json"> block.
+mixin jsonld(data)
+  script(type='application/ld+json')!= JSON.stringify(data)
+
+//- Sitewide Organization + WebSite (with SearchAction) graph.
+//- Reused by the layout default so every page carries brand identity.
+mixin orgAndWebsite()
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://hedgewears.com/#organization',
+        name: 'Hedge Wears',
+        legalName: 'Hedge Wearsly Limited',
+        url: 'https://hedgewears.com',
+        logo: 'https://hedgewears.com/img/brand/hedge-10.jpg',
+        description: 'Hedge Wears is a modern African fashion house designing and curating premium clothing, footwear, and accessories for men and women — blending African heritage with timeless, seasonless design.',
+        slogan: "We don't just wear fashion — we Hedge it.",
+        email: 'hello@hedgewears.com',
+        foundingLocation: { '@type': 'Place', name: 'Lagos, Nigeria' },
+        sameAs: [
+          'https://instagram.com/hedgewears',
+          'https://x.com/hedgewears',
+          'https://facebook.com/hedgewears'
+        ],
+        contactPoint: [{
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          email: 'hello@hedgewears.com',
+          availableLanguage: ['English']
+        }]
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://hedgewears.com/#website',
+        url: 'https://hedgewears.com',
+        name: 'Hedge Wears',
+        publisher: { '@id': 'https://hedgewears.com/#organization' },
+        inLanguage: 'en',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://hedgewears.com/products?q={search_term_string}'
+          },
+          'query-input': 'required name=search_term_string'
+        }
+      }
+    ]
+  })
+
+//- BreadcrumbList builder. items = [{ name, path }] (path is site-relative, home optional).
+mixin breadcrumbs(items)
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map(function(it, i) {
+      return {
+        '@type': 'ListItem',
+        position: i + 1,
+        name: it.name,
+        item: 'https://hedgewears.com' + it.path
+      };
+    })
+  })

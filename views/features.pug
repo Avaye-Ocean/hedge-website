@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Every feature on Hedge Wears is designed to make fashion shopping and selling seamless. Explore shopping, HedgeCoin, business tools, and more.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Features', path: '/features' }])
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

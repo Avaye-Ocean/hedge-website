@@ -6,6 +6,18 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Get in touch with Hedge Wears — for business inquiries, support, or just to say hello.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact' }])
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact Hedge Wears',
+    url: 'https://hedgewears.com/contact',
+    isPartOf: { '@id': 'https://hedgewears.com/#website' },
+    about: { '@id': 'https://hedgewears.com/#organization' }
+  })
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

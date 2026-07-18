@@ -6,6 +6,30 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Explore curated collections from Hedge Wears — The Meridian Collection, Street & Sport, and more from African designers.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Collections', path: '/collections' }])
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://hedgewears.com/collections#collection',
+    name: 'The Collections — Hedge Wears',
+    description: 'Curated seasonal and thematic collections from Hedge Wears — refined classics with cultural weight and contemporary relevance.',
+    url: 'https://hedgewears.com/collections',
+    isPartOf: { '@id': 'https://hedgewears.com/#website' },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: (featuredProducts || []).map(function(p, i) {
+        return {
+          '@type': 'ListItem',
+          position: i + 1,
+          name: p.name,
+          url: webShopUrl + '/product/' + p._id
+        };
+      })
+    }
+  })
+
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────

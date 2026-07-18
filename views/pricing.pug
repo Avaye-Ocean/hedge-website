@@ -6,6 +6,28 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Free to browse. Every product priced in HedgeCoin with your local currency always in view. Shopping on Hedge Wears is simple by design.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'How Shopping Works', path: '/pricing' }])
+  - var pfaqs = []
+  - pfaqs.push({ q: 'What is HedgeCoin (HGC)?', a: 'HGC is the currency Hedge Wears uses to sell products — every item on the platform is priced in HGC. It runs on the Vendorstack coin infrastructure that powers the platform and is not a cryptocurrency. You fund your HGC balance from your local currency and every price shows an equivalent in the currency you pick in settings.' })
+  - pfaqs.push({ q: 'How do I get HGC?', a: 'Fund your wallet using your local currency — on web or mobile. The conversion rate and any fees are shown before you confirm, and HGC can be converted back to your local currency equivalent at the prevailing rate.' })
+  - pfaqs.push({ q: 'Does my HGC expire?', a: 'No. Your HGC balance stays in your wallet until you spend it at checkout or convert it back to your local currency. If you plan to close your account, convert your remaining balance first.' })
+  - pfaqs.push({ q: 'What payment methods are accepted?', a: 'All payments are processed through Paystack. You can pay by debit card, credit card, or bank transfer. Your card details are never stored on Hedge Wears servers.' })
+  - pfaqs.push({ q: 'How do returns work?', a: 'Return and refund requests are handled through our support team. Contact us at hello@hedgewears.com with your order number and we will assist you promptly.' })
+  - pfaqs.push({ q: 'Is shopping on Hedge Wears free?', a: 'Yes. There are no subscription fees, membership fees, or browsing fees. Creating an account and purchasing is completely free. You only pay for the products you buy.' })
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: pfaqs.map(function(f) {
+      return {
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      };
+    })
+  })
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

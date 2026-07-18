@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Learn how Hedge Wears collects, uses, and protects your personal data.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: '/privacy' }])
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

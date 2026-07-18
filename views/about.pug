@@ -6,6 +6,19 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Hedge Wears is a modern African fashion house built on simplicity, cultural depth, and timeless designs. Classic pieces rooted in heritage, crafted for the world.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }])
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About Hedge Wears',
+    description: 'The Hedge Wears brand story, mission, and values — a modern African fashion house built on simplicity, cultural depth, and timeless design.',
+    url: 'https://hedgewears.com/about',
+    isPartOf: { '@id': 'https://hedgewears.com/#website' },
+    about: { '@id': 'https://hedgewears.com/#organization' }
+  })
+
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────

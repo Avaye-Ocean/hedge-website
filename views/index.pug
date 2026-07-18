@@ -6,6 +6,23 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Hedge Wears — African creativity on the global stage. Discover fashion from local designers. Every piece priced in HedgeCoin, with your local currency always in view.')
 
+block structuredData
+  +orgAndWebsite()
+  if featuredProducts && featuredProducts.length > 0
+    +jsonld({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'Featured products — Hedge Wears',
+      itemListElement: featuredProducts.map(function(p, i) {
+        return {
+          '@type': 'ListItem',
+          position: i + 1,
+          name: p.name,
+          url: webShopUrl + '/product/' + p._id
+        };
+      })
+    })
+
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────

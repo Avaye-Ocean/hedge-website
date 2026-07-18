@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Download the Hedge Wears app on iOS or Android. Shop fashion, pay in HedgeCoin, and track orders from your phone.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Download the App', path: '/download' }])
+
 block content
 
   //- ─── DOWNLOAD HERO ─────────────────────────────────────────────────────────

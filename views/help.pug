@@ -6,6 +6,36 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Find answers to common questions about shopping, orders, delivery, and HedgeCoin on Hedge Wears.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Help Center', path: '/help' }])
+  - var faqs = []
+  - faqs.push({ q: 'How do I create a Hedge Wears account?', a: 'Download the Hedge Wears app from the App Store or Google Play, then tap "Sign Up." Enter your name, email address, and a password. You can also sign up via the web shop at hedgewears.com. Your account is free to create.' })
+  - faqs.push({ q: 'Is Hedge Wears free to use?', a: 'Yes — browsing and shopping on Hedge Wears is completely free. There are no subscription fees for shoppers. You only pay when you make a purchase.' })
+  - faqs.push({ q: 'What countries can I shop from?', a: 'Hedge Wears is available globally. Product prices are displayed in HGC (HedgeCoin) and you can view an equivalent in your local currency from the settings menu. Delivery availability depends on the individual seller.' })
+  - faqs.push({ q: 'How do I update my account details?', a: 'Open the app and tap your profile icon in the bottom navigation. From there you can update your name, email, delivery addresses, and notification preferences.' })
+  - faqs.push({ q: 'How do I track my order?', a: 'Once your order is placed, go to the Orders section of the app. You will see a live status for each order: Confirmed, Processing, Shipped, and Delivered. You will also receive push notifications at each stage.' })
+  - faqs.push({ q: 'How long does delivery take?', a: "Delivery times vary by seller and your location. Each product page shows the seller's estimated delivery window. If you have a specific query, you can message the seller directly from the order page." })
+  - faqs.push({ q: 'What is the returns policy?', a: 'Returns are managed between the buyer and the seller. Each seller sets their own returns policy, which is visible on their product and store pages. If you cannot resolve a dispute directly, contact us at hello@hedgewears.com and our support team will assist.' })
+  - faqs.push({ q: "My order hasn't arrived — what do I do?", a: "First, check the tracking status in the app. If the status shows Delivered but you haven't received the item, contact the seller via the order page. If you're still not resolved within 48 hours, email us at hello@hedgewears.com with your order number." })
+  - faqs.push({ q: 'Can I cancel an order?', a: 'You may be able to cancel an order before the seller has marked it as Processing. Go to the Orders section, select the order, and tap "Request Cancellation." If the order has already been dispatched, you will need to follow the seller\'s returns process.' })
+  - faqs.push({ q: 'What is HedgeCoin (HGC)?', a: 'HedgeCoin (HGC) is the currency Hedge Wears uses to sell products — every item on the platform is priced in HGC. It runs on the Vendorstack coin infrastructure that powers the platform and is not a cryptocurrency. You fund your HGC balance from your local currency and every price shows an equivalent in the currency you pick in settings.' })
+  - faqs.push({ q: 'How do I get HedgeCoin?', a: 'Fund your wallet using your local currency — the conversion rate and any fees are shown before you confirm. Your HGC balance and full transaction history live in the wallet, and HGC can be converted back to your local currency equivalent.' })
+  - faqs.push({ q: 'How do I use HedgeCoin at checkout?', a: 'Orders are paid in HGC from your wallet balance at checkout. Alongside the HGC total you always see the approximate equivalent in your selected local currency, updated with the current conversion rate.' })
+  - faqs.push({ q: 'Which payment methods are accepted?', a: "All payments are processed through Paystack, one of Africa's most trusted payment providers. You can pay by debit or credit card, or via bank transfer. Your card details are never stored on Hedge Wears servers." })
+  - faqs.push({ q: 'Is my payment information safe?', a: 'Yes. All payment data is handled by Paystack using industry-standard encryption. Hedge Wears never stores your card numbers or banking details.' })
+  +jsonld({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(function(f) {
+      return {
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      };
+    })
+  })
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

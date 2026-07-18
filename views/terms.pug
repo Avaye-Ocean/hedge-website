@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Read the Hedge Wears Terms of Service — the rules that govern your use of the platform as a shopper or seller.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Terms of Service', path: '/terms' }])
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

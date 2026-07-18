@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Join the Hedge Wears team. We are building the platform for African fashion — and we are looking for talented people to help.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Careers', path: '/careers' }])
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

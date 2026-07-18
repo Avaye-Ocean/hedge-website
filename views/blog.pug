@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Stories, updates, and style guides from the Hedge Wears team. Fashion, culture, and business from Africa and beyond.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }])
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────

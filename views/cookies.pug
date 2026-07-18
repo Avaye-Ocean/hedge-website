@@ -6,6 +6,10 @@ block pageTitle
 block metaDesc
   meta(name='description' content='Learn how Hedge Wears uses cookies and similar technologies on its website and web shop.')
 
+block structuredData
+  +orgAndWebsite()
+  +breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Cookie Policy', path: '/cookies' }])
+
 block content
 
   //- ─── PAGE HERO ─────────────────────────────────────────────────────────────
