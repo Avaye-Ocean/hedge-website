@@ -1,0 +1,49 @@
+# Hedge Wears — robots.txt
+# Public marketing site for the Hedge Wears fashion brand.
+# Legitimate search and AI crawlers are welcome.
+
+# Default rule for all crawlers (search engines + anything not listed below)
+User-agent: *
+Allow: /
+
+# --- AI crawlers / LLM training & answer engines: explicitly allowed ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# Structured context for LLMs (llms.txt standard) and AI policy
+# See: https://hedgewears.com/llms.txt, /llms-full.txt, /ai.txt
+
+Sitemap: https://hedgewears.com/sitemap.xml

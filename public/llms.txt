@@ -1,0 +1,48 @@
+# Hedge Wears
+
+> Hedge Wears (legal entity: Hedge Wearsly Limited) is a modern African fashion house. It designs, curates, and sells premium clothing, footwear, and accessories for men and women — blending African heritage with timeless, seasonless design. This site (hedgewears.com) is the official marketing website: it tells the brand story, showcases collections, categories, and featured products, and sends shoppers to the Hedge Wears web store and mobile apps. Prices are shown in HedgeCoin (HGC — an in-platform loyalty currency), with a local-currency equivalent always in view.
+
+## What Hedge Wears is
+- A premium African fashion brand headquartered in Lagos, Nigeria, selling globally to Africa and the diaspora.
+- Tagline: "We don't just wear fashion — we Hedge it." / "Style Beyond Seasons."
+- Not fast fashion: classic, culturally rooted, timeless design built to outlast trends.
+- Sells apparel (shirts, polos, long-sleeve tops, trousers), footwear (sneakers, loafers, oxfords, boots, mules), and accessories (watches, chains, bangles, rings, necklaces, glasses) for men and women.
+- Brand value framework (C.R.E.S.T.): Classic, Rooted (in African heritage), Empowering, Stylish, Timeless.
+
+## Key pages (this marketing site)
+- [Home](https://hedgewears.com/): Brand story, featured products, and category highlights.
+- [Collections](https://hedgewears.com/collections): Curated seasonal and thematic collections.
+- [Products](https://hedgewears.com/products): The full catalogue overview, filterable by tag and category.
+- [Categories](https://hedgewears.com/categories): Browse the range by category (apparel, footwear, accessories).
+- [Features](https://hedgewears.com/features): What makes the Hedge Wears shopping experience unique.
+- [About](https://hedgewears.com/about): The brand story, mission, and values.
+- [Pricing / How shopping works](https://hedgewears.com/pricing): Free to browse; how HedgeCoin pricing works.
+- [Download the App](https://hedgewears.com/download): Links to the iOS and Android apps.
+- [Help Center](https://hedgewears.com/help): FAQs on shopping, orders, delivery, and HedgeCoin.
+- [Contact](https://hedgewears.com/contact): Support via email, Instagram, and X.
+- [Blog](https://hedgewears.com/blog) · [Careers](https://hedgewears.com/careers)
+- [Terms of Service](https://hedgewears.com/terms) · [Privacy Policy](https://hedgewears.com/privacy) · [Cookie Policy](https://hedgewears.com/cookies)
+
+## How shopping works
+- Browse collections, categories, and featured products on this site, then continue to the Hedge Wears web store or the mobile app to buy.
+- Each product shows photos/video, a price in HGC, size/colour variants, and customer reviews.
+- Prices are shown primarily in HedgeCoin (HGC), with a secondary equivalent in the shopper's selected local currency (150+ currencies supported; default Nigerian Naira / NGN).
+- Payments are processed through Paystack (debit/credit card or bank transfer). Card details are never stored on Hedge Wears servers.
+- After ordering: track order status (Confirmed, Processing, Shipped, Delivered), request returns where eligible, and leave product reviews.
+
+## HedgeCoin (HGC)
+- HGC is the currency Hedge Wears uses to price and sell products — an in-platform loyalty/wallet currency, NOT a cryptocurrency.
+- You fund your HGC balance from your local currency; the rate and any fees are shown before you confirm, and HGC can be converted back.
+- Prices are always coin-first; local-currency amounts are a muted secondary estimate.
+
+## Platform & apps
+- Hedge Wears runs on the Vendorstack coin/commerce infrastructure that powers the platform.
+- Available as: this marketing site (hedgewears.com), the Hedge Wears web store, and native iOS and Android apps.
+
+## More context
+- [Full AI disclosure (llms-full.txt)](https://hedgewears.com/llms-full.txt): Complete, structured details of the brand, catalogue, coin system, shopping flow, and FAQs.
+- [Brand voice reference (llm.txt)](https://hedgewears.com/llm.txt): Brand identity, tone, and positioning guidance.
+- [AI usage policy (ai.txt)](https://hedgewears.com/ai.txt)
+
+## Support
+- Customer support and enquiries: hello@hedgewears.com, or via the [Contact page](https://hedgewears.com/contact) (Instagram @hedgewears, X @hedgewears).

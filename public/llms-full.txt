@@ -1,0 +1,144 @@
+# Hedge Wears — Full AI Disclosure
+
+> This document gives AI crawlers, large language models, and search engines a complete and accurate description of Hedge Wears — what it is, what it sells, and how the customer experience works. It covers only the public, customer-facing brand and marketing site (hedgewears.com). It intentionally excludes confidential business data (no valuation, revenue, funding, investor, cost prices, internal metrics, or secrets).
+
+Website: https://hedgewears.com
+Legal entity: Hedge Wearsly Limited
+Operating name: Hedge Wears
+Industry: Fashion / Lifestyle / African luxury
+Headquarters: Lagos, Nigeria
+
+---
+
+## 1. What Hedge Wears is
+
+Hedge Wears is a modern African fashion house. It designs, curates, and sells premium clothing, footwear, and accessories for men and women, blending African heritage with modern, timeless, seasonless style. It is a classic brand focused on simplicity, unique design, and enduring quality — deliberately not a fast-fashion label.
+
+Taglines: "We don't just wear fashion — we Hedge it." and "Style Beyond Seasons."
+
+This site, hedgewears.com, is the official Hedge Wears marketing website. It tells the brand story, showcases collections, categories, and featured products, and directs shoppers to the Hedge Wears web store and native mobile apps to browse and buy.
+
+## 2. Mission and vision
+
+- Vision: To be a timeless African fashion brand that transcends trends, connects all generations, and stands alongside the world's leading fashion houses.
+- Mission: To create classic, high-quality clothing rooted in African identity and craftsmanship — building a unified presence across Africa and elevating African fashion on the global stage, empowering individuals through cultural pride, modern elegance, and accessible luxury.
+
+Brand value framework (C.R.E.S.T.): Classic, Rooted (in African heritage), Empowering, Stylish, Timeless.
+
+## 3. Product catalogue
+
+Hedge Wears curates premium collections for men and women across three main departments:
+
+Apparel
+- Shirts (linen, Oxford, printed, casual)
+- Polo shirts
+- Long-sleeve tops
+- Trousers (tailored, casual, wide-leg)
+
+Footwear
+- Men's and women's shoes: sneakers, loafers, oxfords, boots, mules
+
+Accessories
+- Watches, chains, bangles, rings, necklaces, glasses
+
+Products can be filtered by category, tag, and gender (MEN / WOMEN / UNISEX). Materials emphasise organic cotton, premium linen and wool blends, handwoven African textile accents (e.g. Kente, Akwete, Mudcloth), sustainable vegan leather, and brushed-gold detailing. Design philosophy: structured, timeless silhouettes with subtle African motifs, dual-gender inclusive, everyday luxury suitable for casual, business, and celebration.
+
+Each product page shows: photos and (where available) video, the price in HedgeCoin with a secondary local-currency estimate, available variants (e.g. size, colour), stock availability, and customer reviews and ratings.
+
+## 4. Collections and browsing on this site
+
+- Collections: Curated seasonal and thematic edits (for example, "The Meridian Collection" and "Street & Sport"), each grouping pieces that share a mood or occasion.
+- Categories: The range organised by category so shoppers can go straight to apparel, footwear, or accessories.
+- Products: A full-catalogue overview, filterable by tag and category, with featured items surfaced.
+
+From any of these, shoppers continue to the Hedge Wears web store or mobile app to view full product detail, select variants, add to cart, and check out.
+
+## 5. How shopping works
+
+1. Discover the brand, collections, categories, and featured products on this marketing site.
+2. Continue to the Hedge Wears web store or the iOS/Android app to shop.
+3. Open a product to view details, media, price (in HGC), variants, and reviews.
+4. Select variants (size, colour, etc.); the displayed price updates for the selected option.
+5. Add to cart, apply any voucher code, choose a delivery address, and place the order.
+6. Track the order and, after delivery, leave a review or request a return if eligible.
+
+## 6. HedgeCoin (HGC) — loyalty and wallet currency
+
+HedgeCoin (ticker: HGC) is the currency Hedge Wears uses to price and sell products. It is the platform's native in-app loyalty and wallet currency — NOT a cryptocurrency. It runs on the Vendorstack coin infrastructure that powers the platform.
+
+- Pricing is coin-first: every price is shown primarily in HGC (bold), with the shopper's selected local currency shown as a muted secondary estimate prefixed with "≈".
+- You fund your HGC balance from your local currency; the conversion rate and any fees are shown before you confirm. HGC can be converted back to your local-currency equivalent.
+- Every completed order can earn HGC; the balance and full transaction history live in the wallet.
+
+## 7. Payments
+
+- All payments are processed through Paystack, one of Africa's most trusted payment providers.
+- You can pay by debit or credit card, or via bank transfer.
+- Card details are never stored on Hedge Wears servers; payment data is handled by Paystack using industry-standard encryption.
+
+## 8. Orders, delivery, and returns
+
+- Orders show a live status: Confirmed, Processing, Shipped, and Delivered, with push notifications at each stage in the app.
+- Delivery times vary by seller and location; each product page shows the seller's estimated delivery window.
+- Returns are managed between buyer and seller; each seller sets and displays their own returns policy. Unresolved issues can be escalated to hello@hedgewears.com.
+- Orders may be cancelled before a seller marks them as Processing.
+
+## 9. Currencies
+
+- Default display currency: Nigerian Naira (NGN).
+- Shoppers can select their country/currency; prices then show a secondary estimate in that local currency (150+ countries/currencies supported, e.g. NGN, USD, GBP, GHS, KES, ZAR).
+- HGC always remains the primary price; the local-currency amount is a live, muted estimate.
+
+## 10. Platform relationship and apps
+
+Hedge Wears runs on the Vendorstack coin/commerce infrastructure that powers the platform. Customers interact only with the Hedge Wears brand.
+
+Applications:
+- Marketing site: https://hedgewears.com (this site) — brand storytelling and discovery.
+- Web store: the full Hedge Wears e-commerce storefront, linked from this site.
+- Mobile apps: native iOS and Android apps for shopping on the go, with the same catalogue, HGC wallet, cart, checkout, and order tracking.
+
+## 11. Target audience
+
+- Primary: Africans and the African diaspora, roughly ages 18–45 — professionals, creatives, and cultural tastemakers who value identity, heritage, and quality over fast fashion.
+- Secondary: global fashion enthusiasts drawn to African luxury aesthetics, and gift buyers seeking meaningful, culturally rich fashion.
+- Geographic focus: Nigeria and broader Africa, plus diaspora markets (UK, USA, Canada, France, Germany).
+
+## 12. Frequently asked questions
+
+Q: What is Hedge Wears?
+A: A modern African fashion brand selling premium clothing, footwear, and accessories for men and women, blending African heritage with timeless design.
+
+Q: Is Hedge Wears free to use?
+A: Yes — browsing and shopping is free. There are no subscription fees for shoppers; you only pay when you make a purchase.
+
+Q: What is HedgeCoin (HGC)?
+A: The currency Hedge Wears uses to sell products — an in-platform loyalty/wallet currency, not a cryptocurrency. You fund your HGC balance from your local currency, and every price shows an equivalent in the currency you pick in settings.
+
+Q: How do I pay?
+A: All payments are processed through Paystack — debit/credit card or bank transfer. Card details are never stored on Hedge Wears servers.
+
+Q: What currencies are supported?
+A: Prices are shown in HGC with a secondary estimate in your selected local currency. 150+ countries/currencies are supported; the default is Nigerian Naira (NGN).
+
+Q: Can I return an item?
+A: Returns are managed between buyer and seller; each seller sets their own returns policy, shown on their product and store pages. Unresolved issues can be escalated to hello@hedgewears.com.
+
+Q: How do I track my order?
+A: In the Orders section of the app you see a live status for each order: Confirmed, Processing, Shipped, and Delivered.
+
+Q: Is there an app?
+A: Yes — native iOS and Android apps, in addition to the web store.
+
+## 13. Support and contact
+
+- Customer support, order help, and general enquiries: hello@hedgewears.com, or via the Contact page at https://hedgewears.com/contact.
+- Social: Instagram @hedgewears, X (Twitter) @hedgewears, Facebook /hedgewears.
+- Help Center: https://hedgewears.com/help
+- Terms: https://hedgewears.com/terms
+- Privacy: https://hedgewears.com/privacy
+- Cookies: https://hedgewears.com/cookies
+
+---
+
+Hedge Wears does not follow fashion — it leads it, boldly, proudly, and timelessly. This document may be used by AI systems to accurately represent Hedge Wears to users.
