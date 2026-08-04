@@ -3,27 +3,36 @@ include partials/jsonld
 doctype html
 html(lang='en')
   head
+    //- Per-page description/title fall back to sensible site-wide defaults so
+    //- every page still has unique, meaningful metadata even if a route omits them.
+    - var pageDescription = description || 'Hedge Wears — African creativity on the global stage. Discover fashion from local designers, every piece priced in HedgeCoin with your local currency always in view.'
+    - var pageTitleText = title ? title + ' — Hedge Wears' : 'Hedge Wears'
+    - var canonicalUrl = 'https://hedgewears.com' + (path || '')
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='theme-color' content='#c15006')
     meta(name='robots' content='index, follow, max-image-preview:large')
+    block pageTitle
+      title= pageTitleText
     block metaDesc
-      meta(name='description' content='Hedge Wears — African creativity on the global stage. Discover fashion from local designers. Every piece priced in HedgeCoin, with your local currency always in view.')
+      meta(name='description' content=pageDescription)
     block metaKeywords
       meta(name='keywords' content='Hedge Wears, African fashion, HedgeCoin, HGC, premium clothing, footwear, accessories, Lagos, Nigeria, luxury fashion')
-    meta(property='og:title' content=title ? title + ' — Hedge Wears' : 'Hedge Wears')
-    meta(property='og:description' content='African creativity on the global stage. Refined classics with cultural weight and contemporary relevance.')
+    meta(property='og:title' content=pageTitleText)
+    meta(property='og:description' content=pageDescription)
     meta(property='og:type' content='website')
     meta(property='og:image' content=og_image || 'https://hedgewears.com/img/brand/hedge-10.jpg')
+    meta(property='og:image:width' content='1200')
+    meta(property='og:image:height' content='630')
     meta(name='twitter:card' content='summary_large_image')
-    meta(name='twitter:title' content=title ? title + ' — Hedge Wears' : 'Hedge Wears')
-    meta(name='twitter:description' content='African creativity on the global stage. Refined classics with cultural weight and contemporary relevance.')
-    meta(property='og:url' content='https://hedgewears.com' + (path || ''))
+    meta(name='twitter:title' content=pageTitleText)
+    meta(name='twitter:description' content=pageDescription)
+    meta(name='twitter:image' content=og_image || 'https://hedgewears.com/img/brand/hedge-10.jpg')
+    meta(property='og:url' content=canonicalUrl)
     meta(property='og:site_name' content='Hedge Wears')
     meta(property='og:locale' content='en_NG')
-    link(rel='canonical' href='https://hedgewears.com' + (path || ''))
+    link(rel='canonical' href=canonicalUrl)
     meta(name='twitter:site' content='@hedgewears')
-    block pageTitle
-      title Hedge Wears
 
     link(rel='preconnect' href='https://fonts.googleapis.com')
     link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
@@ -42,10 +51,11 @@ html(lang='en')
       +orgAndWebsite()
 
   body
+    a.skip-link(href='#main-content') Skip to content
     include partials/nav
     include partials/icons
 
-    main
+    main#main-content(tabindex='-1')
       block content
 
     include partials/footer

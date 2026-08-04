@@ -6,11 +6,11 @@ header.nav
       span.nav-logo-text HEDGE WEARS
 
     nav.nav-links(aria-label='Primary navigation')
-      a.nav-link(href='/' class=(page === 'home' ? 'active' : '')) Home
-      a.nav-link(href='/collections' class=(page === 'collections' ? 'active' : '')) Collections
-      a.nav-link(href='/products' class=(page === 'products' ? 'active' : '')) Products
-      a.nav-link(href='/about' class=(page === 'about' ? 'active' : '')) About
-      a.nav-link(href='/download' class=(page === 'download' ? 'active' : '')) Download
+      a.nav-link(href='/' class=(page === 'home' ? 'active' : '') aria-current=(page === 'home' ? 'page' : false)) Home
+      a.nav-link(href='/collections' class=(page === 'collections' ? 'active' : '') aria-current=(page === 'collections' ? 'page' : false)) Collections
+      a.nav-link(href='/products' class=(page === 'products' ? 'active' : '') aria-current=(page === 'products' ? 'page' : false)) Products
+      a.nav-link(href='/about' class=(page === 'about' ? 'active' : '') aria-current=(page === 'about' ? 'page' : false)) About
+      a.nav-link(href='/download' class=(page === 'download' ? 'active' : '') aria-current=(page === 'download' ? 'page' : false)) Download
 
     a.btn.btn-primary.nav-cta(href=webShopUrl target='_blank' rel='noopener') Shop Now
 
@@ -22,9 +22,9 @@ header.nav
 
   .nav-mobile-menu#nav-mobile-menu(aria-hidden='true')
     nav.nav-mobile-links
-      a.nav-mobile-link(href='/' class=(page === 'home' ? 'active' : '')) Home
-      a.nav-mobile-link(href='/collections' class=(page === 'collections' ? 'active' : '')) Collections
-      a.nav-mobile-link(href='/products' class=(page === 'products' ? 'active' : '')) Products
-      a.nav-mobile-link(href='/about' class=(page === 'about' ? 'active' : '')) About
-      a.nav-mobile-link(href='/download' class=(page === 'download' ? 'active' : '')) Download
+      a.nav-mobile-link(href='/' class=(page === 'home' ? 'active' : '') aria-current=(page === 'home' ? 'page' : false)) Home
+      a.nav-mobile-link(href='/collections' class=(page === 'collections' ? 'active' : '') aria-current=(page === 'collections' ? 'page' : false)) Collections
+      a.nav-mobile-link(href='/products' class=(page === 'products' ? 'active' : '') aria-current=(page === 'products' ? 'page' : false)) Products
+      a.nav-mobile-link(href='/about' class=(page === 'about' ? 'active' : '') aria-current=(page === 'about' ? 'page' : false)) About
+      a.nav-mobile-link(href='/download' class=(page === 'download' ? 'active' : '') aria-current=(page === 'download' ? 'page' : false)) Download
     a.btn.btn-primary.nav-mobile-cta(href=webShopUrl target='_blank' rel='noopener') Shop Now

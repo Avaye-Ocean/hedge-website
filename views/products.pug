@@ -67,7 +67,7 @@ block content
               .product-card-info
                 span.product-card-name= product.name
                 span.product-price
-                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg?v=' + version alt='HGC')
                   = product.sellingPriceCoin
               span.product-card-link View →
         else
@@ -78,7 +78,7 @@ block content
               .product-card-info
                 span.product-card-name= placeholderNames[i]
                 span.product-price
-                  img.hgc-icon-inline(src='/img/hgc-icon.svg' alt='HGC')
+                  img.hgc-icon-inline(src='/img/hgc-icon.svg?v=' + version alt='HGC')
                   = placeholderPrices[i]
               span.product-card-link View →
       .section-footer-cta

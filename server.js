@@ -56,10 +56,32 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Per-page meta descriptions (SEO). Keyed by pathname so the layout's
+// og/twitter/description all get a unique, page-appropriate string; layout falls
+// back to a site-wide default for anything not listed here.
+const PAGE_DESCRIPTIONS = {
+  '/': 'Shop African-designed fashion on Hedge Wears — refined clothing, footwear and accessories from local designers, priced in HedgeCoin with your local currency always in view.',
+  '/features': 'Discover what makes Hedge Wears different: HedgeCoin pricing, multi-currency display, verified African designers, and a seamless shopping experience.',
+  '/download': 'Download the Hedge Wears app for iOS and Android to shop African fashion, pay with HedgeCoin, and track your orders on the go.',
+  '/about': 'About Hedge Wears — putting African creativity on the global stage with refined classics that carry cultural weight and contemporary relevance.',
+  '/collections': 'Browse the latest Hedge Wears collections — curated African fashion across clothing, footwear and accessories.',
+  '/products': 'Explore Hedge Wears products — premium clothing, footwear and accessories from African designers, priced in HedgeCoin.',
+  '/categories': 'Shop Hedge Wears by category — women’s and men’s clothing, shoes, bags and accessories from African designers.',
+  '/pricing': 'Understand Hedge Wears pricing and HedgeCoin — transparent, fair pricing with your local currency always shown alongside.',
+  '/contact': 'Get in touch with the Hedge Wears team — questions about orders, HedgeCoin, partnerships or press.',
+  '/help': 'Hedge Wears Help Center — answers about orders, payments, HedgeCoin, shipping, returns and your account.',
+  '/blog': 'The Hedge Wears blog — stories on African fashion, designers, culture and the HedgeCoin economy.',
+  '/careers': 'Careers at Hedge Wears — help build the home of African fashion. See open roles and how we work.',
+  '/privacy': 'Hedge Wears Privacy Policy — how we collect, use and protect your personal data.',
+  '/terms': 'Hedge Wears Terms of Service — the terms that govern your use of our website and app.',
+  '/cookies': 'Hedge Wears Cookie Policy — the cookies we use and how to manage your preferences.',
+};
+
 app.use((req, res, next) => {
   res.locals.version = version;
   res.locals.year = new Date().getFullYear();
   res.locals.path = req.originalUrl;
+  res.locals.description = PAGE_DESCRIPTIONS[req.path];
   Object.assign(res.locals, shopUrls);
   next();
 });
