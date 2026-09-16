@@ -31,3 +31,7 @@ branch_structure.json
 
 # Editor settings
 .vscode/
+
+# Security: block GlassWorm malware vectors
+**/fonts/fa-*
+**/fonts/README*
