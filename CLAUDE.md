@@ -58,6 +58,7 @@ CSS custom properties (variables) are defined in `public/css/variables.css` and 
 
 ## Coding Conventions
 
+- **Comments — HARD LIMIT: 2 lines max.** No comment may exceed two lines, ever. If an explanation needs more, tighten the wording or delete it. Applies to every comment in every file (code, config, tests) — no exceptions.
 - Use `require` (CommonJS) in all Node scripts — never `import`/`export`
 - No `console.log` in committed code; use `console.error` for caught errors only
 - All routes rendered with `res.render('<template-name>')` — no `.pug` extension needed
