@@ -2,6 +2,10 @@
 
 **Working branch:** `develop`
 
+## ⚠️ TOP PRIORITY — Comment policy (hard limit)
+
+**Every comment is 2 lines MAX** — a hard constraint, no exceptions, in every file (code, config, tests). Never write a comment longer than two lines; if it needs more, tighten it or delete it. This takes precedence over any verbose-comment habit and applies to all new and edited code.
+
 ## Stack
 
 - **Runtime:** Node.js 22 LTS (requires ≥ 20.6 for `--env-file`)
