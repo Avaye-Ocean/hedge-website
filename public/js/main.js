@@ -39,8 +39,8 @@
     });
   });
 
-  // ─── Sticky Nav: add .scrolled on scroll ────────────────────────────────────
-  var nav = document.querySelector('nav');
+  // ─── Sticky Nav: add .scrolled on the header bar (not the inner <nav>) ──────
+  var nav = document.querySelector('header.nav');
 
   if (nav) {
     function onScroll() {

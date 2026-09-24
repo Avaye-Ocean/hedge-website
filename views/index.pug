@@ -26,15 +26,20 @@ block structuredData
 block content
 
   //- ─── HERO ──────────────────────────────────────────────────────────────────
-  section.hero.hero--image.section(style=`background-image: url("/img/brand/hero-home.jpg?v=${version}")`)
+  //- hero--image keeps the photo as a no-WebGL fallback; the shader canvas + liquid
+  //- logo enhance on top and are skipped under prefers-reduced-motion.
+  section.hero.hero--image.hero--fx.section(data-fx-host style=`background-image: url("/img/brand/hero-home.jpg?v=${version}")`)
+    canvas.hero-fx-canvas(aria-hidden='true')
     .hero-overlay
     .container
       .hero-inner
         .hero-content
+          .hero-logo(aria-hidden='true')
+            canvas.hero-logo-canvas
           h1.hero-title Style Beyond Seasons
           p.hero-subtitle African creativity on the global stage. Refined classics with cultural weight and contemporary relevance.
           .hero-cta-group
-            a.btn.btn-primary.btn-lg(href=webShopUrl target='_blank' rel='noopener') Shop the Collection
+            a.btn.btn-glass.btn-lg(href=webShopUrl target='_blank' rel='noopener') Shop the Collection
             a.btn.btn-outline-white.btn-lg(href='/download') Download App
 
   //- ─── CATEGORY STRIP ────────────────────────────────────────────────────────
@@ -87,6 +92,31 @@ block content
               span.category-card-cta Shop →
       .section-footer-link
         a.link(href='/categories') View all categories →
+
+  //- ─── BRAND STORY (scroll journey) ──────────────────────────────────────────
+  section.story
+    .container
+      .story-row(data-fx='up')
+        .story-media
+          img(src='/img/brand/hedge-31.jpg?v=' + version alt='Hedge Wears designs rooted in African creativity' loading='lazy')
+        .story-copy(data-fx='right' data-fx-delay='1')
+          p.story-eyebrow The Origin
+          h2.story-title Designed where culture lives
+          p.story-text From Lagos ateliers to the global runway — every Hedge piece carries the craft, colour and confidence of African design.
+      .story-row.story-row--reverse(data-fx='up')
+        .story-media
+          img(src='/img/brand/hedge-13.jpg?v=' + version alt='A Hedge Wears piece priced in HedgeCoin' loading='lazy')
+        .story-copy(data-fx='left' data-fx-delay='1')
+          p.story-eyebrow The Currency
+          h2.story-title Priced in HedgeCoin, clear in yours
+          p.story-text One fair price in HedgeCoin, with your local currency always in view — no surprises, wherever you shop from.
+      .story-row(data-fx='up')
+        .story-media
+          img(src='/img/brand/hedge-35.jpg?v=' + version alt='Hedge Wears worn worldwide' loading='lazy')
+        .story-copy(data-fx='right' data-fx-delay='1')
+          p.story-eyebrow The Reach
+          h2.story-title Made local. Worn worldwide.
+          p.story-text Discover independent designers and ship the look anywhere — style beyond seasons, beyond borders.
 
   //- ─── FEATURED PRODUCTS ─────────────────────────────────────────────────────
   section.featured-products.section
